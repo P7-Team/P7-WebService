@@ -1,0 +1,39 @@
+openapi: 3.0.3
+info:
+  title: P-7 WebService
+  description: 'WebService to distribute computations'
+  license:
+    name: Don't know
+    url: 
+  version: 1.0.0
+servers:
+- url: can't remember
+tags:
+- name: batch
+  description: A batch containing an executable able to perform the
+               desired computations, and a set of inputs that should be computed
+paths:
+  /batch:
+    post:
+      tags:
+      - batch
+      summary: Add a batch to be computed
+      operationId: addBatch
+      requestBody:
+        description: Batch object that should be computed
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Batch'
+        required: true
+      responses:
+        202:
+          description: Batch has been added to queue
+          content: {}
+        400:
+          description: Invalid input
+          content: {}
+        401:
+          description: Not logged in
+          content: {}
+      x-codegen-request-body-name: body
