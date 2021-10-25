@@ -10,9 +10,7 @@ using Task = WebService.Models.Task;
 
 namespace WebService.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class TaskController : ControllerBase
+    public class TaskController : ApiController
     {
         private readonly WebServiceContext _context;
 
