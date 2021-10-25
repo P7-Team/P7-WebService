@@ -37,3 +37,23 @@ paths:
           description: Not logged in
           content: {}
       x-codegen-request-body-name: body
+
+  /task:
+    get:
+      tags:
+      - task
+      summary: stuff
+      operationId: getTask
+      responses:
+        200:
+          description: Successful operation
+        400:
+          description: Invalid input
+        401:
+          description: Not logged in
+
+    # post:
+    #   tags:
+    #   - task
+    #   summary: stuff
+    #   operationId: postTask

@@ -1,0 +1,12 @@
+type: object
+required:
+- id
+- executable
+- input
+properties:
+  id:
+    type: string
+  executable:
+    type: object
+  input:
+    type: object
