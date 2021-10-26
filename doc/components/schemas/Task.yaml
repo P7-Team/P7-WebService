@@ -5,8 +5,8 @@ required:
 - input
 properties:
   id:
-    type: string
+    type: long
   executable:
-    type: object
+    type: string
   input:
-    type: object
+    type: string

@@ -4,8 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using WebService.Interfaces;
+using WebService.Models;
+using Task = WebService.Models.Task;
 
 namespace WebService
 {
@@ -21,6 +25,14 @@ namespace WebService
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureServices((hostBuilderContext, serviceCollection) =>
+                {
+                    // Setup a context for the TaskController
+                    serviceCollection.AddSingleton<ITaskContext, TaskContext>(sp =>
+                    {
+                        return new TaskContext();
+                    });
                 });
     }
 }

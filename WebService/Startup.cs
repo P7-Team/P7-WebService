@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -11,7 +12,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using WebService.Interfaces;
 using WebService.Models;
+using Task = WebService.Models.Task;
 
 namespace WebService
 {
@@ -28,9 +31,9 @@ namespace WebService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
-            services.AddDbContext<WebServiceContext>(opt =>
-                opt.UseInMemoryDatabase("WebServiceDatabase"));
+            
+            // services.AddDbContext<WebServiceContext>(opt =>
+            //     opt.UseInMemoryDatabase("WebServiceDatabase"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

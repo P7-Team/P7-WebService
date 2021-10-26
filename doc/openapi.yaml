@@ -12,6 +12,9 @@ tags:
 - name: batch
   description: A batch containing an executable able to perform the
                desired computations, and a set of inputs that should be computed
+- name: task
+  description: A task that is ready to be computed
+
 paths:
   /batch:
     post:
@@ -38,22 +41,18 @@ paths:
           content: {}
       x-codegen-request-body-name: body
 
-  /task:
+  /task/ready:
     get:
       tags:
       - task
-      summary: stuff
-      operationId: getTask
+      summary: Returns a task that is ready to be computed
+      operationId: GetReadyTask
+      produces:
+      - application/json
       responses:
         200:
           description: Successful operation
-        400:
-          description: Invalid input
-        401:
-          description: Not logged in
-
-    # post:
-    #   tags:
-    #   - task
-    #   summary: stuff
-    #   operationId: postTask
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
