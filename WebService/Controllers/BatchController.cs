@@ -29,7 +29,7 @@ namespace WebService.Controllers
 
             MultipartMarshaller<MultipartSection> batchMarshaller = new MultipartMarshaller<MultipartSection>(reader);
 
-            Dictionary<string, string> fromData = batchMarshaller.GetFormData();
+            Dictionary<string, string> formData = batchMarshaller.GetFormData();
             List<FileStream> streams = batchMarshaller.GetFileStreams();
 
         }
