@@ -4,48 +4,28 @@ namespace WebService
 {
     public class User : IEquatable<User>
     {
-        private string _username;
-        private readonly int _id;
-        private string _password;
-        private int _contributionPoints = 0;
+        public string Username { get; }
+        public int Id { get; }
+        public string Password { private get; set; }
+        public int ContributionPoints { get; set; }
 
         public User(string username, int ID, string password)
         {
-            _username = username;
-            _id = ID;
-            _password = password;
+            Username = username;
+            Id = ID;
+            Password = password;
         }
 
-        public string GetUsername()
+        public void AddContributionPoints(int contributionModifier)
         {
-            return _username;
-        }
-
-        public void SetPassword(string passwordHash)
-        {
-            _password = passwordHash;
-        }
-
-        public int GetId()
-        {
-            return _id;
-        }
-
-        public int GetContributionPoints()
-        {
-            return _contributionPoints;
-        }
-
-        public void SetContributionPoints(int contributionModifier)
-        {
-            _contributionPoints += contributionModifier;
+            ContributionPoints += contributionModifier;
         }
 
         public bool Equals(User other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return _id == other._id;
+            return Id == other.Id;
         }
 
         public override bool Equals(object obj)
@@ -58,7 +38,7 @@ namespace WebService
 
         public override int GetHashCode()
         {
-            return _id;
+            return Id.GetHashCode();
         }
 
         public bool Save()
