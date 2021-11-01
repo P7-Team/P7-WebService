@@ -8,5 +8,7 @@ properties:
     type: long
   executable:
     type: string
+    format: binary
   input:
     type: string
+    format: binary
