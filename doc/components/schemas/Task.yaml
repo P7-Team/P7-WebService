@@ -1,0 +1,14 @@
+type: object
+required:
+- id
+- executable
+- input
+properties:
+  id:
+    type: long
+  executable:
+    type: string
+    format: binary
+  input:
+    type: string
+    format: binary
