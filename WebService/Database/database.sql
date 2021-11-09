@@ -104,3 +104,4 @@ CREATE TABLE IF NOT EXISTS Runs(
 CREATE INDEX idx_user_pass_name ON Users (username,password);
 CREATE INDEX idx_owned_by ON Batch (ownedBy);
 CREATE INDEX idx_allocated_to ON Task (allocatedTo);
+CREATE INDEX idx_batch_id ON Task (id);
