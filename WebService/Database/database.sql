@@ -36,7 +36,10 @@ CREATE TABLE IF NOT EXISTS Task(
     PRIMARY KEY(id,number),
     FOREIGN KEY(allocatedTo) REFERENCES Users(username)
      ON UPDATE CASCADE
-     ON DELETE SET NULL
+     ON DELETE SET NULL,
+    FOREIGN KEY(id) REFERENCES Batch(id)
+     ON UPDATE CASCADE
+     ON DELETE CASCADE
 );
 
 -- File
