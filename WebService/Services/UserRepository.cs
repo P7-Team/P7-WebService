@@ -1,14 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using WebService.Interfaces;
-using WebService.Models;
+using SqlKata.Execution;
+using SqlKata.Compilers;
 
 namespace WebService.Services
 {
     public class UserRepository : IRepository<User, int>
     {
+        private readonly QueryFactory _db;
+
+        public UserRepository(QueryFactory db)
+        {
+            _db = db;
+        }
+
         public void Create(User item)
         {
             throw new NotImplementedException();
