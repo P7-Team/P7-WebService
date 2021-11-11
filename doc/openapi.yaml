@@ -47,8 +47,6 @@ paths:
       - task
       summary: Returns a task that is ready to be computed
       operationId: GetReadyTask
-      produces:
-      - application/json
       responses:
         200:
           description: Successful operation
@@ -56,3 +54,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
+  /task/complete:
+    post:
+      tags:
+      - task
+      summary: Receives a file containing the result of the Task with ID
+      operationId: addResult
+      requestBody:
+        description: Information about completed Task
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompletedTask'
+      responses:
+        201:
+          description: Successful creation
+        400:
+          description: Invalid input
+        401:
+          description: Not logged in
