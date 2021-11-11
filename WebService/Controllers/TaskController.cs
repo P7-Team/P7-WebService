@@ -28,5 +28,12 @@ namespace WebService.Controllers
         {
             return _context.FirstOrDefault(k => k.IsReady);
         }
+
+        [HttpPost]
+        [Route("api/task/complete")]
+        public void AddResult()
+        {
+            
+        }
     }
 }

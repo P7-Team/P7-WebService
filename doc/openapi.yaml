@@ -59,7 +59,7 @@ paths:
       tags:
       - task
       summary: Receives a file containing the result of the Task with ID
-      operationId: addResult
+      operationId: AddResult
       requestBody:
         description: Information about completed Task
         content:
