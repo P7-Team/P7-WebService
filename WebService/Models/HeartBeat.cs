@@ -18,10 +18,9 @@ namespace WebService.Models
 
         public HeartBeat(string input)
         {
-            if (SetMessageType(input) == false)
-            {
-                _heartBeat = MessageType.Error;
-            }
+            SetMessageType(input);
+
+            _heartBeat = MessageType.Error;
         }
 
         public HeartBeat()
@@ -34,15 +33,10 @@ namespace WebService.Models
             return _heartBeat;
         }
 
-        public bool SetMessageType(string input)
+        public void SetMessageType(string input)
         {
             bool canParse = Enum.TryParse(StringCapitalization(input), out MessageType output);
-            if (canParse)
-            {
-                _heartBeat = output;
-            }
-
-            return canParse;
+            _heartBeat = canParse ? output : MessageType.Error;
         }
 
         private string StringCapitalization(string input)

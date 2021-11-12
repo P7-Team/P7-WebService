@@ -10,33 +10,32 @@ namespace WebService_UnitTests
         public void heatBeatMessageType_Parses()
         {
             HeartBeat heartBeat = new HeartBeat("Working");
-            Assert.True(heartBeat.SetMessageType("Available"));
+            heartBeat.SetMessageType("Available");
+            Assert.Equal(MessageType.Available, heartBeat.GetMessageType());
         }
-        
+
         [Fact]
         public void heatBeatMessageType_Parses_With_LowerCase()
         {
             HeartBeat heartBeat = new HeartBeat("Working");
-            Assert.True(heartBeat.SetMessageType("available"));
+            heartBeat.SetMessageType("available");
+            Assert.Equal(MessageType.Available, heartBeat.GetMessageType());
         }
 
         [Fact]
         public void heatBeatMessageType_Parses_With_Uppercase()
         {
             HeartBeat heartBeat = new HeartBeat("Working");
-            Assert.True(heartBeat.SetMessageType("AVAILABLE"));
-        }
-        [Fact]
-        public void heatBeatMessageType_Doesnt_Parse()
-        {
-            HeartBeat heartBeat = new HeartBeat("Working");
-            Assert.False(heartBeat.SetMessageType("Test"));
+            heartBeat.SetMessageType("AVAILABLE");
+            Assert.Equal(MessageType.Available, heartBeat.GetMessageType());
         }
 
         [Fact]
-        public void Heartbeat_Instantiation_throws_error()
+        public void Heartbeat_Instantiation_makes_error_on_wrong_input()
         {
-            Assert.Throws<Exception>(() => new HeartBeat("WrongInput"));
+            HeartBeat heartBeat = new HeartBeat("Working");
+            heartBeat.SetMessageType("Test");
+            Assert.Equal(MessageType.Error, heartBeat.GetMessageType());
         }
     }
 }
