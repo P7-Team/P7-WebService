@@ -56,3 +56,22 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
+  /api/HeartBeat:
+    get:
+      tags:
+      - HeartBeat
+      summary: Status message of devices
+      operationId: HeartBeat
+      responses:
+        200:
+          description: HeartBeat susescully recieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeartBeat'
+        400:
+          description: Incorrect heartbeat type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeartBeat'
