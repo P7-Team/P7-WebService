@@ -64,7 +64,7 @@ paths:
       operationId: HeartBeat
       responses:
         200:
-          description: HeartBeat susescully recieved
+          description: HeartBeat successfully received
           content:
             application/json:
               schema:
