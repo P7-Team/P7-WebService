@@ -25,7 +25,7 @@ paths:
       requestBody:
         description: Batch object that should be computed
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/Batch'
         required: true
