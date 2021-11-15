@@ -28,12 +28,13 @@ CREATE TABLE IF NOT EXISTS Batch(
 
 -- Task
 CREATE TABLE IF NOT EXISTS Task(
-    id INTEGER  UNIQUE,
+    id          INTEGER,
     number      INTEGER,
+    subNumber   INTEGER,
     startedOn   TIMESTAMP,
     finishedOn  TIMESTAMP,
     allocatedTo VARCHAR(50),
-    PRIMARY KEY(id,number),
+    PRIMARY KEY(id,number,subNumber),
     FOREIGN KEY(allocatedTo) REFERENCES Users(username)
      ON UPDATE CASCADE
      ON DELETE SET NULL,
@@ -61,8 +62,9 @@ CREATE TABLE IF NOT EXISTS Result(
     isVerified          BOOLEAN DEFAULT FALSE,
     producedById        INTEGER NOT NULL,
     producedByNumber    INTEGER NOT NULL,
+	producedBySubNumber	INTEGER NOT NULL,
     PRIMARY KEY(path,filename),
-    FOREIGN KEY(producedById,producedByNumber) REFERENCES Task(id,number)
+    FOREIGN KEY(producedById,producedByNumber,producedBySubNumber) REFERENCES Task(id,number,subNumber)
 );
 
 -- Source
@@ -87,12 +89,13 @@ CREATE TABLE IF NOT EXISTS Argument(
 
 -- Runs
 CREATE TABLE IF NOT EXISTS Runs(
-    id INTEGER,
-    number INTEGER,
-    path VARCHAR(510),
-    filename VARCHAR(255),
+    id          INTEGER,
+    number      INTEGER,
+	subNumber   INTEGER,
+    path        VARCHAR(510),
+    filename    VARCHAR(255),
     PRIMARY KEY(id,number,path,filename),
-    FOREIGN KEY(id,number) REFERENCES Task(id,number)
+    FOREIGN KEY(id,number,subNumber) REFERENCES Task(id,number,subNumber)
      ON UPDATE CASCADE,
     FOREIGN KEY(path,filename) REFERENCES File(path,filename)
      ON UPDATE CASCADE
