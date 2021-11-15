@@ -20,7 +20,6 @@ namespace WebService.Models
         {
             SetMessageType(input);
 
-            _heartBeat = MessageType.Error;
         }
 
         public HeartBeat()
