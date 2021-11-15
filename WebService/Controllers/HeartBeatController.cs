@@ -26,12 +26,6 @@ namespace WebService.Controllers
         {
             HeartBeat statusMessage = new HeartBeat(messageType["status"]);
 
-            if (statusMessage.GetMessageType() == MessageType.Error)
-            {
-                return BadRequest(
-                    messageType["status is not valid, should be either: Working, Available, IsWorking or Done"]);
-            }
-
             return statusMessage.GetMessageType() switch
             {
                 MessageType.Working => Ok(statusMessage.GetMessageType().ToString()),
