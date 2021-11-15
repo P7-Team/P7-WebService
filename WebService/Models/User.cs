@@ -1,8 +1,10 @@
 using System;
+using WebService.Interfaces;
+using WebService.Models;
 
 namespace WebService
 {
-    public class User : IEquatable<User>
+    public class User : IEquatable<User>, IAggregateRoot<int>
     {
         public string Username { get; }
         public int Id { get; }
@@ -45,6 +47,11 @@ namespace WebService
         {
             // TODO Should store data to the database.
             throw new NotImplementedException();
+        }
+
+        public int GetIdentifier()
+        {
+            return Id;
         }
     }
 }
