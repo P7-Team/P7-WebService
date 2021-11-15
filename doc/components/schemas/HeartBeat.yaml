@@ -1,0 +1,10 @@
+    HeartBeat:
+      type: object
+      required:
+      - body
+      - MessageType
+      properties:
+        Messagetype:
+          type: string
+        body:
+          type: object
