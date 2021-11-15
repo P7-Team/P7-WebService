@@ -12,7 +12,7 @@ namespace WebService_UnitTests
             // Act
             testBatch.AddTask(new Task(false));
             // Assert
-            Assert.Equal(1, testBatch.GetTask(0).Number);
+            Assert.Equal(0, testBatch.GetTask(0).Number);
         }
         
         [Fact]
@@ -23,7 +23,7 @@ namespace WebService_UnitTests
             testBatch.AddTask(new Task(false));
             testBatch.AddTask(new Task(false));
             // Assert
-            Assert.Equal(2, testBatch.GetTask(1).Number);
+            Assert.Equal(1, testBatch.GetTask(1).Number);
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace WebService_UnitTests
             // Act
             testBatch.AddTask(new Task(false));
             // Assert
-            Assert.Equal(1, testBatch.GetTask(0).Number);
+            Assert.Equal(0, testBatch.GetTask(0).Number);
         }
         
         [Fact]
@@ -43,7 +43,7 @@ namespace WebService_UnitTests
             // Act
             testBatch.AddTask(new Task(false),3);
             // Assert
-            Assert.Equal(1, testBatch.GetTask(2).Number);
+            Assert.Equal(0, testBatch.GetTask(2).Number);
         }
         
         [Fact]
@@ -53,7 +53,7 @@ namespace WebService_UnitTests
             // Act
             testBatch.AddTask(new Task(false),-1);
             // Assert
-            Assert.Equal(1, testBatch.GetTask(0).Number);
+            Assert.Equal(0, testBatch.GetTask(0).Number);
         }
         
 
