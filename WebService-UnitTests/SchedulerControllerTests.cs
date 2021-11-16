@@ -3,6 +3,7 @@ using WebService;
 using WebService.Controllers;
 using WebService.Interfaces;
 using WebService.Models;
+using WebService.Services;
 using Xunit;
 
 namespace WebService_UnitTests

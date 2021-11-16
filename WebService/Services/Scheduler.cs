@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using WebService.Interfaces;
 using WebService.Models;
 
-namespace WebService.Controllers
+namespace WebService.Services
 {
     public class SchedulerController : IScheduler
     {
