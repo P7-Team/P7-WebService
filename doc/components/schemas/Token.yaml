@@ -1,6 +1,6 @@
 type: object
 required:
-- token
+- tkn
 properties:
-  token:
+  tkn:
     type: string
