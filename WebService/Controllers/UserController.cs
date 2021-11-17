@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,6 +13,12 @@ namespace WebService.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly ITokenValidator _tokenValidator;
+        public UserController(ITokenValidator tokenValidator)
+        {
+            _tokenValidator = tokenValidator;
+        }
+
         [HttpPost]
         [Route("api/user/signup")]
         public IActionResult SignUp()
