@@ -1,3 +1,4 @@
+using WebService;
 using WebService.Models;
 using Xunit;
 
@@ -14,7 +15,7 @@ namespace WebService_UnitTests
             // Assert
             Assert.Equal(0, testBatch.GetTask(0).Number);
         }
-        
+
         [Fact]
         public void AddTaskToBatch_Multiple_Tasks_Returns_Correct_Number()
         {
@@ -35,27 +36,27 @@ namespace WebService_UnitTests
             // Assert
             Assert.Equal(0, testBatch.GetTask(0).Number);
         }
-        
+
         [Fact]
         public void AddTaskToBatch_Multiple_Replications_Returns_Correct_SubNumber()
         {
             Batch testBatch = new Batch(1);
             // Act
-            testBatch.AddTask(new Task(false),3);
+            testBatch.AddTask(new Task(false), 3);
             // Assert
             Assert.Equal(0, testBatch.GetTask(2).Number);
         }
-        
+
         [Fact]
         public void AddTaskToBatch_Negative_Replication_Provided_One_Element_Added()
         {
             Batch testBatch = new Batch(1);
             // Act
-            testBatch.AddTask(new Task(false),-1);
+            testBatch.AddTask(new Task(false), -1);
             // Assert
             Assert.Equal(0, testBatch.GetTask(0).Number);
         }
-        
+
 
         [Fact]
         public void AddTaskToBatch_No_Other_Tasks_Returns_Correct_ID()
