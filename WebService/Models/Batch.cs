@@ -1,21 +1,33 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using WebService.Interfaces;
 using WebService.Models;
 
 
 namespace WebService.Models
 {
-    public class Batch
+    public class Batch : IAggregateRoot<int>
     {
-        private List<Task> _tasks;
+        public List<Task> Tasks { get; private set; }
 
         public int Id { get; }
+        public Batch(int id)
+        {
+            Id = id;
+            Tasks = new List<Task>();
+        }
+
+        public Batch(int id, List<Task> tasks)
+        {
+            Id = id;
+            Tasks = tasks;
+        }
 
         public Task GetTask(int entry)
         {
             if (entry < TasksCount())
             {
-                return _tasks[entry];
+                return Tasks[entry];
             }
 
             return null;
@@ -23,23 +35,23 @@ namespace WebService.Models
 
         public void RemoveTask(Task task)
         {
-            _tasks.Remove(task);
+            Tasks.Remove(task);
         }
 
         public void RemoveTask(int number, int subNumber)
         {
-            _tasks.RemoveAll(x => x.Id == Id && x.Number == number && x.SubNumber == subNumber);
+            Tasks.RemoveAll(x => x.Id == Id && x.Number == number && x.SubNumber == subNumber);
         }
 
         public int TasksCount()
         {
-            return _tasks.Count;
+            return Tasks.Count;
         }
 
         public void AddTask(Task task, int replications = 1)
         {
             task.Id = Id;
-            task.Number = _tasks.Count;
+            task.Number = Tasks.Count;
             if (replications < 0)
             {
                 replications = 1;
@@ -48,14 +60,13 @@ namespace WebService.Models
             for (int i = 0; i < replications; i++)
             {
                 task.SubNumber = i;
-                _tasks.Add(task);
+                Tasks.Add(task);
             }
         }
 
-        public Batch(int id)
+        public int GetIdentifier()
         {
-            Id = id;
-            _tasks = new List<Task>();
+            return Id;
         }
     }
 }
