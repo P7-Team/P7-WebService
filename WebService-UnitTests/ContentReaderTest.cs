@@ -11,7 +11,7 @@ namespace WebService_UnitTests
         [Fact]
         public void ReadStreamContent_WithDefaultEncoding_StreamWithContentUsingDefaultEncoding_ReturnsCorrectString()
         {
-            // Steup
+            // Setup
             const string expected = "String content";
             MemoryStream stream = new MemoryStream();
             stream.Write(Encoding.UTF8.GetBytes(expected));
