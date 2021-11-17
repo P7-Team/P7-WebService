@@ -9,6 +9,8 @@ namespace WebService_UnitTests
 {
     public class SchedulerControllerTests
     {
+        private const int InRangeNumber = 0;
+        private const int OutOfRangeNumber = 20;
         [Fact]
         public void GetNextTask_Returns_Task()
         {
@@ -19,7 +21,7 @@ namespace WebService_UnitTests
             // Act
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
-            Assert.IsType<Task>(scheduler.GetTaskAndAssignUser(user));
+            Assert.IsType<Task>(scheduler.AllocateTask(user));
         }
 
 
@@ -34,7 +36,7 @@ namespace WebService_UnitTests
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
             // Assert
-            Assert.Null(scheduler.GetTaskAndAssignUser(user));
+            Assert.Null(scheduler.AllocateTask(user));
         }
 
         [Fact]
@@ -49,9 +51,9 @@ namespace WebService_UnitTests
             testBatch.AddTask(task);
             testBatch.AddTask(taskOne);
             scheduler.AddBatch(testBatch);
-            scheduler.GetTaskAndAssignUser(user);
+            scheduler.AllocateTask(user);
             // Assert
-            Assert.Equal(1, scheduler.GetTaskAndAssignUser(anotherUser).Number);
+            Assert.Equal(1, scheduler.AllocateTask(anotherUser).Number);
         }
 
         [Fact]
@@ -65,7 +67,7 @@ namespace WebService_UnitTests
             Batch testBatch = new Batch(0);
             scheduler.AddBatch(testBatch);
             // Assert
-            Assert.Null(scheduler.GetTaskAndAssignUser(user));
+            Assert.Null(scheduler.AllocateTask(user));
         }
 
         [Fact]
@@ -81,7 +83,7 @@ namespace WebService_UnitTests
             // Act
             testBatch.RemoveTask(task);
             // Assert
-            Assert.Null(scheduler.GetTaskAndAssignUser(user));
+            Assert.Null(scheduler.AllocateTask(user));
         }
 
         [Fact]
@@ -95,9 +97,9 @@ namespace WebService_UnitTests
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
             // Act
-            scheduler.RemoveCompletedTask(0, 0, 0);
+            scheduler.RemoveCompletedTask(testBatch.Id, InRangeNumber, InRangeNumber);
             // Assert
-            Assert.Null(scheduler.GetTaskAndAssignUser(user));
+            Assert.Null(scheduler.AllocateTask(user));
         }
 
         [Fact]
@@ -112,9 +114,9 @@ namespace WebService_UnitTests
             scheduler.AddBatch(testBatch);
             // Act
             // AS there are not 20 tasks, trying to remove number 20 will not modify the queue.
-            scheduler.RemoveCompletedTask(0, 20, 20);
+            scheduler.RemoveCompletedTask(testBatch.Id, OutOfRangeNumber, OutOfRangeNumber);
             // Assert
-            Assert.IsType<Task>(scheduler.GetTaskAndAssignUser(user));
+            Assert.IsType<Task>(scheduler.AllocateTask(user));
         }
 
         [Fact]
@@ -133,9 +135,9 @@ namespace WebService_UnitTests
             scheduler.AddBatch(testBatchTwo);
             // Act
             // AS there are not 20 tasks, trying to remove number 20 will not modify the queue.
-            scheduler.RemoveCompletedTask(0, 0, 0);
+            scheduler.RemoveCompletedTask(testBatch.Id, InRangeNumber,InRangeNumber );
             // Assert
-            Assert.Equal(testBatchTwo.Id, scheduler.GetTaskAndAssignUser(user).Id);
+            Assert.Equal(testBatchTwo.Id, scheduler.AllocateTask(user).Id);
         }
 
         [Fact]
@@ -158,7 +160,7 @@ namespace WebService_UnitTests
             // AS there are not 20 tasks, trying to remove number 20 will not modify the queue.
             scheduler.RemoveCompletedTask(0, 0, 0);
             // Assert
-            Assert.Equal(testBatch.Id, scheduler.GetTaskAndAssignUser(user).Id);
+            Assert.Equal(testBatch.Id, scheduler.AllocateTask(user).Id);
         }
 
         [Fact]
@@ -170,7 +172,7 @@ namespace WebService_UnitTests
             Batch testBatch = new Batch(0);
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
-            scheduler.GetTaskAndAssignUser(user);
+            scheduler.AllocateTask(user);
             // Using the fact that objects are pass by reference.
             scheduler.UnAssignUserFromTask(user, testBatch.Id, task.Number, task.SubNumber);
 
@@ -186,7 +188,7 @@ namespace WebService_UnitTests
             Batch testBatch = new Batch(0);
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
-            scheduler.GetTaskAndAssignUser(user);
+            scheduler.AllocateTask(user);
             // Using the fact that objects are pass by reference.
 
             Assert.Equal(user.Username, task.AllocatedTo);
@@ -202,7 +204,7 @@ namespace WebService_UnitTests
             // Act
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
-            scheduler.GetTaskAndAssignUser(user);
+            scheduler.AllocateTask(user);
             scheduler.PingScheduler(user, DateTime.Now);
 
             Assert.IsType<DateTime>(scheduler.GetLastPing(user));
@@ -218,7 +220,7 @@ namespace WebService_UnitTests
             // Act
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
-            scheduler.GetTaskAndAssignUser(user);
+            scheduler.AllocateTask(user);
             scheduler.PingScheduler(user, DateTime.Now.Subtract(new TimeSpan(2, 0, 2, 0)));
             DateTime? lastPing = scheduler.GetLastPing(user);
             scheduler.PingScheduler(user, DateTime.Now);
@@ -236,7 +238,7 @@ namespace WebService_UnitTests
             // Act
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
-            scheduler.GetTaskAndAssignUser(user);
+            scheduler.AllocateTask(user);
             scheduler.PingScheduler(user, DateTime.Now.Subtract(new TimeSpan(0, 0, 5, 2)));
             scheduler.FreeTasksNoLongerWorkedOn();
             Assert.Null(task.AllocatedTo);
@@ -252,7 +254,7 @@ namespace WebService_UnitTests
             // Act
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
-            scheduler.GetTaskAndAssignUser(user);
+            scheduler.AllocateTask(user);
             scheduler.PingScheduler(user, DateTime.Now.Subtract(new TimeSpan(0, 0, 2, 0)));
             scheduler.FreeTasksNoLongerWorkedOn();
             Assert.Equal(user.Username,task.AllocatedTo);

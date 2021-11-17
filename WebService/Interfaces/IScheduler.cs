@@ -5,7 +5,7 @@ namespace WebService.Interfaces
 {
     public interface IScheduler
     {
-        public Task GetTaskAndAssignUser(User user);
+        public Task AllocateTask(User user);
 
         public void AddBatch(Batch batch);
 

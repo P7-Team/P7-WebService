@@ -26,17 +26,17 @@ namespace WebService.Services
     public class Scheduler : IScheduler
     {
         // TODO Implement functionality such that the user can only be assigned to a specific task once.
-        private List<Batch> _batches;
+        private readonly List<Batch> _batches;
 
-        private List<TaskWrapper> _assignedUsers;
+        private readonly List<TaskWrapper> _taskWrappers;
 
         public Scheduler()
         {
-            _assignedUsers = new List<TaskWrapper>();
+            _taskWrappers = new List<TaskWrapper>();
             _batches = new List<Batch>();
         }
 
-        public Task GetTaskAndAssignUser(User user)
+        public Task AllocateTask(User user)
         {
             foreach (Batch currentBatch in _batches)
             {
@@ -46,12 +46,12 @@ namespace WebService.Services
 
                     if (tempTask.AllocatedTo != null) continue;
 
-                    if (_assignedUsers.Any(x => x.Task.AllocatedTo == user.Username
+                    if (_taskWrappers.Any(x => x.Task.AllocatedTo == user.Username
                                                 && x.Task.Id == currentBatch.Id
                                                 && x.Task.Number == tempTask.Number)) continue;
                     tempTask.SetAllocatedTo(user);
                     TaskWrapper tw = new TaskWrapper(tempTask, user);
-                    _assignedUsers.Add(tw);
+                    _taskWrappers.Add(tw);
                     return tempTask;
                 }
             }
@@ -78,7 +78,7 @@ namespace WebService.Services
                 if (batch.TasksCount() == 0) batchesToRemove.Add(batch);
             }
 
-            foreach (var currentTask in _assignedUsers.Where(x => x.Task.Id == id && x.Task.Number == number))
+            foreach (var currentTask in _taskWrappers.Where(x => x.Task.Id == id && x.Task.Number == number))
             {
                 currentTask.isDone = true;
             }
@@ -100,7 +100,7 @@ namespace WebService.Services
         public void PingScheduler(User user, DateTime dateTime)
         {
             // TODO Implement timestamp on a task for when a user last pinged the server.
-            foreach (TaskWrapper taskWrapper in _assignedUsers.Where(x => x.Task.AllocatedTo == user.Username && !x.isDone))
+            foreach (TaskWrapper taskWrapper in _taskWrappers.Where(x => x.Task.AllocatedTo == user.Username && !x.isDone))
             {
                 taskWrapper.LastPing = dateTime;
             }
@@ -108,7 +108,7 @@ namespace WebService.Services
 
         public DateTime? GetLastPing(User user)
         {
-            foreach (TaskWrapper taskWrapper in _assignedUsers.Where(x => x.Task.AllocatedTo == user.Username && !x.isDone))
+            foreach (TaskWrapper taskWrapper in _taskWrappers.Where(x => x.Task.AllocatedTo == user.Username && !x.isDone))
             {
                 return taskWrapper.LastPing;
             }
@@ -118,7 +118,7 @@ namespace WebService.Services
 
         public void FreeTasksNoLongerWorkedOn()
         {
-            foreach (var tw in _assignedUsers.Where(x=> !x.isDone && x.LastPing < DateTime.Now.Subtract(new TimeSpan(0, 5, 0))))
+            foreach (var tw in _taskWrappers.Where(x=> !x.isDone && x.LastPing < DateTime.Now.Subtract(new TimeSpan(0, 5, 0))))
             {
                 UnAssignUserFromTask(tw.user, tw.Task.Id, tw.Task.Number, tw.Task.SubNumber);
             }
