@@ -1,9 +1,10 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using WebService.Models;
 using WebService.Services;
@@ -55,6 +56,25 @@ namespace WebService.Controllers
             }
             else
                 return NotFound();
+        }
+        
+        [HttpDelete]
+        [Route("api/user/logout")]
+        public IActionResult Logout()
+        {
+            StringValues token;
+            bool success = HttpContext.Request.Query.TryGetValue("tkn", out token);
+
+            if (!success)
+            {
+                return NotFound();
+            }
+            
+            // Currently token may include '+', which C# automatically converts to ' '
+            string tokenStr = token.ToString().Replace(" ", "+");
+            _tokenValidator.Invalidate(tokenStr);
+
+            return Ok();
         }
     }
 }
