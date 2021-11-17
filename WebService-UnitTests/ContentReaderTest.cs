@@ -56,7 +56,7 @@ namespace WebService_UnitTests
         
         [Fact]
         public void
-            ReadStreamContent_WithUnicodeEncoding_StreamWithContentUsingSameEncoding_ReturnsIncorrectString()
+            ReadStreamContent_WithUnicodeEncoding_StreamWithContentUsingSameEncoding_ReturnsCorrectString()
         {
             // Setup
             const string expected = "This is the original string";
