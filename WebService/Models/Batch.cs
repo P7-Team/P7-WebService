@@ -8,9 +8,13 @@ namespace WebService.Models
 {
     public class Batch : IAggregateRoot<int>
     {
-        public List<Task> Tasks { get; private set; }
+        public List<Task> Tasks { get; set; }
 
-        public int Id { get; }
+        public int Id { get; set; }
+        public string OwnerUsername { get; set; }
+
+        public Batch() { }
+
         public Batch(int id)
         {
             Id = id;
