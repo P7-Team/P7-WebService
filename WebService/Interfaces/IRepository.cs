@@ -15,7 +15,7 @@ namespace WebService.Interfaces
     public interface IRepository<T, K> where T : IAggregateRoot<K>
     {
         public void Create(T item);
-        public T Read(K identifer);
+        public T Read(K identifier);
         public void Update(T item);
         public void Delete(K identifier);
     }

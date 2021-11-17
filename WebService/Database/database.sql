@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS Batch(
     description     VARCHAR(255),
     organization    VARCHAR(255),
     link            VARCHAR(255),
-    isActive        BOOLEAN DEFAULT FALSE,z
+    isActive        BOOLEAN DEFAULT FALSE,
     byzantineCheck  BOOLEAN DEFAULT FALSE,
     uploadedOn      TIMESTAMP,
     activatedOn     TIMESTAMP,

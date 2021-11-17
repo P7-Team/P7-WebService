@@ -35,10 +35,10 @@ namespace WebService.Services
             _db.Query(table).Where("username", "=", identifier).Delete();
         }
 
-        public User Read(string identifer)
+        public User Read(string identifier)
         {
             // Select first user with matching username (it is assumed that there is only one)
-            return _db.Query(table).Where("username", identifer).First();
+            return _db.Query(table).Where("username", identifier).First();
         }
 
         public void Update(User item)

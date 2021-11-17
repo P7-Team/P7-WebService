@@ -13,7 +13,7 @@ namespace IntegrationTests
     {
         public DatabaseFixture()
         {
-            var connection = new MySqlConnection("server=164.90.236.116;uid=Tester;pwd=Finlux12345;database=TestDB");
+            var connection = new MySqlConnection("");
 
             var compiler = new MySqlCompiler();
 

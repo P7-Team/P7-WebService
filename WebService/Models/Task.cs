@@ -1,8 +1,9 @@
 using System;
+using WebService.Interfaces;
 
 namespace WebService.Models
 {
-    public class Task
+    public class Task : IAggregateRoot<(long, int, int)>
     {
         public long Id { get; set; }
 
@@ -51,6 +52,11 @@ namespace WebService.Models
                    other.Id == Id &&
                    other.Number == Number &&
                    other.SubNumber == SubNumber;
+        }
+
+        public (long, int, int) GetIdentifier()
+        {
+            return (Id, Number, SubNumber);
         }
     }
 }
