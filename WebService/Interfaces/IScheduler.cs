@@ -18,5 +18,7 @@ namespace WebService.Interfaces
         public void PingScheduler(User user,DateTime time);
 
         public DateTime? GetLastPing(User user);
+
+        public void FreeTasksNoLongerWorkedOn();
     }
 }

@@ -12,7 +12,7 @@ namespace WebService_UnitTests
         [Fact]
         public void GetNextTask_Returns_Task()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Batch testBatch = new Batch(0);
@@ -26,7 +26,7 @@ namespace WebService_UnitTests
         [Fact]
         public void GetNextTask_User_Already_Assigned_Returns_Null()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             task.SetAllocatedTo(user);
@@ -40,7 +40,7 @@ namespace WebService_UnitTests
         [Fact]
         public void GetNextTask_Assigns_User()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             User anotherUser = new User("AnotherUser", 0, "Password");
             Task task = new Task(true);
@@ -57,7 +57,7 @@ namespace WebService_UnitTests
         [Fact]
         public void GetNextTask_Another_User_Already_Assigned_Returns_Null()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             User anotherUser = new User("AnotherUser", 0, "Password");
             Task task = new Task(true);
@@ -71,7 +71,7 @@ namespace WebService_UnitTests
         [Fact]
         public void Remove_Completed_Task_Task_Provided()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
 
@@ -87,7 +87,7 @@ namespace WebService_UnitTests
         [Fact]
         public void Remove_Completed_Task_ID_Number_SubNumber_Provided()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
 
@@ -103,7 +103,7 @@ namespace WebService_UnitTests
         [Fact]
         public void Remove_Completed_Task_Incorrect_ID_Number_SubNumber_Provided()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
 
@@ -120,7 +120,7 @@ namespace WebService_UnitTests
         [Fact]
         public void Remove_Completed_Task_Remove_Batch_On_Emptying_Batch()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Task taskOne = new Task(true);
@@ -141,7 +141,7 @@ namespace WebService_UnitTests
         [Fact]
         public void Remove_Completed_Task_Only_Remove_Task_If_More_Tasks_Are_In_Batch()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Task taskOne = new Task(true);
@@ -164,7 +164,7 @@ namespace WebService_UnitTests
         [Fact]
         public void UnAssignUserFromTasks_UnAssignsUser()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Batch testBatch = new Batch(0);
@@ -180,7 +180,7 @@ namespace WebService_UnitTests
         [Fact]
         public void GetTaskAndAssignUser_Assigns_User()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Batch testBatch = new Batch(0);
@@ -195,7 +195,7 @@ namespace WebService_UnitTests
         [Fact]
         public void PingScheduler_Ping_Set()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Batch testBatch = new Batch(0);
@@ -203,7 +203,7 @@ namespace WebService_UnitTests
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
             scheduler.GetTaskAndAssignUser(user);
-            scheduler.PingScheduler(user,DateTime.Now);
+            scheduler.PingScheduler(user, DateTime.Now);
 
             Assert.IsType<DateTime>(scheduler.GetLastPing(user));
         }
@@ -211,7 +211,7 @@ namespace WebService_UnitTests
         [Fact]
         public void PingScheduler_Ping_Updated()
         {
-            IScheduler scheduler = new SchedulerController();
+            IScheduler scheduler = new Scheduler();
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Batch testBatch = new Batch(0);
@@ -219,11 +219,43 @@ namespace WebService_UnitTests
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
             scheduler.GetTaskAndAssignUser(user);
-            scheduler.PingScheduler(user,DateTime.Now.Subtract(new TimeSpan(2,0,2,0)));
+            scheduler.PingScheduler(user, DateTime.Now.Subtract(new TimeSpan(2, 0, 2, 0)));
             DateTime? lastPing = scheduler.GetLastPing(user);
-            scheduler.PingScheduler(user,DateTime.Now);
-            
+            scheduler.PingScheduler(user, DateTime.Now);
+
             Assert.True(lastPing < scheduler.GetLastPing(user));
+        }
+
+        [Fact]
+        public void FreeTasksNoLongerWorkedOn_UnAssigns_InActive_User()
+        {
+            IScheduler scheduler = new Scheduler();
+            User user = new User("Username", 0, "Password");
+            Task task = new Task(true);
+            Batch testBatch = new Batch(0);
+            // Act
+            testBatch.AddTask(task);
+            scheduler.AddBatch(testBatch);
+            scheduler.GetTaskAndAssignUser(user);
+            scheduler.PingScheduler(user, DateTime.Now.Subtract(new TimeSpan(0, 0, 5, 2)));
+            scheduler.FreeTasksNoLongerWorkedOn();
+            Assert.Null(task.AllocatedTo);
+        }
+        
+        [Fact]
+        public void FreeTasksNoLongerWorkedOn_Does_Not_UnAssign_Active_User()
+        {
+            IScheduler scheduler = new Scheduler();
+            User user = new User("Username", 0, "Password");
+            Task task = new Task(true);
+            Batch testBatch = new Batch(0);
+            // Act
+            testBatch.AddTask(task);
+            scheduler.AddBatch(testBatch);
+            scheduler.GetTaskAndAssignUser(user);
+            scheduler.PingScheduler(user, DateTime.Now.Subtract(new TimeSpan(0, 0, 2, 0)));
+            scheduler.FreeTasksNoLongerWorkedOn();
+            Assert.Equal(user.Username,task.AllocatedTo);
         }
     }
 }

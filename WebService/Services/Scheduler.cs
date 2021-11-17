@@ -7,7 +7,7 @@ using WebService.Models;
 
 namespace WebService.Services
 {
-    public class TaskWrapper
+    class TaskWrapper
     {
         public DateTime LastPing;
         public bool isDone;
@@ -23,20 +23,17 @@ namespace WebService.Services
         }
     }
 
-    public class SchedulerController : IScheduler
+    public class Scheduler : IScheduler
     {
-        private static Timer _aTimer;
-
         // TODO Implement functionality such that the user can only be assigned to a specific task once.
         private List<Batch> _batches;
 
         private List<TaskWrapper> _assignedUsers;
 
-        public SchedulerController()
+        public Scheduler()
         {
             _assignedUsers = new List<TaskWrapper>();
             _batches = new List<Batch>();
-            SetTimer();
         }
 
         public Task GetTaskAndAssignUser(User user)
@@ -119,24 +116,13 @@ namespace WebService.Services
             return null;
         }
 
-        private void SetTimer()
+        public void FreeTasksNoLongerWorkedOn()
         {
-            // Create a timer with a 2 min interval.
-            _aTimer = new Timer(1000*60*2);
-            // Hook up the Elapsed event for the timer. 
-            _aTimer.Elapsed += (s, e) => UserStillWorking();
-            _aTimer.AutoReset = true;
-            _aTimer.Enabled = true;
-        }
-
-        private void UserStillWorking()
-        {
-            DateTime currentTime = DateTime.Now;
-            foreach (var tw in _assignedUsers.Where(x =>
-                !x.isDone && x.LastPing < currentTime.Subtract(new TimeSpan(0, 5, 0))))
+            foreach (var tw in _assignedUsers.Where(x=> !x.isDone && x.LastPing < DateTime.Now.Subtract(new TimeSpan(0, 5, 0))))
             {
                 UnAssignUserFromTask(tw.user, tw.Task.Id, tw.Task.Number, tw.Task.SubNumber);
             }
         }
+        
     }
 }
