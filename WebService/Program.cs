@@ -66,7 +66,7 @@ namespace WebService
                     });
 
                     // Inject UserRepository when IRepository<User, int> or UserRepository is required
-                    serviceCollection.AddScoped<IRepository<User, int>, UserRepository>();
+                    serviceCollection.AddScoped<IRepository<User, string>, UserRepository>();
                     serviceCollection.AddScoped<UserRepository>();
                 });
     }

@@ -3,18 +3,17 @@
 CREATE TABLE IF NOT EXISTS Users(
     username VARCHAR(50),
     password VARCHAR(255) NOT NULL,
-    points   INTEGER DEFAULT 0,
+    points   INT DEFAULT 0,
     PRIMARY KEY(username)
 );
 
 -- Batch
-CREATE SEQUENCE IF NOT EXISTS batch_id START 1;
 CREATE TABLE IF NOT EXISTS Batch(
-    id              INTEGER DEFAULT nextval('batch_id'),
+    id              INT AUTO_INCREMENT NOT NULL,
     description     VARCHAR(255),
     organization    VARCHAR(255),
     link            VARCHAR(255),
-    isActive        BOOLEAN DEFAULT FALSE,
+    isActive        BOOLEAN DEFAULT FALSE,z
     byzantineCheck  BOOLEAN DEFAULT FALSE,
     uploadedOn      TIMESTAMP,
     activatedOn     TIMESTAMP,
@@ -28,9 +27,9 @@ CREATE TABLE IF NOT EXISTS Batch(
 
 -- Task
 CREATE TABLE IF NOT EXISTS Task(
-    id          INTEGER,
-    number      INTEGER,
-    subNumber   INTEGER,
+    id          INT,
+    number      INT,
+    subNumber   INT,
     startedOn   TIMESTAMP,
     finishedOn  TIMESTAMP,
     allocatedTo VARCHAR(50),
@@ -48,7 +47,7 @@ CREATE TABLE IF NOT EXISTS File(
     path        VARCHAR(510), -- Linux max is 4096 (seems overkill for our usage)
     filename    VARCHAR(255), -- Linux max is 255
     encoding    VARCHAR(10),
-    includedIn  INTEGER,
+    includedIn  INT,
     PRIMARY KEY(path,filename),
     FOREIGN KEY(includedIn) REFERENCES Batch(id)
      ON UPDATE CASCADE
@@ -60,9 +59,9 @@ CREATE TABLE IF NOT EXISTS Result(
     path            VARCHAR(510),
     filename        VARCHAR(255),
     isVerified      BOOLEAN DEFAULT FALSE,
-    task_id         INTEGER NOT NULL,
-    task_number     INTEGER NOT NULL,
-	task_subnumber  INTEGER NOT NULL,
+    task_id         INT NOT NULL,
+    task_number     INT NOT NULL,
+	task_subnumber  INT NOT NULL,
     PRIMARY KEY(path,filename),
     FOREIGN KEY(task_id,task_number,task_subnumber) REFERENCES Task(id,number,subNumber)
 );
@@ -79,7 +78,7 @@ CREATE TABLE IF NOT EXISTS Source(
 CREATE TABLE IF NOT EXISTS Argument(
     path        VARCHAR(510),
     filename    VARCHAR(50),
-    number      INTEGER,
+    number      INT,
     arg         VARCHAR(10) NOT NULL,
     PRIMARY KEY(path,filename,number),
     FOREIGN KEY(path,filename) REFERENCES Source(path,filename)
@@ -89,9 +88,9 @@ CREATE TABLE IF NOT EXISTS Argument(
 
 -- Runs
 CREATE TABLE IF NOT EXISTS Runs(
-    task_id         INTEGER,
-    task_number     INTEGER,
-	task_subnumber  INTEGER,
+    task_id         INT,
+    task_number     INT,
+	task_subnumber  INT,
     path            VARCHAR(510),
     filename        VARCHAR(255),
     PRIMARY KEY(task_id,task_number,task_subnumber,path,filename),

@@ -14,7 +14,7 @@ namespace WebService_UnitTests
         public void GetNextTask_Returns_Task()
         {
             IScheduler scheduler = new SchedulerController();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username", "Password");
             Task task = new Task(true) ;
             Batch testBatch = new Batch(0);
             // Act
@@ -28,7 +28,7 @@ namespace WebService_UnitTests
         public void GetNextTask_User_Already_Assigned_Returns_Null()
         {
             IScheduler scheduler = new SchedulerController();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username", "Password");
             Task task = new Task(true);
             task.SetAllocatedTo(user);
             Batch testBatch = new Batch(0);
@@ -41,8 +41,8 @@ namespace WebService_UnitTests
         public void GetNextTask_Assigns_User()
         {
             IScheduler scheduler = new SchedulerController();
-            User user = new User("Username", 0, "Password");
-            User anotherUser = new User("AnotherUser", 0, "Password");
+            User user = new User("Username", "Password");
+            User anotherUser = new User("AnotherUser", "Password");
             Task task = new Task(true);
             Task taskOne = new Task(true);
             Batch testBatch = new Batch(0);
@@ -58,8 +58,8 @@ namespace WebService_UnitTests
         public void GetNextTask_Another_User_Already_Assigned_Returns_Null()
         {
             IScheduler scheduler = new SchedulerController();
-            User user = new User("Username", 0, "Password");
-            User anotherUser = new User("AnotherUser", 0, "Password");
+            User user = new User("Username", "Password");
+            User anotherUser = new User("AnotherUser", "Password");
             Task task = new Task(true);
             task.SetAllocatedTo(anotherUser);
             Batch testBatch = new Batch(0);
@@ -72,7 +72,7 @@ namespace WebService_UnitTests
         public void Remove_Completed_Task_Task_Provided()
         {
             IScheduler scheduler = new SchedulerController();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username", "Password");
             Task task = new Task(true);
             
             Batch testBatch = new Batch(0);
@@ -88,7 +88,7 @@ namespace WebService_UnitTests
         public void Remove_Completed_Task_ID_Number_SubNumber_Provided()
         {
             IScheduler scheduler = new SchedulerController();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username", "Password");
             Task task = new Task(true);
             
             Batch testBatch = new Batch(0);
@@ -104,7 +104,7 @@ namespace WebService_UnitTests
         public void Remove_Completed_Task_Incorrect_ID_Number_SubNumber_Provided()
         {
             IScheduler scheduler = new SchedulerController();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username", "Password");
             Task task = new Task(true);
             
             Batch testBatch = new Batch(0);
@@ -121,7 +121,7 @@ namespace WebService_UnitTests
         public void Remove_Completed_Task_Remove_Batch_On_Emptying_Batch()
         {
             IScheduler scheduler = new SchedulerController();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username", "Password");
             Task task = new Task(true);
             Task taskOne = new Task(true);
 
@@ -142,7 +142,7 @@ namespace WebService_UnitTests
         public void Remove_Completed_Task_Only_Remove_Task_If_More_Tasks_Are_In_Batch()
         {
             IScheduler scheduler = new SchedulerController();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username", "Password");
             Task task = new Task(true);
             Task taskOne = new Task(true);
             Task taskTwo = new Task(true);
