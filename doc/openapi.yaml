@@ -4,7 +4,7 @@ info:
   description: 'WebService to distribute computations'
   license:
     name: Don't know
-    url: 
+    url: localhost
   version: 1.0.0
 servers:
 - url: can't remember
@@ -95,3 +95,61 @@ paths:
         401:
           description: Not logged in
 
+  /user/signup:
+    post:
+      tags:
+      - user
+      summary: Creates a new user with supplied information, if not already existing in the system
+      operationId: SignUp
+      requestBody:
+        description: User information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        201:
+          description: Successful creation
+        422:
+          description: Could not create user with given information
+
+  /user/login:
+    post:
+      tags:
+      - user
+      summary: Authenticates a user in the system and provides a session token
+      operationId: Login
+      requestBody:
+        description: User login information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        404:
+          description: User not found
+
+  /user/logout:
+    delete:
+      tags:
+      - user
+      summary: Informing the service that a user is going inactive, destroying the user session
+      operationId: Logout
+      parameters:
+        - in: query
+          name: session
+          required: true
+          allowEmptyValue: false
+          schema:
+            $ref: '#/components/schemas/Token'
+      responses:
+        200:
+          description: Successful logout
+        404:
+          description: Session not found
