@@ -21,6 +21,12 @@ namespace WebService.Models
             Tasks = new List<Task>();
         }
 
+        public Batch(int id, string owner)
+        {
+            Id = id;
+            OwnerUsername = owner;
+        }
+
         public Batch(int id, List<Task> tasks)
         {
             Id = id;

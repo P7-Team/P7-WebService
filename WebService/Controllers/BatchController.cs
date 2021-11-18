@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using WebService.Interfaces;
 using WebService.Models;
 using WebService.Services;
 using WebService.Services.Repositories;
@@ -18,10 +19,10 @@ namespace WebService.Controllers
     [ApiController]
     public class BatchController : ControllerBase
     {
-        BatchRepository repository;
-        public BatchController(BatchRepository repository)
+        IBatchService service;
+        public BatchController(IBatchService service)
         {
-            this.repository = repository;
+            this.service = service;
         }
 
         // POST api/<BatchController>
@@ -35,8 +36,9 @@ namespace WebService.Controllers
 
             Dictionary<string, string> formData = batchMarshaller.GetFormData();
             List<FileStream> streams = batchMarshaller.GetFileStreams();
-            
+
             // TODO: Create an instance of the Batch model with the needed data, and use the BatchRepository to persist it to the DB
+            Batch batch = new Batch();
         }
     }
 }
