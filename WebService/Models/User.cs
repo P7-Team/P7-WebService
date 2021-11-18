@@ -10,6 +10,13 @@ namespace WebService
         public string Password { get; set; }
         public int ContributionPoints { get; set; }
 
+        public User(string username, string password, int contributionPoints)
+        {
+            Username = username;
+            Password = password;
+            ContributionPoints = contributionPoints;
+        }
+
         public User(string username, string password)
         {
             Username = username;

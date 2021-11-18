@@ -38,7 +38,8 @@ namespace WebService.Services
         public User Read(string identifier)
         {
             // Select first user with matching username (it is assumed that there is only one)
-            return _db.Query(table).Where("username", identifier).First();
+            return _db.Query(table).Select("username as Username", "password as Password", "points as ContributionPoints")
+                    .Where("username", identifier).First<User>();
         }
 
         public void Update(User item)
