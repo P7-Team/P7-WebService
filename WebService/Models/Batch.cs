@@ -20,6 +20,19 @@ namespace WebService.Models
 
             return null;
         }
+        
+        public Task GetTask(int number,int subNumber)
+        {
+            foreach (var task in _tasks)
+            {
+                if (task.Number == number && task.SubNumber == subNumber)
+                {
+                    return task;
+                }
+            }
+
+            return null;
+        }
 
         public void RemoveTask(Task task)
         {
