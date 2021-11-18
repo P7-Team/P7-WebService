@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using WebService.Interfaces;
 using WebService.Models;
 using WebService.Services;
+using WebService.Services.Repositories;
 using Task = WebService.Models.Task;
 
 namespace WebService.Controllers
@@ -47,6 +48,12 @@ namespace WebService.Controllers
 
             CompletedTask completedTask = new CompletedTask(long.Parse(formData["id"]), fileStreams[0].Name);
             // TODO: This needs to be persisted in the DB and File needs to be stored in file system.
+            string filepath = "";
+
+            Task task = new Task(int.Parse(formData["batchId"]), int.Parse(formData["taskNumber"]), int.Parse(formData["taskSubNumber"]));
+
+            Result result = new Result(filepath, fileStreams[0].Name, false, task);
+            _context.SaveResult(result);
         }
     }
 }

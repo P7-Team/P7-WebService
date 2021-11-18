@@ -14,6 +14,7 @@ using SqlKata.Execution;
 using WebService.Interfaces;
 using WebService.Models;
 using WebService.Services;
+using WebService.Services.Repositories;
 using Task = WebService.Models.Task;
 
 namespace WebService
@@ -37,12 +38,6 @@ namespace WebService
                     var config = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", optional: false)
                     .Build();
-                    
-                    // Setup a context for the TaskController
-                    serviceCollection.AddSingleton<ITaskContext, TaskContext>(sp =>
-                    {
-                        return new TaskContext();
-                    });
 
                     // This provides a IDBConnectionFactory that can be used to create connections
                     // to the db.
@@ -68,6 +63,16 @@ namespace WebService
                     // Inject UserRepository when IRepository<User, int> or UserRepository is required
                     serviceCollection.AddScoped<IRepository<User, string>, UserRepository>();
                     serviceCollection.AddScoped<UserRepository>();
+                    serviceCollection.AddScoped<BatchRepository>();
+                    serviceCollection.AddScoped<InputFileRepository>();
+                    serviceCollection.AddScoped<TaskRepository>();
+                    serviceCollection.AddScoped<ResultRepository>();
+
+                    // Setup a context for the TaskController
+                    serviceCollection.AddSingleton<ITaskContext, TaskContext>(sp =>
+                    {
+                        return new TaskContext(sp.GetService<ResultRepository>());
+                    });
                 });
     }
 }

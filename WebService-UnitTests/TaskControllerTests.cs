@@ -15,11 +15,19 @@ namespace WebService_UnitTests
 {
     public class TaskControllerTests
     {
+        private class MockContext : List<Task>, ITaskContext
+        {
+            public void SaveResult(Result result)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         [Fact]
         public void GetReadyTask_ContextIsEmpty_ReturnsNull()
         {
             // Arrange
-            ITaskContext context = new TaskContext();
+            ITaskContext context = new MockContext();
 
             TaskController controller = new TaskController(context);
 
@@ -34,7 +42,7 @@ namespace WebService_UnitTests
         public void GetReadyTask_ContextContainsTask_ReadyTask_ReturnsReadyTask()
         {
             // Arrange
-            ITaskContext context = new TaskContext();
+            ITaskContext context = new MockContext();
             Task expectedTask = new Task(true);
             context.Add(expectedTask);
 
@@ -51,7 +59,7 @@ namespace WebService_UnitTests
         public void GetReadyTask_ContextContainsTask_NotReadyTask_ReturnsNull()
         {
             // Arrange
-            ITaskContext context = new TaskContext();
+            ITaskContext context = new MockContext();
             context.Add(new Task(false));
 
             TaskController controller = new TaskController(context);
@@ -67,7 +75,7 @@ namespace WebService_UnitTests
         public void GetReadyTask_ContextContainsMultipleTasks_OneReadyTask_ReturnsReadyTask()
         {
             // Arrange
-            ITaskContext context = new TaskContext();
+            ITaskContext context = new MockContext();
             Task expectedTask = new Task(true);
             
             context.Add(new Task(false));
@@ -86,7 +94,7 @@ namespace WebService_UnitTests
         public void GetReadyTask_ContextContainsMultipleTasks_TwoReadyTasks_ReturnsFirstReadyTask()
         {
             // Arrange
-            ITaskContext context = new TaskContext();
+            ITaskContext context = new MockContext();
             Task expectedTask = new Task(true);
             context.Add(expectedTask);
             context.Add(new Task(true));

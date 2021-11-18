@@ -24,6 +24,13 @@ namespace WebService.Models
 
         public bool IsReady { get; set; }
 
+        public Task(int id, int number, int subnumber)
+        {
+            Id = id;
+            Number = number;
+            SubNumber = subnumber;
+        }
+
         public Task(bool isReady)
         {
             IsReady = isReady;
@@ -36,7 +43,7 @@ namespace WebService.Models
             IsReady = false;
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as Task);
         }

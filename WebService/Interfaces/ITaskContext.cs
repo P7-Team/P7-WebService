@@ -7,6 +7,6 @@ namespace WebService.Interfaces
 {
     public interface ITaskContext : IList<Task>
     {
-        
+        public void SaveResult(Result result);
     }
 }
