@@ -8,7 +8,7 @@ namespace WebService
     {
         public string Username { get; }
         public int Id { get; }
-        public string Password { private get; set; }
+        public string Password { get; set; }
         public int ContributionPoints { get; set; }
 
         public User(string username, int ID, string password)
