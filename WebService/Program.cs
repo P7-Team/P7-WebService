@@ -64,7 +64,7 @@ namespace WebService
                     serviceCollection.AddScoped<IRepository<User, string>, UserRepository>();
                     serviceCollection.AddScoped<UserRepository>();
                     serviceCollection.AddScoped<BatchRepository>();
-                    serviceCollection.AddScoped<InputFileRepository>();
+                    serviceCollection.AddScoped<BatchFileRepository>();
                     serviceCollection.AddScoped<TaskRepository>();
                     serviceCollection.AddScoped<ResultRepository>();
 

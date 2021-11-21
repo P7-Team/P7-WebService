@@ -10,13 +10,15 @@ namespace WebService.Services.Repositories
     public class BatchRepository : IRepository<Batch, int>
     {
         private readonly QueryFactory db;
+        private readonly BatchFileRepository batchFileRepository;
+        private readonly SourceFileRepository sourceFileRepository;
         private const string table = "Batch";
-        private readonly TaskRepository taskRepository;
 
-        public BatchRepository(QueryFactory db, TaskRepository taskRepository)
+        public BatchRepository(QueryFactory db, BatchFileRepository batchFileRepository, SourceFileRepository sourceFileRepository)
         {
             this.db = db;
-            this.taskRepository = taskRepository;
+            this.batchFileRepository = batchFileRepository;
+            this.sourceFileRepository = sourceFileRepository;
         }
 
         public void Create(Batch item)
@@ -25,11 +27,14 @@ namespace WebService.Services.Repositories
             var batchId = db.Query(table).InsertGetId<int>(new { ownedBy = item.OwnerUsername });
             item.Id = batchId;
 
-            // Create tasks in DB with reference to the batch
-            foreach (Task task in item.Tasks)
+            item.SourceFile.BatchId = batchId;
+            item.SourceFile.Filename = item.SourceFile.Filename + batchId.ToString();
+            sourceFileRepository.Create(item.SourceFile);
+
+            foreach (BatchFile file in item.InputFiles)
             {
-                task.Id = batchId;
-                taskRepository.Create(task);
+                file.BatchId = batchId;
+                batchFileRepository.Create(file);
             }
         }
 
@@ -42,10 +47,6 @@ namespace WebService.Services.Repositories
 
         public void Update(Batch item)
         {
-            foreach (Task task in item.Tasks)
-            {
-                taskRepository.Update(task);
-            }
         }
 
         public void Delete(int identifier)

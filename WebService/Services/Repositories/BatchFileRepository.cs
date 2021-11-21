@@ -8,18 +8,19 @@ using WebService.Services;
 
 namespace WebService.Services.Repositories
 {
-    public class InputFileRepository : IRepository<InputFile, (string path, string filename)>
+    public class BatchFileRepository : IRepository<BatchFile, (string path, string filename)>
     {
         private readonly QueryFactory _db;
         private const string table = "File";
 
-        public InputFileRepository(QueryFactory db)
+        public BatchFileRepository(QueryFactory db)
         {
             _db = db;
         }
 
-        public void Create(InputFile item)
+        public void Create(BatchFile item)
         {
+            // TODO: save the file in the filesystem and assign the resulting filepath to the Path property
             _db.Query(table).Insert(new
             {
                 path = item.Path,
@@ -29,7 +30,7 @@ namespace WebService.Services.Repositories
             });
         }
 
-        public InputFile Read((string path, string filename) identifier)
+        public BatchFile Read((string path, string filename) identifier)
         {
             return _db.Query(table).Where(new
             {
@@ -38,7 +39,7 @@ namespace WebService.Services.Repositories
             }).First();
         }
 
-        public void Update(InputFile item)
+        public void Update(BatchFile item)
         {
             _db.Query(table).Where(new
             {

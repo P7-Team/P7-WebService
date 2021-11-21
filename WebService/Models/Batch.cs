@@ -12,6 +12,8 @@ namespace WebService.Models
 
         public int Id { get; set; }
         public string OwnerUsername { get; set; }
+        public List<BatchFile> InputFiles { get; set; }
+        public SourceFile SourceFile { get; set; }
 
         public Batch() { }
 
