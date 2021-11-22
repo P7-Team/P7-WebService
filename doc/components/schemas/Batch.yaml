@@ -7,6 +7,10 @@ properties:
   id:
     type: string
   executable:
-    type: object
+    type: string
+    format: binary
   inputs:
-    type: object
+    type: array
+    items:
+      type: string
+      format: binary
