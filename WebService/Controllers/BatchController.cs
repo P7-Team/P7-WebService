@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using WebService.Models;
@@ -64,17 +65,19 @@ namespace WebService.Controllers
             // TODO: Lookup the filepath and filenames for all result files : Tuple(path, filename)
             List<Tuple<string, string>> pathsAndFiles = new List<Tuple<string, string>>();
             
-            List<Stream> results = new List<Stream>();
+            Dictionary<string, Stream> files = new Dictionary<string, Stream>();
             // TODO: Possible way to do it, ELSE USE STORAGE MANAGER (WHEN IT IS DONE)
+            
             foreach (Tuple<string,string> pathAndFile in pathsAndFiles)
             {
                 // Assumes that the filepath is stored with an ending directory separator
                 string absPath = pathAndFile.Item1 + pathAndFile.Item2;
                 Stream fileStream = System.IO.File.Open(absPath, FileMode.Open);
-                results.Add(fileStream);
+                files.Add(pathAndFile.Item2, fileStream);
             }
 
-            return Ok(results);
+            MultipartFormDataContent content = MultipartFormDataHelper.CreateContent(new Dictionary<string, string>(), files);
+            return Ok(content);
         }
     }
 }
