@@ -13,7 +13,7 @@ items:
       type: integer
       description: Total number of task for batch
       example: 10
-    done:
+    tasksDone:
       type: integer
       description: The amount of tasks with result for the batch
       example: 5

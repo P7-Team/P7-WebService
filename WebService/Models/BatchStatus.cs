@@ -6,14 +6,14 @@ namespace WebService.Models
     {
         private bool Finished { get; set; }
         private int Total { get; set; }
-        private int Done { get; set; }
+        private int TasksDone { get; set; }
         private int Id { get; set; }
 
-        public BatchStatus(int id, bool finished, int done, int total)
+        public BatchStatus(int id, bool finished, int tasksDone, int total)
         {
             Id = id;
             Finished = finished;
-            Done = done;
+            TasksDone = tasksDone;
             Total = total;
         }
     }
