@@ -52,6 +52,7 @@ namespace WebService.Controllers
                 string rawToken = user.Username + user.Password + user.ContributionPoints;
                 HashAlgorithm sha = SHA256.Create();
                 Token token = new Token(Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(rawToken))));
+                new TokenStore().Store(token.Key, user.Username);
                 return Ok(token);   
             }
             else
