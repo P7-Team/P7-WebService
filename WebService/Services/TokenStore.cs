@@ -8,11 +8,15 @@ namespace WebService.Services
     {
         private static readonly Dictionary<string, string> Tokens = new Dictionary<string, string>();
 
-        public void Store(string token, string username)
+        public void Store(string token, string username, bool overrideExisting = true)
         {
-            Tokens.Add(token, username);
+            bool exists = !Tokens.TryAdd(token, username);
+            if (exists && overrideExisting)
+            {
+                Tokens[token] = username;
+            }
         }
-
+        
         public string Fetch(string token)
         {
             return Tokens.GetValueOrDefault(token, String.Empty);
