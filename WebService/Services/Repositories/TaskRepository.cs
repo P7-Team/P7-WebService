@@ -32,8 +32,8 @@ namespace WebService.Services.Repositories
         {
             return _db.Query(_table).Select("is as Id", "number as Number", "subnumber as Subnumber")
                 .Where(new { 
-                id = identifier.id
-                number = identifier.number
+                id = identifier.id,
+                number = identifier.number,
                 subnumber = identifier.subnumber
                 }).First<Task>();
         }
