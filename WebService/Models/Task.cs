@@ -1,4 +1,5 @@
 using System;
+//TODO : TIME!
 using WebService.Interfaces;
 
 namespace WebService.Models
@@ -14,6 +15,10 @@ namespace WebService.Models
         public int Number { get; set; }
 
         public int SubNumber { get; set; }
+
+        public DateTime StartedOn {get; set;}
+
+        public DateTime FinishedOn {get; set;}
 
         public string AllocatedTo { get; private set; }
 

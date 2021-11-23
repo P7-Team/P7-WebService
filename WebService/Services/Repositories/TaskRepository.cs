@@ -1,4 +1,5 @@
 ﻿using SqlKata.Execution;
+using SqlKata.Compilers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace WebService.Services.Repositories
     public class TaskRepository : IRepository<Task, (long id, int number, int subnumber)>
     {
         private readonly QueryFactory _db;
-        private const string table = "Task";
+        private const string _table = "Task";
 
         public TaskRepository(QueryFactory db)
         {
@@ -19,41 +20,42 @@ namespace WebService.Services.Repositories
 
         public void Create(Task item)
         {
-            _db.Query(table).Insert(new
+            _db.Query(_table).Insert(new
             {
                 id = item.Id,
                 number = item.Number,
-                subNumber = item.SubNumber,
-                allocatedTo = item.AllocatedTo,
+                subNumber = item.SubNumber,  //For byzentine checking
             });
         }
 
         public Task Read((long id, int number, int subnumber) identifier)
         {
-            return _db.Query(table).Where(new
-            {
-                id = identifier.id,
-                number = identifier.number,
-                subNumber = identifier.subnumber,
-            }).First();
+            return _db.Query(_table).Select("is as Id", "number as Number", "subnumber as Subnumber")
+                .Where(new { 
+                id = identifier.id
+                number = identifier.number
+                subnumber = identifier.subnumber
+                }).First<Task>();
         }
 
         public void Update(Task item)
         {
-            _db.Query(table).Where(new
+            _db.Query(_table).Where(new
             {
                 id = item.Id,
                 number = item.Number,
                 subNumber = item.SubNumber,
             }).Update(new
             {
+                startedOn = item.StartedOn,
+                finishedOn = item.FinishedOn,
                 allocatedTo = item.AllocatedTo,
             });
         }
 
         public void Delete((long id, int number, int subnumber) identifier)
         {
-            _db.Query(table).Where(new
+            _db.Query(_table).Where(new
             {
                 id = identifier.id,
                 number = identifier.number,

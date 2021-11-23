@@ -1,31 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using WebService.Interfaces;
 using WebService.Services;
+using WebService_UnitTests.Fixtures;
 using Xunit;
 
 namespace WebService_UnitTests
 {
-    public class FileFixture : IDisposable
-    {
-        public List<string> FilesToDelete { get; private set; }
-        public FileFixture()
-        {
-            FilesToDelete = new List<string>();
-        }
-        
-        public void Dispose()
-        {
-            foreach (string file in FilesToDelete)
-            {
-                if (File.Exists(file))
-                    File.Delete(file);
-            }
-        }
-    }
-    
     public class FileSaverTest : IClassFixture<FileFixture>
     {
         private readonly FileFixture _fileFixture;
