@@ -21,7 +21,7 @@ namespace WebService_UnitTests
         {
             User user = CreateTestUser();
 
-            Batch batch = BatchMarshaller.MarshalBatch(new Dictionary<string, string>(), new List<FileStream>(), user);
+            Batch batch = BatchMarshaller.MarshalBatch(new Dictionary<string, string>(), new List<(string, Stream)>(), user);
 
             Assert.Equal(user.Username, batch.OwnerUsername);
         }
@@ -32,13 +32,13 @@ namespace WebService_UnitTests
             Dictionary<string, string> formdata = new Dictionary<string, string>();
             formdata.Add("executableEncoding", "unicode");
             formdata.Add("executableLanguage", "Erlang");
-            FileStream sourceFile = new FileStream("executable", FileMode.Truncate);
-            List<FileStream> files = new List<FileStream>();
-            files.Add(sourceFile);
+            List<(string, Stream)> files = new List<(string, Stream)>();
+            Stream sourceFile = new MemoryStream();
+            files.Add(("executable", sourceFile));
 
             Batch batch = BatchMarshaller.MarshalBatch(formdata, files, CreateTestUser());
 
-            Assert.Equal(sourceFile.Name, batch.SourceFile.Filename);
+            Assert.Equal("executable", batch.SourceFile.Filename);
             Assert.Equal("unicode", batch.SourceFile.Encoding);
             Assert.Equal("Erlang", batch.SourceFile.Language);
             Assert.Equal(sourceFile, batch.SourceFile.Data);
