@@ -33,7 +33,8 @@ namespace WebService.Controllers
 
             Dictionary<string, string> formData = batchMarshaller.GetFormData();
             List<FileStream> streams = batchMarshaller.GetFileStreams();
-            CreateBatch(formData, streams);
+            Batch batch = BatchMarshaller.MarshalBatch(formData, streams.Select(stream => (stream.Name, (Stream)stream)), getUser());
+            repository.Create(batch);
         }   
 
         private MultipartMarshaller<MultipartSection> createMarshaller(HttpRequest request)
@@ -44,22 +45,9 @@ namespace WebService.Controllers
             return new MultipartMarshaller<MultipartSection>(reader);
         }
 
-        // TODO: move this functionality to BatchMarshaller
-        private void CreateBatch(Dictionary<string, string> formData, List<FileStream> streams)
+        private User getUser()
         {
-            User user = new User("FakeUser", "Placeholder");
-            Batch batch = new Batch();
-            batch.OwnerUsername = user.Username;
-
-            SourceFile sourceFile = new SourceFile(streams.Where(file => file.Name == "executable").First());
-            batch.SourceFile = sourceFile;
-            foreach (FileStream inputfile in streams.Where(file => file.Name != "executable"))
-            {
-                BatchFile file = new BatchFile(inputfile.Name, inputfile);
-                file.Encoding = formData[inputfile.Name];
-                batch.InputFiles.Add(file);
-            }
-            repository.Create(batch);
+            return new User("fakeUser", "fakePassword");
         }
     }
 }
