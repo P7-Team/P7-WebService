@@ -12,10 +12,10 @@ namespace WebService.Models
         public string Path { get; set; }
         public string Filename { get; set; }
         public string Encoding { get; set; }
-        public FileStream Data { get; set; }
+        public Stream Data { get; set; }
         public int BatchId { get; set; }
 
-        public BatchFile(string filename, FileStream data)
+        public BatchFile(string filename, Stream data)
         {
             Filename = filename;
             Data = data;
