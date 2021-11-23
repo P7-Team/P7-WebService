@@ -70,5 +70,57 @@ namespace WebService_UnitTests
             actualData.Close();
             data.Close();
         }
+
+        [Fact]
+        public void Store_FileAlreadyExists_OriginalDataOverriden()
+        {
+            // Setup
+            string path = Path.GetTempFileName();
+            string filename = "ultimate";
+            string extension = ".uha";
+            const string content = "This is something new, something you have never seen before!";
+            
+            string originalContent = CreateRandomFile(path, filename, extension, out int originalContentLength);
+            bool existedBefore = File.Exists(path + filename + extension);
+
+            IFileSaver fileSaver = new FileSaver();
+            Stream data = new MemoryStream();
+            data.Write(Encoding.UTF8.GetBytes(content));
+            data.Position = 0;
+            int dataLength = (int)data.Length;
+            _fileFixture.FilesToDelete.Add(path + filename + extension);
+
+            // Act
+            fileSaver.Store(path, filename, extension, data);
+
+            Stream storedFile = File.OpenRead(path + filename + extension);
+            byte[] buffer = new byte[dataLength];
+            storedFile.Read(buffer, 0, dataLength);
+            string actualContent = Encoding.UTF8.GetString(buffer);
+            
+            // Assert
+            Assert.True(existedBefore);
+            Assert.NotEqual(originalContent, actualContent);
+            Assert.Equal(content, actualContent);
+
+
+
+            // Cleanup
+            data.Close();
+            storedFile.Close();
+        }
+
+        private string CreateRandomFile(string path, string filename, string extension, out int length)
+        {
+            string content = "Some original data in the stream";
+
+            Stream file = File.Open(path + filename + extension, FileMode.Create);
+            file.Write(Encoding.UTF8.GetBytes(content));
+            length = (int)file.Length;
+            file.Close();
+
+            return content;
+        }
+
     }
 }
