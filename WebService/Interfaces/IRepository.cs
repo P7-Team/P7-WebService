@@ -6,12 +6,6 @@ using WebService.Models;
 
 namespace WebService.Interfaces
 {
-    /***
-     * A generic repository interface
-     * Type T is the type of the objects that are manipulated by the repository.
-     * Type K is the type that is used as an identifier for the objects or a type 
-     * from which the the identifier can be derived.
-     **/
     /// <summary>
     /// A generic repository interface
     /// </summary>
