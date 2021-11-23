@@ -10,14 +10,14 @@ namespace WebService.Models
     {
         public string Path { get; set; }
         public string Filename { get; set; }
-        public bool Verfied { get; set; }
+        public bool Verified { get; set; }
         public Task Task { get; set; }
 
         public Result(string path, string filename, bool verified, Task task)
         {
             Path = path;
             Filename = filename;
-            Verfied = verified;
+            Verified = verified;
             Task = task;
         }
 
