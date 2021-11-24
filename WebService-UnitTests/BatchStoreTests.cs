@@ -48,14 +48,20 @@ namespace WebService_UnitTests
     {
         public SourceFile CalledWithSourceFile { get; private set; }
         public IEnumerable<BatchFile> CalledWithInputFiles { get; private set; }
-        public void StoreInputFiles(IEnumerable<BatchFile> inputFiles)
-        {
-            CalledWithInputFiles = inputFiles;
-        }
-
-        public void StoreSourceFile(SourceFile sourceFile)
+        
+        public void StoreFile(SourceFile sourceFile)
         {
             CalledWithSourceFile = sourceFile;
+        }
+
+        public void StoreFile(Result resultFile)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StoreFiles(IEnumerable<BatchFile> batchFiles)
+        {
+            CalledWithInputFiles = batchFiles;
         }
     }
 
@@ -92,7 +98,7 @@ namespace WebService_UnitTests
             MockBatchRepository batchRep = new MockBatchRepository(3);
             MockFileStore fileStore = new MockFileStore();
             BatchStore store = new BatchStore(batchRep, fileStore);
-            SourceFile source = new SourceFile(new MemoryStream()) { Filename = "testFile" };
+            SourceFile source = new SourceFile("", Encoding.UTF8.EncodingName, new MemoryStream(), testBatch, "language") { Filename = "testFile" };
             testBatch.SourceFile = source;
 
             store.Store(testBatch);
@@ -107,7 +113,7 @@ namespace WebService_UnitTests
             MockBatchRepository batchRep = new MockBatchRepository(4);
             MockFileStore fileStore = new MockFileStore();
             BatchStore store = new BatchStore(batchRep, fileStore);
-            SourceFile source = new SourceFile(new MemoryStream()) { Filename = "testFile" };
+            SourceFile source = new SourceFile("", Encoding.UTF8.EncodingName, new MemoryStream(), testBatch, "language") { Filename = "testFile" };
             testBatch.SourceFile = source;
 
             store.Store(testBatch);
@@ -124,8 +130,8 @@ namespace WebService_UnitTests
             BatchStore store = new BatchStore(batchRep, fileStore);
             List<BatchFile> inputFiles = new List<BatchFile>()
             {
-                new BatchFile("input1", new MemoryStream()),
-                new BatchFile("input2", new MemoryStream()),
+                new BatchFile("input1", Encoding.UTF8.EncodingName, new MemoryStream(), testBatch),
+                new BatchFile("input2", Encoding.UTF8.EncodingName, new MemoryStream(), testBatch),
             };
             testBatch.InputFiles = inputFiles;
 
@@ -143,8 +149,8 @@ namespace WebService_UnitTests
             BatchStore store = new BatchStore(batchRep, fileStore);
             List<BatchFile> inputFiles = new List<BatchFile>()
             {
-                new BatchFile("input1", new MemoryStream()),
-                new BatchFile("input2", new MemoryStream()),
+                new BatchFile("input1", Encoding.UTF8.EncodingName, new MemoryStream(), testBatch),
+                new BatchFile("input2", Encoding.UTF8.EncodingName, new MemoryStream(), testBatch),
             };
             testBatch.InputFiles = inputFiles;
 

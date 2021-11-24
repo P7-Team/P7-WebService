@@ -32,13 +32,13 @@ namespace WebService_UnitTests
             Dictionary<string, string> formdata = new Dictionary<string, string>();
             formdata.Add("executableEncoding", "unicode");
             formdata.Add("executableLanguage", "Erlang");
+            formdata.Add("executableExtension", ".erl");
             List<(string, Stream)> files = new List<(string, Stream)>();
             Stream sourceFile = new MemoryStream();
             files.Add(("executable", sourceFile));
 
             Batch batch = BatchMarshaller.MarshalBatch(formdata, files, CreateTestUser());
-
-            Assert.Equal("executable", batch.SourceFile.Filename);
+            
             Assert.Equal("unicode", batch.SourceFile.Encoding);
             Assert.Equal("Erlang", batch.SourceFile.Language);
             Assert.Equal(sourceFile, batch.SourceFile.Data);

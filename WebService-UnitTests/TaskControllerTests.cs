@@ -21,6 +21,11 @@ namespace WebService_UnitTests
             {
                 throw new NotImplementedException();
             }
+
+            public Batch GetBatch(int batchId)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         [Fact]
