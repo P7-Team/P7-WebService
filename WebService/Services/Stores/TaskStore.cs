@@ -7,14 +7,14 @@ namespace WebService.Services.Stores
 {
     public class TaskStore : IStore<Task>
     {
-        private readonly QueryFactory _db;
-        private const string _table = "Runs";
         private readonly IRepository<Task, (int id, int number, int subnumber)> _taskRepository;
+        private readonly IRepository<Run, (int id, int number, int subnumber)> _runRepository;
 
-        public TaskStore(IRepository<Task, (int id, int number, int subnumber)> taskRepository, QueryFactory db)
+        public TaskStore(IRepository<Task, (int id, int number, int subnumber)> taskRepository, 
+                         IRepository<Run, (int id, int number, int subnumber)> runRepository)
         {
             _taskRepository = taskRepository;
-            _db = db;
+            _runRepository = runRepository;
         }
 
         /// <summary>
@@ -24,30 +24,19 @@ namespace WebService.Services.Stores
         /// <param name="batchFile">The input file associated with task.</param>
         public void Store(Task task, BatchFile batchFile)
         {
-            _taskRepository.Create(task);
+            Run run = new Run(task.Id, task.Number, task.SubNumber);
             
-            Run run = new Run(task.Id, task.Number,task.SubNumber);
             run.Path = batchFile.Path;
             run.FileName = batchFile.Filename;
 
-            CreateRunInDB(run);
+            _taskRepository.Create(task);
+            _runRepository.Create(run);
+            _runRepository.Update(run);
         }
 
         public void Store(Task task)
         {
             Store(task, task.Input);
-        }
-
-        private void CreateRunInDB(Run run)
-        {
-            _db.Query(_table).Insert(new
-            {
-                id = run.Id,
-                number = run.Number,
-                subnumber = run.SubNumber,
-                path = run.Path,
-                filename = run.FileName
-            });
         }
     }
 }

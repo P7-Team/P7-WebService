@@ -10,7 +10,7 @@ namespace WebService.Models
 
         public SourceFile Executable { get; set; }
 
-        public BatchFile Input { get; set; } //Eventually list of file paths, currently only a single path for a single file associated with the Task.
+        public BatchFile Input { get; set; } 
 
         public int Number { get; set; }
 
