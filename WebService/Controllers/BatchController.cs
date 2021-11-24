@@ -10,6 +10,7 @@ using WebService.Interfaces;
 using WebService.Models;
 using WebService.Services;
 using WebService.Services.Repositories;
+using WebService.Services.Stores;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,10 +20,10 @@ namespace WebService.Controllers
     [ApiController]
     public class BatchController : ControllerBase
     {
-        BatchRepository repository;
-        public BatchController(BatchRepository repository)
+        BatchStore _store;
+        public BatchController(BatchStore store)
         {
-            this.repository = repository;
+            _store = store;
         }
 
         // POST api/<BatchController>
@@ -33,8 +34,8 @@ namespace WebService.Controllers
 
             Dictionary<string, string> formData = batchMarshaller.GetFormData();
             List<FileStream> streams = batchMarshaller.GetFileStreams();
-            Batch batch = BatchMarshaller.MarshalBatch(formData, streams.Select(stream => (stream.Name, (Stream)stream)), getUser());
-            repository.Create(batch);
+            Batch batch = BatchMarshaller.MarshalBatch(formData, streams.Select(stream => (stream.Name, (Stream)stream)).ToList(), getUser());
+            _store.Store(batch);
         }   
 
         private MultipartMarshaller<MultipartSection> createMarshaller(HttpRequest request)
