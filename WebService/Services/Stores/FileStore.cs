@@ -89,6 +89,11 @@ namespace WebService.Services.Stores
 
         }
 
+        /// <summary>
+        /// Extract the necessary data from each <see cref="BatchFile"/> to create a unique filename
+        /// </summary>
+        /// <param name="files">Enumerable of <see cref="BatchFile"/>s to create names for</param>
+        /// <returns>An array of filenames containing a unique name for each file</returns>
         private string[] ExtractFileNames(IEnumerable<BatchFile> files)
         {
             int postFixId = 1;
@@ -101,6 +106,11 @@ namespace WebService.Services.Stores
             return names;
         }
 
+        /// <summary>
+        /// Extracts the necessary information from the <see cref="Result"/> to create a unique name for the file
+        /// </summary>
+        /// <param name="resultFile">The <see cref="Result"/> object to create a name for</param>
+        /// <returns>A unique name for the <see cref="Result"/> file</returns>
         private string ExtractFileName(Result resultFile)
         {
             StringBuilder sb = new StringBuilder();
@@ -112,6 +122,11 @@ namespace WebService.Services.Stores
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Extracts the necessary information from the <see cref="SourceFile"/> to create a unique name for the file
+        /// </summary>
+        /// <param name="sourceFile">The <see cref="SourceFile"/> object to create a name for</param>
+        /// <returns>A unique name for the <see cref="SourceFile"/> file</returns>
         private string ExtractFileName(SourceFile sourceFile)
         {
             return sourceFile.BatchId.ToString();
