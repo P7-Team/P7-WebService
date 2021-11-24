@@ -47,8 +47,6 @@ namespace WebService.Controllers
             Dictionary<string, string> formData = marshaller.GetFormData();
             List<FileStream> fileStreams = marshaller.GetFileStreams();
 
-            CompletedTask completedTask = new CompletedTask(long.Parse(formData["id"]), fileStreams[0].Name);
-
             Task task = new Task(int.Parse(formData["batchId"]), int.Parse(formData["taskNumber"]), int.Parse(formData["taskSubNumber"]));
             
             Batch batch = _context.GetBatch((int)task.Id);
