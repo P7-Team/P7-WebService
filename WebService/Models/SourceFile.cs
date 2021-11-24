@@ -10,6 +10,9 @@ namespace WebService.Models
     {
         public string Language { get; set; }
 
-        public SourceFile(Stream data) : base("executable", data) { }
+        public SourceFile(string originalExtension, string encoding, Stream data, Batch batch, string language) : base(originalExtension, encoding, data, batch)
+        {
+            Language = language;
+        }
     }
 }

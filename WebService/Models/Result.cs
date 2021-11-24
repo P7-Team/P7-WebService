@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebService.Interfaces;
 
 namespace WebService.Models
 {
-    public class Result : IAggregateRoot<(string path, string filename)>
+    public class Result : BatchFile
     {
-        public string Path { get; set; }
-        public string Filename { get; set; }
         public bool Verified { get; set; }
         public Task Task { get; set; }
 
-        public Result(string path, string filename, bool verified, Task task)
+        public Result(string originalExtension, string encoding, Stream data, Batch batch, bool verified, Task task)
+            : base(originalExtension, encoding, data, batch)
         {
-            Path = path;
-            Filename = filename;
             Verified = verified;
             Task = task;
         }
