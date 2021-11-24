@@ -23,16 +23,15 @@ namespace WebService.Services
             // Return batch with only username if there are no files
             if(files.Count < 1) 
                 return batch;
-
-            SourceFile source = new SourceFile(files.Where(file => file.name == "executable").First().data);
+            
+            SourceFile source = new SourceFile(formdata["sourceExtension"], formdata["sourceEncoding"], files.Where(file => file.name == "executable").First().data, batch, formdata["language"]);
             source.Encoding = formdata["executableEncoding"];
             source.Language = formdata["executableLanguage"];
             batch.SourceFile = source;
 
             foreach ((string name, Stream data) inputfile in files.Where(file => file.name != "executable"))
             {
-                BatchFile file = new BatchFile(inputfile.name, inputfile.data);
-                file.Encoding = formdata[inputfile.name];
+                BatchFile file = new BatchFile(formdata["extension"], formdata[inputfile.name], inputfile.data, batch);
                 batch.InputFiles.Add(file);
             }
 
