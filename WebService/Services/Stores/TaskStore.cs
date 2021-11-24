@@ -9,9 +9,9 @@ namespace WebService.Services.Stores
     {
         private readonly QueryFactory _db;
         private const string _table = "Runs";
-        private readonly IRepository<Task, (long id, int number, int subnumber)> _taskRepository;
+        private readonly IRepository<Task, (int id, int number, int subnumber)> _taskRepository;
 
-        public TaskStore(IRepository<Task, (long id, int number, int subnumber)> taskRepository, QueryFactory db)
+        public TaskStore(IRepository<Task, (int id, int number, int subnumber)> taskRepository, QueryFactory db)
         {
             _taskRepository = taskRepository;
             _db = db;
