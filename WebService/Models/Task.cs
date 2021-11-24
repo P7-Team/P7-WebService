@@ -4,7 +4,7 @@ using WebService.Interfaces;
 
 namespace WebService.Models
 {
-    public class Task : IAggregateRoot<(long, int, int)>
+    public class Task : IAggregateRoot<(int, int, int)>
     {
         public int Id { get; set; } //Changed from long to int, noted for potential furture errors.
 
@@ -66,7 +66,7 @@ namespace WebService.Models
                    other.SubNumber == SubNumber;
         }
 
-        public (long, int, int) GetIdentifier()
+        public (int, int, int) GetIdentifier()
         {
             return (Id, Number, SubNumber);
         }
