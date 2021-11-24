@@ -6,7 +6,7 @@ namespace WebService.Models
 {
     public class Task : IAggregateRoot<(long, int, int)>
     {
-        public long Id { get; set; } //TODO: Change to int and fix all errors that creates.
+        public int Id { get; set; } //Changed from long to int, noted for potential furture errors.
 
         public string Executable { get; set; }
 
