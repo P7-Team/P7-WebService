@@ -21,7 +21,7 @@ namespace WebService.Services.Stores
 
         public void Store(Batch batch)
         {
-            _batchRepository.Create(batch);
+            int batchId = _batchRepository.Create(batch);
             _fileStore.StoreSourceFile(batch.SourceFile);
             _fileStore.StoreInputFiles(batch.InputFiles);
         }

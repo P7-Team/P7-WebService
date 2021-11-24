@@ -18,9 +18,9 @@ namespace WebService.Services.Repositories
             _db = db;
         }
 
-        public void Create(Task item)
+        public (long id, int number, int subnumber) Create(Task item)
         {
-            _db.Query(_table).Insert(new
+            return _db.Query(_table).InsertGetId<(long id, int number, int subNumber)>(new
             {
                 id = item.Id,
                 number = item.Number,

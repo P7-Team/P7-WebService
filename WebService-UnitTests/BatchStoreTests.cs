@@ -15,9 +15,10 @@ namespace WebService_UnitTests
     {
         public Batch CalledWithBatch { get; private set; }
 
-        public void Create(Batch item)
+        public int Create(Batch item)
         {
             CalledWithBatch = item;
+            return item.Id;
         }
 
         public void Delete(int identifier)

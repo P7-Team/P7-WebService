@@ -18,13 +18,13 @@ namespace WebService.Services.Repositories
             _db = db;
         }
 
-        public void Create(Result item)
+        public (string path, string filename) Create(Result item)
         {
-            _db.Query(table).Insert(new
+            return _db.Query(table).InsertGetId<(string path, string filename)>(new
             {
                 path = item.Path,
                 filename = item.Filename,
-                isVerified = item.Verfied,
+                isVerified = item.Verified,
                 task_id = item.Task.Id,
                 task_number = item.Task.Number,
                 task_subnumber = item.Task.SubNumber
@@ -54,7 +54,7 @@ namespace WebService.Services.Repositories
                 filename = item.Filename
             }).Update(new
             {
-                isVerified = item.Verfied,
+                isVerified = item.Verified,
                 task_id = item.Task.Id,
                 task_number = item.Task.Number,
                 task_subnumber = item.Task.SubNumber
