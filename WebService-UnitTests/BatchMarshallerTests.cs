@@ -43,5 +43,17 @@ namespace WebService_UnitTests
             Assert.Equal("Erlang", batch.SourceFile.Language);
             Assert.Equal(sourceFile, batch.SourceFile.Data);
         }
+
+        [Fact]
+        public void MarshallBatch_GivenReplicationFactorFormData_ReturnsBatchWithReplicationFactor()
+        {
+            Dictionary<string, string> formdata = new Dictionary<string, string>();
+            formdata.Add("replicationfactor", "3");
+            List<(string, Stream)> files = new List<(string, Stream)>();
+
+            Batch batch = BatchMarshaller.MarshalBatch(formdata, files, CreateTestUser());
+
+            Assert.Equal(3, batch.ReplicationFactor);
+        }
     }
 }

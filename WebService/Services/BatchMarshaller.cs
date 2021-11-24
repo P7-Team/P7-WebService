@@ -20,28 +20,43 @@ namespace WebService.Services
         {
             Batch batch = new Batch() { OwnerUsername = owner.Username };
 
-            // Return batch with only username if there are no files
-            if(files.Count < 1) 
-                return batch;
+            // Get replication factor
+            if (formdata.ContainsKey("replicationfactor"))
+                batch.ReplicationFactor = int.Parse(formdata["replicationfactor"]);
 
+            MarshallFiles(formdata, files, batch);
+
+            return batch;
+        }
+
+        private static void MarshallFiles(Dictionary<string, string> formdata, List<(string name, Stream data)> files, Batch batch)
+        {
+            // Simply return if there are no files
+            if (files.Count < 1)
+                return;
+
+            MarshallSourceFile(formdata, files, batch);
+            MarshallInputFiles(formdata, files, batch);
+        }
+
+        private static void MarshallSourceFile(Dictionary<string, string> formdata, List<(string name, Stream data)> files, Batch batch)
+        {
+            // Get source file details
             SourceFile source = new SourceFile(files.Where(file => file.name == "executable").First().data);
             source.Encoding = formdata["executableEncoding"];
             source.Language = formdata["executableLanguage"];
             batch.SourceFile = source;
+        }
 
+        private static void MarshallInputFiles(Dictionary<string, string> formdata, List<(string name, Stream data)> files, Batch batch)
+        {
+            // Get input file details
             foreach ((string name, Stream data) inputfile in files.Where(file => file.name != "executable"))
             {
                 BatchFile file = new BatchFile(inputfile.name, inputfile.data);
                 file.Encoding = formdata[inputfile.name];
                 batch.InputFiles.Add(file);
             }
-
-            return batch;
-        }
-
-        internal static Batch MarshalBatch(Dictionary<string, string> formData, IEnumerable<(string Name, Stream)> enumerable, User user)
-        {
-            throw new NotImplementedException();
         }
     }
 }
