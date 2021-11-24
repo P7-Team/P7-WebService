@@ -106,7 +106,7 @@ namespace WebService.Services.Stores
             StringBuilder sb = new StringBuilder();
             sb.Append(resultFile.BatchId);
             sb.Append("-");
-            sb.Append(resultFile.Task.Id);
+            sb.Append(resultFile.Task.Number);
             sb.Append("-");
             sb.Append(resultFile.Task.SubNumber);
             return sb.ToString();
