@@ -22,18 +22,8 @@ namespace WebService_UnitTests
             User user = new User("Username", 0, "Password");
             Task testTask = new Task(false);
             testTask.SetAllocatedTo(user);
-            testTask.UnAllocateFrom(user);
+            testTask.UnAllocate();
             Assert.Null(testTask.AllocatedTo);
-        }
-        
-        [Fact]
-        public void UnAssignUser_User_Not_Assigned()
-        {
-            User user = new User("Username", 0, "Password");
-            Task testTask = new Task(false);
-            testTask.UnAllocateFrom(user);
-            Assert.Null(testTask.AllocatedTo);
-            
         }
     }
 }

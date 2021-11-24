@@ -8,6 +8,8 @@ namespace WebService.Interfaces
     {
         public bool IsWorkedOnBy(Task task, User user);
 
+        public bool IsWorkedOn(Task task);
+
         public void AddToWorkedOn(TaskWrapper taskWrapper, User user);
 
         public void MarkCurrentlyWorkingOnAsDone(long id, int number, int subNumber);
@@ -17,5 +19,7 @@ namespace WebService.Interfaces
         public TaskWrapper GetCurrentlyWorkedOn(User user);
 
         public void CleanInactiveUsers();
+
+        public TaskWrapper PopTaskWrapper(long id, int number, int subNumber);
     }
 }

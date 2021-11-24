@@ -10,15 +10,15 @@ namespace WebService.Helper
 {
     public class SchedulerWorkedOnHelper : ISchedulerWorkedOnHelper
     {
-        private ReaderWriterLockSlim WorkedOnElementsLock;
-        private static List<TaskWrapper> _workedOnElements;
+        private readonly ReaderWriterLockSlim _workedOnElementsLock;
+        private readonly List<TaskWrapper> _workedOnElements;
         private const int CleanUpTimeHours = 0;
         private const int CleanUpTimeMinutes = 5;
         private const int CleanUpTimeSeconds = 0;
 
         public SchedulerWorkedOnHelper()
         {
-            WorkedOnElementsLock = new ReaderWriterLockSlim();
+            _workedOnElementsLock = new ReaderWriterLockSlim();
             _workedOnElements = new List<TaskWrapper>();
         }
 
@@ -30,11 +30,25 @@ namespace WebService.Helper
         /// <returns></returns>
         public bool IsWorkedOnBy(Task task, User user)
         {
-            WorkedOnElementsLock.EnterReadLock();
+            _workedOnElementsLock.EnterReadLock();
             bool status = _workedOnElements.Any(x => x.Task.AllocatedTo == user.Username
                                                      && x.Task.Id == task.Id
                                                      && x.Task.Number == task.Number);
-            WorkedOnElementsLock.ExitReadLock();
+            _workedOnElementsLock.ExitReadLock();
+            return status;
+        }
+
+        /// <summary>
+        /// Checks whether or not a task is being worked on.
+        /// </summary>
+        /// <param name="task"></param>
+        /// <returns></returns>
+        public bool IsWorkedOn(Task task)
+        {
+            _workedOnElementsLock.EnterReadLock();
+            bool status = _workedOnElements.Any(x => x.Task.Id == task.Id
+                                                     && x.Task.Number == task.Number);
+            _workedOnElementsLock.ExitReadLock();
             return status;
         }
 
@@ -45,10 +59,10 @@ namespace WebService.Helper
         /// <param name="user"></param>
         public void AddToWorkedOn(TaskWrapper taskWrapper, User user)
         {
-            WorkedOnElementsLock.EnterWriteLock();
+            _workedOnElementsLock.EnterWriteLock();
             if (taskWrapper.Task.AllocatedTo != null)
             {
-                WorkedOnElementsLock.ExitWriteLock();
+                _workedOnElementsLock.ExitWriteLock();
                 return;
             }
 
@@ -56,7 +70,7 @@ namespace WebService.Helper
             taskWrapper.Task.SetAllocatedTo(user);
             taskWrapper.AssignedAt = DateTime.Now;
             _workedOnElements.Add(taskWrapper);
-            WorkedOnElementsLock.ExitWriteLock();
+            _workedOnElementsLock.ExitWriteLock();
         }
 
         // TODO Overvej om denne skal rykkes til SchedulerHistory
@@ -68,15 +82,15 @@ namespace WebService.Helper
         /// <param name="subNumber"></param>
         public void MarkCurrentlyWorkingOnAsDone(long id, int number, int subNumber)
         {
-            WorkedOnElementsLock.EnterWriteLock();
+            _workedOnElementsLock.EnterWriteLock();
             foreach (var currentTask in _workedOnElements.Where(x => x.Task.Id == id &&
                                                                      x.Task.Number == number &&
                                                                      x.Task.SubNumber == subNumber))
             {
-                currentTask.isDone = true;
+                //currentTask.isDone = true;
             }
 
-            WorkedOnElementsLock.ExitWriteLock();
+            _workedOnElementsLock.ExitWriteLock();
         }
 
         /// <summary>
@@ -86,10 +100,10 @@ namespace WebService.Helper
         /// <returns></returns>
         public TaskWrapper GetCurrentlyWorkedOn(User user)
         {
-            WorkedOnElementsLock.EnterReadLock();
-            TaskWrapper currentElement = _workedOnElements.Find(x => !x.isDone &&
-                                                                     x.user.Equals(user));
-            WorkedOnElementsLock.ExitReadLock();
+            _workedOnElementsLock.EnterReadLock();
+            TaskWrapper currentElement = _workedOnElements.Find(x =>
+                x.user.Equals(user));
+            _workedOnElementsLock.ExitReadLock();
             return currentElement;
         }
 
@@ -99,12 +113,32 @@ namespace WebService.Helper
         /// </summary>
         public void CleanInactiveUsers()
         {
-            WorkedOnElementsLock.EnterWriteLock();
-            _workedOnElements.RemoveAll(x =>
-                !x.isDone && x.LastPing <
+            _workedOnElementsLock.EnterWriteLock();
+            List<TaskWrapper> inactiveElements = _workedOnElements.FindAll(x => x.LastPing <
                 DateTime.Now.Subtract(new TimeSpan(CleanUpTimeHours, CleanUpTimeMinutes, CleanUpTimeSeconds)));
+            foreach (TaskWrapper inactiveElement in inactiveElements)
+            {
+                inactiveElement.Task.UnAllocate();
+                _workedOnElements.Remove(inactiveElement);
+            }
 
-            WorkedOnElementsLock.ExitWriteLock();
+            _workedOnElementsLock.ExitWriteLock();
+        }
+
+        /// <summary>
+        /// Pops a taskWrapper from the list, and returns this.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="number"></param>
+        /// <param name="subNumber"></param>
+        /// <returns></returns>
+        public TaskWrapper PopTaskWrapper(long id, int number, int subNumber)
+        {
+            TaskWrapper taskWrapper = _workedOnElements.Find(x => x.Task.Id == id &&
+                                                                  x.Task.Number == number &&
+                                                                  x.Task.SubNumber == subNumber);
+            _workedOnElements.Remove(taskWrapper);
+            return taskWrapper;
         }
 
         /// <summary>
@@ -114,14 +148,14 @@ namespace WebService.Helper
         /// <param name="dateTime"></param>
         public void UpdateLastPing(User user, DateTime dateTime)
         {
-            WorkedOnElementsLock.EnterWriteLock();
+            _workedOnElementsLock.EnterWriteLock();
             foreach (TaskWrapper taskWrapper in _workedOnElements.Where(
-                x => x.Task.AllocatedTo == user.Username && !x.isDone))
+                x => x.Task.AllocatedTo == user.Username))
             {
                 taskWrapper.LastPing = new DateTime(dateTime.Ticks);
             }
 
-            WorkedOnElementsLock.ExitWriteLock();
+            _workedOnElementsLock.ExitWriteLock();
         }
     }
 }

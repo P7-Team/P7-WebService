@@ -16,7 +16,7 @@ namespace WebService_UnitTests
         [Fact]
         public void GetNextTask_Returns_Task()
         {
-            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper());
+            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper());
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Batch testBatch = new Batch(0);
@@ -30,13 +30,13 @@ namespace WebService_UnitTests
         [Fact]
         public void GetNextTask_User_Already_Assigned_Returns_Null()
         {
-            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper());
+            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper());
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
-            task.SetAllocatedTo(user);
             Batch testBatch = new Batch(0);
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
+            scheduler.AllocateTask(user);
             // Assert
             Assert.Null(scheduler.AllocateTask(user));
         }
@@ -44,7 +44,7 @@ namespace WebService_UnitTests
         [Fact]
         public void GetNextTask_Assigns_User()
         {
-            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper());
+            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper());
             User user = new User("Username", 0, "Password");
             User anotherUser = new User("AnotherUser", 0, "Password");
             Task task = new Task(true);
@@ -61,7 +61,7 @@ namespace WebService_UnitTests
         [Fact]
         public void GetNextTask_Another_User_Already_Assigned_Returns_Null()
         {
-            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper());
+            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper());
             User user = new User("Username", 0, "Password");
             User anotherUser = new User("AnotherUser", 0, "Password");
             Task task = new Task(true);
@@ -75,7 +75,7 @@ namespace WebService_UnitTests
         [Fact]
         public void Remove_Completed_Task_Task_Provided()
         {
-            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper());
+            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper());
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
 
@@ -91,7 +91,7 @@ namespace WebService_UnitTests
         [Fact]
         public void Remove_Completed_Task_ID_Number_SubNumber_Provided()
         {
-            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper());
+            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper());
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
 
@@ -107,7 +107,7 @@ namespace WebService_UnitTests
         [Fact]
         public void Remove_Completed_Task_Incorrect_ID_Number_SubNumber_Provided()
         {
-            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper());
+            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper());
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
 
@@ -124,7 +124,7 @@ namespace WebService_UnitTests
         [Fact]
         public void Remove_Completed_Task_Remove_Batch_On_Emptying_Batch()
         {
-            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper());
+            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper());
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Task taskOne = new Task(true);
@@ -145,7 +145,7 @@ namespace WebService_UnitTests
         [Fact]
         public void Remove_Completed_Task_Only_Remove_Task_If_More_Tasks_Are_In_Batch()
         {
-            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper());
+            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper());
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Task taskOne = new Task(true);
@@ -168,7 +168,7 @@ namespace WebService_UnitTests
         [Fact]
         public void GetTaskAndAssignUser_Assigns_User()
         {
-            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper());
+            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper());
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Batch testBatch = new Batch(0);

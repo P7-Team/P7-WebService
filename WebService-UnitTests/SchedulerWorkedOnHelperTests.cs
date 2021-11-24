@@ -10,6 +10,10 @@ namespace WebService_UnitTests
 {
     public class SchedulerWorkedOnHelperTests
     {
+        private const long UnknownID = 500;
+        private const int UnknownNumber = 500;
+        private const int UnknownSubNumber = 500;
+
         [Fact]
         public void UpdateLastPing_Ping_Set()
         {
@@ -127,7 +131,7 @@ namespace WebService_UnitTests
             // Assert
             Assert.NotEqual(tw, sh.GetCurrentlyWorkedOn(user));
         }
-        
+
         [Fact]
         public void AddWorkedOn_AnotherUser_Assigned_AnotherUser_Stays_Assigned()
         {
@@ -154,9 +158,9 @@ namespace WebService_UnitTests
             TaskWrapper tw = new TaskWrapper(task);
             //Act
             sh.AddToWorkedOn(tw, user);
-            Assert.Equal(tw,sh.GetCurrentlyWorkedOn(user));
+            Assert.Equal(tw, sh.GetCurrentlyWorkedOn(user));
         }
-        
+
         [Fact]
         public void GetCurrentlyWorkedOn_User_Not_Assigned_Returns_Null()
         {
@@ -164,6 +168,48 @@ namespace WebService_UnitTests
             User user = new User("Username", 0, "Password");
 
             Assert.Null(sh.GetCurrentlyWorkedOn(user));
+        }
+
+        [Fact]
+        public void PopTaskWrapper_Returns_TaskWrapper()
+        {
+            ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
+            User user = new User("Username", 0, "Password");
+            Task task = new Task(true);
+            TaskWrapper tw = new TaskWrapper(task);
+
+            //Act
+            sh.AddToWorkedOn(tw, user);
+
+            Assert.IsType<TaskWrapper>(sh.PopTaskWrapper(tw.Task.Id, tw.Task.Number, tw.Task.SubNumber));
+        }
+
+        [Fact]
+        public void PopTaskWrapper_Returns_Correct_TaskWrapper()
+        {
+            ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
+            User user = new User("Username", 0, "Password");
+            Task task = new Task(true);
+            TaskWrapper tw = new TaskWrapper(task);
+
+            //Act
+            sh.AddToWorkedOn(tw, user);
+
+            Assert.Equal(tw, sh.PopTaskWrapper(tw.Task.Id, tw.Task.Number, tw.Task.SubNumber));
+        }
+
+        [Fact]
+        public void PopTaskWrapper_Returns_Correct_Null_When_Not_Exists()
+        {
+            ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
+            User user = new User("Username", 0, "Password");
+            Task task = new Task(true);
+            TaskWrapper tw = new TaskWrapper(task);
+
+            //Act
+            sh.AddToWorkedOn(tw, user);
+
+            Assert.Null(sh.PopTaskWrapper(UnknownID, UnknownNumber, UnknownSubNumber));
         }
     }
 }

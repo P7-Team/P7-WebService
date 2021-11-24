@@ -15,19 +15,16 @@ namespace WebService.Models
         public int SubNumber { get; set; }
 
         public string AllocatedTo { get; private set; }
-        
+
 
         public void SetAllocatedTo(User user)
         {
             AllocatedTo = user.Username;
         }
-        
-        public void UnAllocateFrom(User user)
+
+        public void UnAllocate()
         {
-            if (AllocatedTo == user.Username)
-            {
-                AllocatedTo = null;
-            }
+            AllocatedTo = null;
         }
 
         public bool IsReady { get; set; }

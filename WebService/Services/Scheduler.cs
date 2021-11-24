@@ -13,14 +13,15 @@ namespace WebService.Services
         private readonly List<Batch> _batches;
 
         private readonly ISchedulerWorkedOnHelper _schedulerWoh;
+        private readonly ISchedulerHistoryHelper _historyHelper;
 
-        public Scheduler(ISchedulerWorkedOnHelper schedulerWoh)
+        public Scheduler(ISchedulerWorkedOnHelper schedulerWoh, ISchedulerHistoryHelper historyHelper)
         {
             _schedulerWoh = schedulerWoh;
+            _historyHelper = historyHelper;
             _batches = new List<Batch>();
         }
 
-        // TODO Make AllocateTask only take AllocatedTo into consideration.
         public Task AllocateTask(User user)
         {
             foreach (Batch currentBatch in _batches)
@@ -29,10 +30,7 @@ namespace WebService.Services
                 {
                     Task tempTask = currentBatch.GetTask(i);
 
-                    if (tempTask.AllocatedTo != null) continue;
-
-                    if (_schedulerWoh.IsWorkedOnBy(tempTask, user)) continue;
-                    tempTask.SetAllocatedTo(user);
+                    if (_schedulerWoh.IsWorkedOn(tempTask) || _historyHelper.HasWorkedOn(tempTask, user)) continue;
                     TaskWrapper tw = new TaskWrapper(tempTask)
                     {
                         AssignedAt = DateTime.Now
@@ -64,13 +62,12 @@ namespace WebService.Services
                 if (batch.TasksCount() == 0) batchesToRemove.Add(batch);
             }
 
-            _schedulerWoh.MarkCurrentlyWorkingOnAsDone(id, number, subNumber);
+            _historyHelper.AddToHistory(_schedulerWoh.PopTaskWrapper(id, number, subNumber));
 
             foreach (var batch in batchesToRemove)
             {
                 _batches.Remove(batch);
             }
         }
-        
     }
 }
