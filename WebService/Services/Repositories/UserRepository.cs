@@ -19,9 +19,9 @@ namespace WebService.Services
             _db = db;
         }
 
-        public void Create(User item)
+        public string Create(User item)
         {
-            _db.Query(table).Insert(new
+            return _db.Query(table).InsertGetId<string>(new
             {
                 username = item.Username,
                 password = item.Password,

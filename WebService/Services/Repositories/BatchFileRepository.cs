@@ -18,10 +18,10 @@ namespace WebService.Services.Repositories
             _db = db;
         }
 
-        public void Create(BatchFile item)
+        public (string path, string filename) Create(BatchFile item)
         {
             // TODO: save the file in the filesystem and assign the resulting filepath to the Path property
-            _db.Query(table).Insert(new
+            return _db.Query(table).InsertGetId<(string path, string filename)>(new
             {
                 path = item.Path,
                 filename = item.Filename,

@@ -9,7 +9,7 @@ namespace WebService.Services.Repositories
 {
     public class SourceFileRepository : IRepository<SourceFile, (string path, string filename)>
     {
-        public void Create(SourceFile item)
+        public (string path, string filename) Create(SourceFile item)
         {
             throw new NotImplementedException();
         }
