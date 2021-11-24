@@ -71,8 +71,9 @@ CREATE TABLE IF NOT EXISTS Source(
     path        VARCHAR(510),
     filename    VARCHAR(255),
     language    VARCHAR(50) NOT NULL, -- We need to know the language
-    PRIMARY KEY(path,filename)
-    FOREIGN KEY(id) REFERENCES Batch(id)
+    batchId     INT,
+    PRIMARY KEY(path,filename),
+    FOREIGN KEY(batchId) REFERENCES Batch(id)
      ON UPDATE CASCADE
      ON DELETE CASCADE
 );
