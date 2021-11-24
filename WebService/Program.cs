@@ -50,7 +50,7 @@ namespace WebService
                     });
 
                     // Create a QueryFactory that can be used in repositories to create queries using SqlKata
-                    serviceCollection.AddScoped<QueryFactory>(sp =>
+                    serviceCollection.AddSingleton<QueryFactory>(sp =>
                     {
                         // Get connection string from application.json
                         string connectionString = config.GetSection("ConnectionString").Value;
@@ -64,9 +64,11 @@ namespace WebService
                     // Inject UserRepository when IRepository<User, int> or UserRepository is required
                     serviceCollection.AddScoped<IRepository<User, string>, UserRepository>();
                     serviceCollection.AddScoped<UserRepository>();
+                    serviceCollection.AddScoped<IRepository<Batch, int>, BatchRepository>();
                     serviceCollection.AddScoped<BatchRepository>();
                     serviceCollection.AddScoped<BatchFileRepository>();
                     serviceCollection.AddScoped<SourceFileRepository>();
+                    serviceCollection.AddScoped<IRepository<Task, (int, int, int)>, TaskRepository>();
                     serviceCollection.AddScoped<TaskRepository>();
                     serviceCollection.AddScoped<ResultRepository>();
                     serviceCollection.AddScoped<FileSaver>();
@@ -78,6 +80,8 @@ namespace WebService
                         string fileDir = ConfigurationHelper.ReadOSFileDirFromConfiguration(config);
                         return new FileStore(sp.GetService<BatchFileRepository>(), sp.GetService<ResultRepository>(), sp.GetService<SourceFileRepository>(), sp.GetService<FileSaver>(), sp.GetService<FileFetcher>(), sp.GetService<FileDeleter>(), fileDir);
                     });
+
+                    serviceCollection.AddScoped<BatchStore>();
 
                     // Setup a context for the TaskController
                     serviceCollection.AddSingleton<ITaskContext, TaskContext>(sp =>
