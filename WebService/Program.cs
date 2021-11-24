@@ -82,7 +82,7 @@ namespace WebService
                     // Setup a context for the TaskController
                     serviceCollection.AddSingleton<ITaskContext, TaskContext>(sp =>
                     {
-                        return new TaskContext(sp.GetService<ResultRepository>());
+                        return new TaskContext(sp.GetService<FileStore>(), sp.GetService<BatchRepository>());
                     });
                 });
     }
