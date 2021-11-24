@@ -8,5 +8,6 @@ namespace WebService.Interfaces
     public interface ITaskContext : IList<Task>
     {
         public void SaveResult(Result result);
+        public Batch GetBatch(int batchId);
     }
 }

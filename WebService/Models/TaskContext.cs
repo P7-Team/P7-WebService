@@ -8,16 +8,23 @@ namespace WebService.Models
 {
     public class TaskContext : List<Task>, ITaskContext
     {
-        private readonly ResultRepository _resultRepository;
+        private readonly IFileStore _fileStore;
+        private readonly BatchRepository _batchRepository;
 
-        public TaskContext(ResultRepository resultRepository)
+        public TaskContext(IFileStore fileStore, BatchRepository batchRepository)
         {
-            _resultRepository = resultRepository;
+            _fileStore = fileStore;
+            _batchRepository = batchRepository;
         }
 
         public void SaveResult(Result result)
         {
-            _resultRepository.Create(result);
+            _fileStore.StoreFile(result);
+        }
+
+        public Batch GetBatch(int batchId)
+        {
+            return _batchRepository.Read(batchId);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -47,12 +48,12 @@ namespace WebService.Controllers
             List<FileStream> fileStreams = marshaller.GetFileStreams();
 
             CompletedTask completedTask = new CompletedTask(long.Parse(formData["id"]), fileStreams[0].Name);
-            // TODO: This needs to be persisted in the DB and File needs to be stored in file system.
-            string filepath = "";
 
             Task task = new Task(int.Parse(formData["batchId"]), int.Parse(formData["taskNumber"]), int.Parse(formData["taskSubNumber"]));
-
-            Result result = new Result(filepath, fileStreams[0].Name, false, task);
+            
+            Batch batch = _context.GetBatch((int)task.Id);
+            Result result = new Result(String.Empty, Encoding.UTF8.EncodingName, fileStreams[0], batch, false, task);
+            
             _context.SaveResult(result);
         }
     }
