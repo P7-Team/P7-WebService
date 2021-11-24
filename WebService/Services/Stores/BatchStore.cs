@@ -30,8 +30,8 @@ namespace WebService.Services.Stores
             AddBatchReferenceToFiles(batch, batchId);
 
             // store source and input files
-            _fileStore.StoreSourceFile(batch.SourceFile);
-            _fileStore.StoreInputFiles(batch.InputFiles);
+            _fileStore.StoreFile(batch.SourceFile);
+            _fileStore.StoreFiles(batch.InputFiles);
         }
 
         private void AddBatchReferenceToFiles(Batch batch, int batchId)

@@ -8,7 +8,8 @@ namespace WebService.Interfaces
 {
     public interface IFileStore
     {
-        public void StoreSourceFile(SourceFile sourceFile);
-        public void StoreInputFiles(IEnumerable<BatchFile> inputFiles);
+        public void StoreFile(SourceFile sourceFile);
+        public void StoreFile(Result resultFile);
+        public void StoreFiles(IEnumerable<BatchFile> batchFiles);
     }
 }
