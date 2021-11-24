@@ -5,7 +5,7 @@ using WebService.Interfaces;
 
 namespace WebService.Services.Stores
 {
-    public class TaskStore
+    public class TaskStore : IStore<Task>
     {
         private readonly QueryFactory _db;
         private const string _table = "Runs";
@@ -20,9 +20,9 @@ namespace WebService.Services.Stores
         /// <summary>
         /// Stores the details of a task, then stores its association with a file as a run. 
         /// </summary>
-        /// <param name="task">Task the should be stored.</param>
-        /// <param name="batchFile">The file associated with task.</param>
-        public void Store(Task task,BatchFile batchFile)
+        /// <param name="task">Task that should be stored.</param>
+        /// <param name="batchFile">The input file associated with task.</param>
+        public void Store(Task task, BatchFile batchFile)
         {
             _taskRepository.Create(task);
             
@@ -31,7 +31,11 @@ namespace WebService.Services.Stores
             run.FileName = batchFile.Filename;
 
             CreateRunInDB(run);
+        }
 
+        public void Store(Task task)
+        {
+            Store(task, task.Input);
         }
 
         private void CreateRunInDB(Run run)

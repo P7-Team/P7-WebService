@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WebService.Models;
 using WebService.Services;
 using WebService.Interfaces;
 
 namespace WebService.Services.Stores
 {
-    public class BatchStore
+    public class BatchStore : IStore<Batch>
     {
         private readonly IRepository<Batch, int> _batchRepository;
         private readonly IFileStore _fileStore;
+        private readonly IStore<Task> _taskStore;
 
-        public BatchStore(IRepository<Batch, int> batchRepository, IFileStore fileStore)
+        public BatchStore(IRepository<Batch, int> batchRepository, IFileStore fileStore, IStore<Task> taskStore)
         {
             _batchRepository = batchRepository;
             _fileStore = fileStore;
+            _taskStore = taskStore;
         }
 
         /// <summary>
@@ -35,6 +36,17 @@ namespace WebService.Services.Stores
             // store source and input files
             _fileStore.StoreFile(batch.SourceFile);
             _fileStore.StoreFiles(batch.InputFiles);
+
+            // Create and store tasks
+            CreateTasks(batch);
+            batch.Tasks.ForEach(task => _taskStore.Store(task));
+        }
+
+        private void CreateTasks(Batch batch)
+        {
+            if(batch.InputFiles != null)
+                foreach (BatchFile file in batch.InputFiles)
+                    batch.AddTask(new Task() { Input = file, Executable = batch.SourceFile });
         }
 
         private void AddBatchReferenceToFiles(Batch batch, int batchId)

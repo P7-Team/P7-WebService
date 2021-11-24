@@ -6,11 +6,11 @@ namespace WebService.Models
 {
     public class Task : IAggregateRoot<(int, int, int)>
     {
-        public int Id { get; set; } //Changed from long to int, noted for potential furture errors.
+        public int Id { get; set; }
 
-        public string Executable { get; set; }
+        public SourceFile Executable { get; set; }
 
-        public string Input { get; set; } //Eventually list of file paths, currently only a single path for a single file associated with the Task.
+        public BatchFile Input { get; set; } //Eventually list of file paths, currently only a single path for a single file associated with the Task.
 
         public int Number { get; set; }
 
