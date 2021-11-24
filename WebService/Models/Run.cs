@@ -3,9 +3,9 @@ using WebService.Interfaces;
 
 namespace WebService.Models 
 {
-    public class Run : IAggregateRoot<(long, int, int)>
+    public class Run : IAggregateRoot<(int, int, int)>
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
 
         public int Number { get; set; }
 
@@ -15,14 +15,14 @@ namespace WebService.Models
 
         public string FileName { get; set; }
 
-        public Run(long id, int number, int subnumber)
+        public Run(int id, int number, int subnumber)
         {
             Id = id;
             Number = number;
             SubNumber = subnumber;
         }
 
-        public (long, int, int) GetIdentifier()
+        public (int, int, int) GetIdentifier()
         {
             return (Id, Number, SubNumber);
         }
