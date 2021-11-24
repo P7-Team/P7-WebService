@@ -15,6 +15,7 @@ using WebService.Interfaces;
 using WebService.Models;
 using WebService.Services;
 using WebService.Services.Repositories;
+using WebService.Services.Stores;
 using Task = WebService.Models.Task;
 
 namespace WebService
@@ -65,8 +66,18 @@ namespace WebService
                     serviceCollection.AddScoped<UserRepository>();
                     serviceCollection.AddScoped<BatchRepository>();
                     serviceCollection.AddScoped<BatchFileRepository>();
+                    serviceCollection.AddScoped<SourceFileRepository>();
                     serviceCollection.AddScoped<TaskRepository>();
                     serviceCollection.AddScoped<ResultRepository>();
+                    serviceCollection.AddScoped<FileSaver>();
+                    serviceCollection.AddScoped<FileFetcher>();
+                    serviceCollection.AddScoped<FileDeleter>();
+
+                    serviceCollection.AddSingleton<IFileStore, FileStore>(sp =>
+                    {
+                        string fileDir = ConfigurationHelper.ReadOSFileDirFromConfiguration(config);
+                        return new FileStore(sp.GetService<BatchFileRepository>(), sp.GetService<ResultRepository>(), sp.GetService<SourceFileRepository>(), sp.GetService<FileSaver>(), sp.GetService<FileFetcher>(), sp.GetService<FileDeleter>(), fileDir);
+                    });
 
                     // Setup a context for the TaskController
                     serviceCollection.AddSingleton<ITaskContext, TaskContext>(sp =>
