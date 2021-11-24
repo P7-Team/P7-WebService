@@ -81,7 +81,10 @@ namespace WebService
                         return new FileStore(sp.GetService<BatchFileRepository>(), sp.GetService<ResultRepository>(), sp.GetService<SourceFileRepository>(), sp.GetService<FileSaver>(), sp.GetService<FileFetcher>(), sp.GetService<FileDeleter>(), fileDir);
                     });
 
+                    serviceCollection.AddScoped<TaskStore>();
+                    serviceCollection.AddScoped<IStore<Task>, TaskStore>();
                     serviceCollection.AddScoped<BatchStore>();
+                    serviceCollection.AddScoped<IStore<Batch>, BatchStore>();
 
                     // Setup a context for the TaskController
                     serviceCollection.AddSingleton<ITaskContext, TaskContext>(sp =>
