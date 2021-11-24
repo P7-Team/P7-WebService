@@ -63,6 +63,26 @@ namespace WebService_UnitTests
         {
             CalledWithInputFiles = batchFiles;
         }
+
+        public Stream FetchFile(BatchFile file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteFile(BatchFile file)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteFile(SourceFile sourceFile)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool DeleteFile(Result resultFile)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class BatchStoreTests

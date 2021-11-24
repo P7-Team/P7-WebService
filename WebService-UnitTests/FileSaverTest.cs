@@ -19,8 +19,8 @@ namespace WebService_UnitTests
         [Fact]
         public void Store_FileNotAlreadyExist_FileCreatedAndDataSaved()
         {
-            string path = Path.GetTempFileName();
             // Setup
+            string path = Path.GetTempPath();
             string filename = "test_file1";
             string extension = ".txt";
 
@@ -56,7 +56,7 @@ namespace WebService_UnitTests
         public void Store_FileAlreadyExists_OriginalDataOverriden()
         {
             // Setup
-            string path = Path.GetTempFileName();
+            string path = Path.GetTempPath();
             string filename = "ultimate";
             string extension = ".uha";
             const string content = "This is something new, something you have never seen before!";
@@ -89,6 +89,35 @@ namespace WebService_UnitTests
             // Cleanup
             data.Close();
             storedFile.Close();
+        }
+
+        [Fact]
+        public void Store_ExtensionIsNull_FileNotExistedBefore_FileCreatedAndSavedWithoutExtension()
+        {
+            // Setup
+            string path = Path.GetTempPath();
+            string filename = "test_file3";
+            string extension = null;
+
+            IFileSaver fileSaver = new FileSaver();
+            string textData = "This is awesome data that is stored in the file";
+            MemoryStream data = new MemoryStream();
+            data.Write(Encoding.UTF8.GetBytes(textData));
+            data.Position = 0;
+            long dataLength = data.Length;
+
+            bool existedBefore = File.Exists(path + filename + extension);
+            
+            // Act
+            fileSaver.Store(path, filename, extension, data);
+            
+            // Assert
+            Assert.False(existedBefore);
+            
+            // Cleanup
+            _fileFixture.FilesToDelete.Add(path + filename + extension);
+            data.Close();
+            
         }
 
         private string CreateRandomFile(string path, string filename, string extension, out int length)
