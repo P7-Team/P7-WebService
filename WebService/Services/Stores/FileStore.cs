@@ -14,9 +14,9 @@ namespace WebService.Services.Stores
         private readonly ResultRepository _resultRepository;
         private readonly SourceFileRepository _sourceFileRepository;
 
-        private IFileSaver _fileSaver;
-        private IFileFetcher _fileFetcher;
-        private IFileDeleter _fileDeleter;
+        private readonly IFileSaver _fileSaver;
+        private readonly IFileFetcher _fileFetcher;
+        private readonly IFileDeleter _fileDeleter;
         
         private string Directory { get; set; }
 
@@ -86,7 +86,62 @@ namespace WebService.Services.Stores
                 // Count up
                 counter++;
             }
+        }
 
+        public Stream FetchFile(BatchFile file)
+        {
+            if (!file.ValidForFileSystem())
+                return null;
+            try
+            {
+                return _fileFetcher.Fetch(file.Path, file.Filename, file.OriginalExtension);
+            }
+            catch (FileNotFoundException e)
+            {
+                return null;
+            }
+        }
+
+        public bool DeleteFile(BatchFile file)
+        {
+            if (!file.ValidForFileSystem())
+                return false;
+            
+            // Delete from DB
+            _batchFileRepository.Delete(file.GetIdentifier());
+
+            // Delete from filesystem
+            return _fileDeleter.Delete(file.Path, file.Filename, file.OriginalExtension);
+        }
+
+        public bool DeleteFile(SourceFile sourceFile)
+        {
+            if (!sourceFile.ValidForFileSystem())
+                return false;
+            
+            // Delete Source File from DB
+            _sourceFileRepository.Delete(sourceFile.GetIdentifier());
+            
+            // Delete Batch File from DB
+            _batchFileRepository.Delete(sourceFile.GetIdentifier());
+            
+            // Delete from filesystem
+            return _fileDeleter.Delete(sourceFile.Path, sourceFile.Filename, sourceFile.OriginalExtension);
+        }
+
+        public bool DeleteFile(Result resultFile)
+        {
+            if (!resultFile.ValidForFileSystem())
+                return false;
+            
+            // Delete Result file from DB
+            _resultRepository.Delete(resultFile.GetIdentifier());
+            
+            // Delete Batch file from DB
+            _batchFileRepository.Delete(resultFile.GetIdentifier());
+            
+            // Delete from filesystem
+            return _fileDeleter.Delete(resultFile.Path, resultFile.Filename, resultFile.OriginalExtension);
         }
 
         /// <summary>

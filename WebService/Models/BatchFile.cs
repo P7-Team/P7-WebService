@@ -40,5 +40,14 @@ namespace WebService.Models
         {
             return (Path, Filename);
         }
+
+        /// <summary>
+        /// Used to determine whether the given file can be used in interaction with the filesystem for fetch and delete operations
+        /// </summary>
+        /// <returns>true if valid, false otherwise</returns>
+        public bool ValidForFileSystem()
+        {
+            return Path != null && Filename != null;
+        }
     }
 }

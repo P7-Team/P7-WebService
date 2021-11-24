@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WebService.Models;
@@ -23,5 +24,33 @@ namespace WebService.Interfaces
         /// </summary>
         /// <param name="batchFiles">The <see cref="BatchFile"/>s to store</param>
         public void StoreFiles(IEnumerable<BatchFile> batchFiles);
+
+        /// <summary>
+        /// Fetches a given file from the filesystem.
+        /// </summary>
+        /// <param name="file">The <see cref="BatchFile"/> representation of the file to fetch</param>
+        /// <returns>A <see cref="Stream"/> of the data in the file, null if <see cref="BatchFile.Path"/> or <see cref="BatchFile.Filename"/> is null on the object or file could not be found</returns>
+        public Stream FetchFile(BatchFile file);
+        
+        /// <summary>
+        /// Deletes a given <see cref="BatchFile"/> from the filesystem
+        /// </summary>
+        /// <param name="file">The <see cref="BatchFile"/> representation of the file to delete</param>
+        /// <returns>true if the file was successfully deleted, false otherwise</returns>
+        public bool DeleteFile(BatchFile file);
+        
+        /// <summary>
+        /// Deletes a given <see cref="SourceFile"/> from the filesystem
+        /// </summary>
+        /// <param name="file">The <see cref="SourceFile"/> representation of the file to delete</param>
+        /// <returns>true if the file was successfully deleted, false otherwise</returns>
+        
+        public bool DeleteFile(SourceFile sourceFile);
+        /// <summary>
+        /// Deletes a given <see cref="Result"/> from the filesystem
+        /// </summary>
+        /// <param name="file">The <see cref="Result"/> representation of the file to delete</param>
+        /// <returns>true if the file was successfully deleted, false otherwise</returns>
+        public bool DeleteFile(Result resultFile);
     }
 }
