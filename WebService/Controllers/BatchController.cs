@@ -4,6 +4,7 @@ using System.IO;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using WebService.Helper;
 using WebService.Models;
 using WebService.Services;
 
