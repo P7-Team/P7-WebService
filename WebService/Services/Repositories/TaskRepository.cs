@@ -8,7 +8,7 @@ using WebService.Models;
 
 namespace WebService.Services.Repositories
 {
-    public class TaskRepository : IRepository<Task, (long id, int number, int subnumber)>
+    public class TaskRepository : IRepository<Task, (int id, int number, int subnumber)>
     {
         private readonly QueryFactory _db;
         private const string _table = "Task";
@@ -18,17 +18,17 @@ namespace WebService.Services.Repositories
             _db = db;
         }
 
-        public (long id, int number, int subnumber) Create(Task item)
+        public (int id, int number, int subnumber) Create(Task item)
         {
-            return _db.Query(_table).InsertGetId<(long id, int number, int subNumber)>(new
+            return _db.Query(_table).InsertGetId<(int id, int number, int subNumber)>(new
             {
                 id = item.Id,
                 number = item.Number,
-                subNumber = item.SubNumber,  //For byzentine checking
+                subNumber = item.SubNumber,  
             });
         }
 
-        public Task Read((long id, int number, int subnumber) identifier)
+        public Task Read((int id, int number, int subnumber) identifier)
         {
             return _db.Query(_table).Select("is as Id", "number as Number", "subnumber as Subnumber")
                 .Where(new { 
@@ -53,7 +53,7 @@ namespace WebService.Services.Repositories
             });
         }
 
-        public void Delete((long id, int number, int subnumber) identifier)
+        public void Delete((int id, int number, int subnumber) identifier)
         {
             _db.Query(_table).Where(new
             {

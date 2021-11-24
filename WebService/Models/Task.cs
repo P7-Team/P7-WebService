@@ -4,17 +4,17 @@ using WebService.Interfaces;
 
 namespace WebService.Models
 {
-    public class Task : IAggregateRoot<(long, int, int)>
+    public class Task : IAggregateRoot<(int, int, int)>
     {
-        public long Id { get; set; }
+        public int Id { get; set; } //Changed from long to int, noted for potential furture errors.
 
         public string Executable { get; set; }
 
-        public string Input { get; set; }
+        public string Input { get; set; } //Eventually list of file paths, currently only a single path for a single file associated with the Task.
 
         public int Number { get; set; }
 
-        public int SubNumber { get; set; }
+        public int SubNumber { get; set; } //For byzentine checking
 
         public DateTime StartedOn {get; set;}
 
@@ -66,7 +66,7 @@ namespace WebService.Models
                    other.SubNumber == SubNumber;
         }
 
-        public (long, int, int) GetIdentifier()
+        public (int, int, int) GetIdentifier()
         {
             return (Id, Number, SubNumber);
         }
