@@ -24,7 +24,7 @@ namespace WebService.Services.Repositories
             {
                 id = item.Id,
                 number = item.Number,
-                subNumber = item.SubNumber,  //For byzentine checking
+                subNumber = item.SubNumber,  
             });
         }
 
