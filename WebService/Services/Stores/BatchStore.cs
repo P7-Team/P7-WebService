@@ -25,11 +25,14 @@ namespace WebService.Services.Stores
         /// <param name="batch">Batch that should be stored</param>
         public void Store(Batch batch)
         {
-            // Store batch in DB and add batchId to files
+            // Store batch in DB and assign resulting id
             int batchId = _batchRepository.Create(batch);
+            batch.Id = batchId;
+
+            // Add batchId to files
             AddBatchReferenceToFiles(batch, batchId);
 
-            // store source and input files
+            // Store source and input files
             _fileStore.StoreSourceFile(batch.SourceFile);
             _fileStore.StoreInputFiles(batch.InputFiles);
         }

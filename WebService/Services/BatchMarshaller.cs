@@ -18,6 +18,7 @@ namespace WebService.Services
         /// <returns>A batch containing owner, input and sourcefiles</returns>
         public static Batch MarshalBatch(Dictionary<string, string> formdata, List<(string name, Stream data)> files, User owner)
         {
+            // Create Batch and assign owner
             Batch batch = new Batch() { OwnerUsername = owner.Username };
 
             // Get replication factor

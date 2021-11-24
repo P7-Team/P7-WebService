@@ -15,18 +15,17 @@ namespace WebService_UnitTests
     {
         private int _batchId;
 
-        public MockBatchRepository(int idToAssignToBatch)
+        public MockBatchRepository(int batchId)
         {
-            _batchId = idToAssignToBatch;
+            _batchId = batchId;
         }
 
         public Batch CalledWithBatch { get; private set; }
 
         public int Create(Batch item)
         {
-            item.Id = _batchId;
             CalledWithBatch = item;
-            return item.Id;
+            return _batchId;
         }
 
         public void Delete(int identifier)
