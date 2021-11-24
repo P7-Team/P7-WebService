@@ -12,14 +12,15 @@ namespace WebService.Services
         // TODO Implement functionality such that the user can only be assigned to a specific task once.
         private readonly List<Batch> _batches;
 
-        public readonly List<TaskWrapper> TaskWrappers;
+        private readonly ISchedulerWorkedOnHelper _schedulerWoh;
 
-        public Scheduler()
+        public Scheduler(ISchedulerWorkedOnHelper schedulerWoh)
         {
-            TaskWrappers = new List<TaskWrapper>();
+            _schedulerWoh = schedulerWoh;
             _batches = new List<Batch>();
         }
 
+        // TODO Make AllocateTask only take AllocatedTo into consideration.
         public Task AllocateTask(User user)
         {
             foreach (Batch currentBatch in _batches)
@@ -30,15 +31,13 @@ namespace WebService.Services
 
                     if (tempTask.AllocatedTo != null) continue;
 
-                    if (TaskWrappers.Any(x => x.Task.AllocatedTo == user.Username
-                                                && x.Task.Id == currentBatch.Id
-                                                && x.Task.Number == tempTask.Number)) continue;
+                    if (_schedulerWoh.IsWorkedOnBy(tempTask, user)) continue;
                     tempTask.SetAllocatedTo(user);
-                    TaskWrapper tw = new TaskWrapper(tempTask, user)
+                    TaskWrapper tw = new TaskWrapper(tempTask)
                     {
                         AssignedAt = DateTime.Now
                     };
-                    TaskWrappers.Add(tw);
+                    _schedulerWoh.AddToWorkedOn(tw, user);
                     return tempTask;
                 }
             }
@@ -65,49 +64,11 @@ namespace WebService.Services
                 if (batch.TasksCount() == 0) batchesToRemove.Add(batch);
             }
 
-            foreach (var currentTask in TaskWrappers.Where(x => x.Task.Id == id && x.Task.Number == number))
-            {
-                currentTask.isDone = true;
-            }
+            _schedulerWoh.MarkCurrentlyWorkingOnAsDone(id, number, subNumber);
 
             foreach (var batch in batchesToRemove)
             {
                 _batches.Remove(batch);
-            }
-        }
-
-        public void UnAssignUserFromTask(User user, long id, int number, int subNumber)
-        {
-            foreach (Batch batch in _batches.Where(batch => batch.Id == id))
-            {
-                batch.GetTask(number, subNumber)?.UnAllocateFrom(user);
-            }
-        }
-
-        public void PingScheduler(User user, DateTime dateTime)
-        {
-            // TODO Implement timestamp on a task for when a user last pinged the server.
-            foreach (TaskWrapper taskWrapper in TaskWrappers.Where(x => x.Task.AllocatedTo == user.Username && !x.isDone))
-            {
-                taskWrapper.LastPing = dateTime;
-            }
-        }
-
-        public DateTime? GetLastPing(User user)
-        {
-            foreach (TaskWrapper taskWrapper in TaskWrappers.Where(x => x.Task.AllocatedTo == user.Username && !x.isDone))
-            {
-                return taskWrapper.LastPing;
-            }
-
-            return null;
-        }
-
-        public void FreeTasksNoLongerWorkedOn()
-        {
-            foreach (var tw in TaskWrappers.Where(x=> !x.isDone && x.LastPing < DateTime.Now.Subtract(new TimeSpan(0, 5, 0))))
-            {
-                UnAssignUserFromTask(tw.user, tw.Task.Id, tw.Task.Number, tw.Task.SubNumber);
             }
         }
         

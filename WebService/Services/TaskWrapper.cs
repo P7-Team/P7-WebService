@@ -11,7 +11,7 @@ namespace WebService.Services
         public Task Task;
         public DateTime AssignedAt;
 
-        public TaskWrapper(Task task, User user)
+        public TaskWrapper(Task task)
         {
             this.user = user;
             isDone = false;
