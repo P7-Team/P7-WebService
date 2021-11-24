@@ -25,7 +25,6 @@ namespace WebService.Services.Stores
         public void Store(Task task, BatchFile batchFile)
         {
             Run run = new Run(task.Id, task.Number, task.SubNumber);
-            
             run.Path = batchFile.Path;
             run.FileName = batchFile.Filename;
 
