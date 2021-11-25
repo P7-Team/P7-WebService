@@ -35,7 +35,7 @@ namespace WebService.Controllers
         }
 
         [HttpGet]
-        [Route("api/[controller]/status")]
+        [Route("status")]
         public IActionResult GetBatchStatus()
         {
             string token = HttpContext.Request.Headers["Authorization"].ToString();
@@ -52,7 +52,7 @@ namespace WebService.Controllers
         }
 
         [HttpGet]
-        [Route("api/[controller]/result/{id:int}")]
+        [Route("result/{id:int}")]
         public IActionResult FetchBatchResult(int id)
         {
             // TODO: Lookup the batch with {id} to check for existence
