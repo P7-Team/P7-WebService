@@ -7,33 +7,11 @@ using WebService;
 using WebService.Services;
 using Xunit;
 using Dapper;
+using IntegrationTests.Fixture;
+using Microsoft.Extensions.Configuration;
 
 namespace IntegrationTests
 {
-    public class DatabaseFixture : IDisposable
-    {
-        public DatabaseFixture()
-        {
-            var connection = new MySqlConnection("server=164.90.236.116;uid=Tester;pwd=Finlux12345;database=TestDB");
-
-            var compiler = new MySqlCompiler();
-
-            Db = new QueryFactory(connection, compiler);
-
-            // Remove all existing data in the table
-            connection.Execute(@"SET FOREIGN_KEY_CHECKS = 0;
-                                TRUNCATE TABLE Users;
-                                SET FOREIGN_KEY_CHECKS = 1; ");
-        }
-
-        public void Dispose()
-        {
-            // ... clean up test data from the database ...
-        }
-
-        public QueryFactory Db { get; private set; }
-    }
-
     public class UserRepositoryTests : IClassFixture<DatabaseFixture>
     {
         // change to skip = null, in order to run integration tests
@@ -44,6 +22,7 @@ namespace IntegrationTests
 
         public UserRepositoryTests(DatabaseFixture fixture)
         {
+            fixture.Clean(new string[]{"Users"});
             repository = new UserRepository(fixture.Db);
         }
 
