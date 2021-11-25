@@ -24,6 +24,21 @@ namespace WebService.Models
             BatchId = batch.Id;
         }
 
+        /// <summary>
+        /// Contructor used by the <see cref="BatchFileRepositoryy"/> to convert the DB representation to a BatchFile object
+        /// </summary>
+        /// <param name="path">The path to where the BatchFile is stored on the filesystem</param>
+        /// <param name="filename">The name of the BatchFile stored on the filesystem</param>
+        /// <param name="encoding">The encoding used by the content of the file on the filesystem</param>
+        /// <param name="includedIn">The ID of the Batch that the file is included in</param>
+        public BatchFile(string path, string filename, string encoding, int includedIn)
+        {
+            Path = path;
+            Filename = filename;
+            Encoding = encoding;
+            BatchId = includedIn;
+        }
+
         public BatchFile WithPath(string path)
         {
             Path = path;
