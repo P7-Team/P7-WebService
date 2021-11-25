@@ -20,7 +20,7 @@ namespace WebService.Services.Repositories
         public int Create(Batch item)
         {
             // Create batch row in DB, and get the id
-            return (int)_db.Query(table).InsertGetId<int>(new { ownedBy = item.OwnerUsername });
+            return _db.Query(table).InsertGetId<int>(new { ownedBy = item.OwnerUsername });
         }
 
         public Batch Read(int identifier)
@@ -31,6 +31,7 @@ namespace WebService.Services.Repositories
 
         public void Update(Batch item)
         {
+            _db.Query(table).Where("id", item.GetIdentifier()).Update(new { ownedBy = item.OwnerUsername });
         }
 
         public void Delete(int identifier)
