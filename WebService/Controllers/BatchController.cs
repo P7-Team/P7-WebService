@@ -31,7 +31,7 @@ namespace WebService.Controllers
         public void Post()
         {
             MultipartMarshaller<MultipartSection> batchMarshaller = createMarshaller(HttpContext.Request);
-
+            
             Dictionary<string, string> formData = batchMarshaller.GetFormData();
             List<FileStream> streams = batchMarshaller.GetFileStreams();
             Batch batch = BatchMarshaller.MarshalBatch(formData, streams.Select(stream => (stream.Name, (Stream)stream)).ToList(), getUser());

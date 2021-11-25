@@ -21,7 +21,8 @@ namespace WebService.Services.Stores
         }
 
         /// <summary>
-        /// Store the details of a batch and associated files in the database, and save the files in the file system
+        /// Store the details of a batch and associated files in the database, and save the files in the file system.
+        /// Also handles creating tasks for each inputfile
         /// </summary>
         /// <param name="batch">Batch that should be stored</param>
         public void Store(Batch batch)

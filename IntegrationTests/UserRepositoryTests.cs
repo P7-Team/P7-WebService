@@ -14,7 +14,7 @@ namespace IntegrationTests
     {
         public DatabaseFixture()
         {
-            var connection = new MySqlConnection("");
+            var connection = new MySqlConnection("server=164.90.236.116;uid=Tester;pwd=Finlux12345;database=TestDB");
 
             var compiler = new MySqlCompiler();
 
@@ -38,8 +38,8 @@ namespace IntegrationTests
     {
         // change to skip = null, in order to run integration tests
         // Check https://josephwoodward.co.uk/2019/01/skipping-xunit-tests-based-on-runtime-conditions for conditional skip
-        const string skip = "Integration Test, should not be run along with unit tests";
-        //const string skip = null;
+        //const string skip = "Integration Test, should not be run along with unit tests";
+        const string skip = null;
         UserRepository repository;
 
         public UserRepositoryTests(DatabaseFixture fixture)
