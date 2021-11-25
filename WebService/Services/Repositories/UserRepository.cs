@@ -21,12 +21,14 @@ namespace WebService.Services
 
         public string Create(User item)
         {
-            return _db.Query(table).InsertGetId<string>(new
+            _db.Query(table).InsertGetId<string>(new
             {
                 username = item.Username,
                 password = item.Password,
                 points = item.ContributionPoints
             });
+
+            return item.Username;
         }
 
         public void Delete(string identifier)

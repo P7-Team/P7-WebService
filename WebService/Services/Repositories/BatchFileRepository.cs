@@ -21,13 +21,15 @@ namespace WebService.Services.Repositories
         public (string path, string filename) Create(BatchFile item)
         {
             // TODO: save the file in the filesystem and assign the resulting filepath to the Path property
-            return _db.Query(table).InsertGetId<(string path, string filename)>(new
+            _db.Query(table).Insert(new
             {
                 path = item.Path,
                 filename = item.Filename,
                 encoding = item.Encoding,
                 includedIn = item.BatchId
             });
+
+            return (item.Path, item.Filename);
         }
 
         public BatchFile Read((string path, string filename) identifier)
@@ -36,7 +38,7 @@ namespace WebService.Services.Repositories
             {
                 path = identifier.path,
                 filename = identifier.filename
-            }).First();
+            }).First<BatchFile>();
         }
 
         public void Update(BatchFile item)

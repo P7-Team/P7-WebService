@@ -8,7 +8,7 @@ namespace WebService.Services.Repositories
     public class RunRepository : IRepository<Run, (int id, int number, int subnumber)>
     {
         private readonly QueryFactory _db;
-        private const string _table = "Task";
+        private const string _table = "Runs";
 
         public RunRepository(QueryFactory db)
         {
