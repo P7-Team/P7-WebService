@@ -12,6 +12,7 @@ namespace WebService.Services
 
         public TaskWrapper(Task task)
         {
+            user = null;
             Task = task;
             LastPing = DateTime.Now;
         }

@@ -1,25 +1,38 @@
 using System;
+using System.Linq;
+using WebService.Helper;
 using WebService.Interfaces;
+using WebService.Models;
 
 namespace WebService.Services
 {
-    public static class ContributionPointCalculator
+    public class ContributionPointCalculator : IContributionPointCalculator
     {
-        // TODO Find ud af hvorvidt heartbeat skal udvides til at indeholde den task der arbejdes på.
-        // Find ud af hvordan findes ud af hvornår et element blev startet med at arbejde på.
-        // Information fra scheduler.
-        //      Hvordan instansieres denne.
-        //      Hvordan begræneses workloaden på scheduleren?
-        private static TokenStore _tokenStore = new TokenStore();
-        public static void UpdateContributionPoints(string token)
+        private const int ContributionUpdateTime = 5;
+        private const int ContributionPointsPerMinute = 50;
+        private readonly ISchedulerWorkedOnHelper _schedulerWorkedOn;
+
+        public ContributionPointCalculator(ISchedulerWorkedOnHelper schedulerWorkedOnHelper)
         {
-            string userToUpdate = _tokenStore.Fetch(token);
-            if (string.IsNullOrEmpty(userToUpdate)) return;
-            // TODO insert fetch from database once it is completed.
-            User user = new User(userToUpdate, 1, "")
+            _schedulerWorkedOn = schedulerWorkedOnHelper;
+        }
+
+        public void CalculateContributionPoints()
+        {
+            DateTime testTime = DateTime.Now.Subtract(new TimeSpan(0, ContributionUpdateTime, 0));
+            _schedulerWorkedOn.WorkedOnElementsLock.EnterReadLock();
+            foreach (TaskWrapper tWrapper in _schedulerWorkedOn.CurrentlyWorkedOn())
             {
-                ContributionPoints = 5
-            };
+                DateTime time = DateTime.Now.Subtract(new TimeSpan(0, ContributionUpdateTime, 0));
+                if (tWrapper.AssignedAt < time && tWrapper.LastPing <= time)
+                {
+                    tWrapper.user.ContributionPoints = tWrapper.user.ContributionPoints +=
+                        ContributionPointsPerMinute * ContributionUpdateTime;
+                }
+
+            }
+
+            _schedulerWorkedOn.WorkedOnElementsLock.ExitReadLock();
         }
     }
 }

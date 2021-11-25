@@ -27,9 +27,11 @@ namespace WebService.Helper
         public bool HasWorkedOn(Task task, User user)
         {
             _historyLock.EnterReadLock();
+
             bool status = _history.Any(x => task.Id == x.Task.Id &&
                                             x.Task.Number == task.Number &&
-                                            x.user.Equals(user));
+                                            x.user != null && x.user.Equals(user));
+            
             _historyLock.ExitReadLock();
             return status;
         }
@@ -41,7 +43,8 @@ namespace WebService.Helper
         public void AddToHistory(TaskWrapper taskWrapper)
         {
             _historyLock.EnterWriteLock();
-            _history.Add(taskWrapper);
+            if (taskWrapper != null) _history.Add(taskWrapper);
+
             _historyLock.ExitWriteLock();
         }
     }

@@ -110,8 +110,8 @@ namespace WebService_UnitTests
             IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper());
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
-
             Batch testBatch = new Batch(0);
+            scheduler.AllocateTask(user);
             testBatch.AddTask(task);
             scheduler.AddBatch(testBatch);
             // Act
@@ -128,7 +128,7 @@ namespace WebService_UnitTests
             User user = new User("Username", 0, "Password");
             Task task = new Task(true);
             Task taskOne = new Task(true);
-
+            scheduler.AllocateTask(user);
             Batch testBatch = new Batch(0);
             Batch testBatchTwo = new Batch(1);
             testBatch.AddTask(task);
@@ -136,7 +136,6 @@ namespace WebService_UnitTests
             scheduler.AddBatch(testBatch);
             scheduler.AddBatch(testBatchTwo);
             // Act
-            // AS there are not 20 tasks, trying to remove number 20 will not modify the queue.
             scheduler.RemoveCompletedTask(testBatch.Id, InRangeNumber, InRangeNumber);
             // Assert
             Assert.Equal(testBatchTwo.Id, scheduler.AllocateTask(user).Id);
@@ -150,7 +149,6 @@ namespace WebService_UnitTests
             Task task = new Task(true);
             Task taskOne = new Task(true);
             Task taskTwo = new Task(true);
-
             Batch testBatch = new Batch(0);
             Batch testBatchTwo = new Batch(1);
             testBatch.AddTask(task);
@@ -159,7 +157,7 @@ namespace WebService_UnitTests
             scheduler.AddBatch(testBatch);
             scheduler.AddBatch(testBatchTwo);
             // Act
-            // AS there are not 20 tasks, trying to remove number 20 will not modify the queue.
+
             scheduler.RemoveCompletedTask(0, 0, 0);
             // Assert
             Assert.Equal(testBatch.Id, scheduler.AllocateTask(user).Id);
