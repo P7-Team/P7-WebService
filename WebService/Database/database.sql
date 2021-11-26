@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS Batch(
     uploadedOn      TIMESTAMP,
     activatedOn     TIMESTAMP,
     lastWorkedOn    TIMESTAMP,
-    ownedBy         VARCHAR(50),
+    ownedBy         VARCHAR(50) NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(ownedBy) REFERENCES Users(username)
      ON UPDATE CASCADE
@@ -63,7 +63,10 @@ CREATE TABLE IF NOT EXISTS Result(
     task_number     INT NOT NULL,
 	task_subnumber  INT NOT NULL,
     PRIMARY KEY(path,filename),
-    FOREIGN KEY(task_id,task_number,task_subnumber) REFERENCES Task(id,number,subNumber)
+    FOREIGN KEY(task_id,task_number,task_subnumber) REFERENCES Task(id,number,subNumber),
+    FOREIGN KEY(path,filename) REFERENCES File(path,filename)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE
 );
 
 -- Source
@@ -74,6 +77,9 @@ CREATE TABLE IF NOT EXISTS Source(
     batchId     INT,
     PRIMARY KEY(path,filename),
     FOREIGN KEY(batchId) REFERENCES Batch(id)
+     ON UPDATE CASCADE
+     ON DELETE CASCADE,
+    FOREIGN KEY (path,filename) REFERENCES File(path,filename)
      ON UPDATE CASCADE
      ON DELETE CASCADE
 );
