@@ -24,3 +24,7 @@ properties:
     type: string
   replicationFactor:
     type: integer
+  arguments:
+    type: array
+    items:
+      type: string

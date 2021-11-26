@@ -32,6 +32,8 @@ namespace WebService.Models.DTOs
         public string InputFileExtension { get; set; }
         [FromForm]
         public int ReplicationFactor { get; set; }
+        [FromForm]
+        public IEnumerable<string> Arguments { get; set; }
 
         /// <summary>
         /// Creates a new instance of Batch, and defines source and inputfiles as well as replicaion factor.
