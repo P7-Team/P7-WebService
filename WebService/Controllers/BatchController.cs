@@ -36,6 +36,7 @@ namespace WebService.Controllers
             batch.OwnerUsername = getUser().Username;
             _store.Store(batch);
         }   
+
         private User getUser()
         {
             return new User("fakeUser", "fakePassword");

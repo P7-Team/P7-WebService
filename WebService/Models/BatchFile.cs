@@ -24,6 +24,15 @@ namespace WebService.Models
             BatchId = batch.Id;
         }
 
+        // Same as above constructor, except this accepts an integer for the batch id, rather than extracting it from an instance of Batch
+        public BatchFile(string originalExtension, string encoding, Stream data, int batchId)
+        {
+            OriginalExtension = originalExtension;
+            Encoding = encoding;
+            Data = data;
+            BatchId = batchId;
+        }
+
         /// <summary>
         /// Contructor used by the <see cref="BatchFileRepositoryy"/> to convert the DB representation to a BatchFile object
         /// </summary>
