@@ -1,13 +1,15 @@
 using System;
+using System.Text.Json.Serialization;
 using WebService.Interfaces;
-using WebService.Models;
 
-namespace WebService
+namespace WebService.Models
 {
     public class User : IEquatable<User>, IAggregateRoot<int>
     {
         public string Username { get; }
         public int Id { get; }
+        
+        [JsonIgnore]
         public string Password { get; set; }
         public int ContributionPoints { get; set; }
 

@@ -1,27 +1,30 @@
 ﻿using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using WebService.AuthenticationHelpers;
+using WebService.Interfaces;
 using WebService.Models;
 using WebService.Services;
 
 namespace WebService.Controllers
 {
     [ApiController]
+    [Route("api/user")]
     public class UserController : ControllerBase
     {
         private readonly ITokenValidator _tokenValidator;
-        public UserController(ITokenValidator tokenValidator)
+        private readonly IAuthenticatorService _authenticatorService;
+        public UserController(ITokenValidator tokenValidator, IAuthenticatorService authenticatorService)
         {
+            _authenticatorService = authenticatorService;
             _tokenValidator = tokenValidator;
         }
 
         [HttpPost]
-        [Route("api/user/signup")]
+        [Route("signup")]
+        [AllowAnonymous]
         public IActionResult SignUp()
         {
             string content = ContentReader.ReadStreamContent(HttpContext.Request.Body);
@@ -37,43 +40,26 @@ namespace WebService.Controllers
         }
 
         [HttpPost]
-        [Route("api/user/login")]
-        public IActionResult Login()
+        [Route("login")]
+        [AllowAnonymous]
+        public IActionResult Login(AuthenticateRequest model)
         {
-            string content = ContentReader.ReadStreamContent(HttpContext.Request.Body);
-            User user = JsonConvert.DeserializeObject<User>(content);
-            
-            // TODO: Check if user credentials match a persisted user
-            bool exists = true;
+            var response = _authenticatorService.Authenticate(model);
 
-            if (exists)
-            {
-                // Create session token
-                string rawToken = user.Username + user.Password + user.ContributionPoints;
-                HashAlgorithm sha = SHA256.Create();
-                Token token = new Token(Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(rawToken))));
-                new TokenStore().Store(token.Key, user.Username);
-                return Ok(token);   
-            }
-            else
-                return NotFound();
+            if (response == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(response);
         }
         
         [HttpDelete]
-        [Route("api/user/logout")]
+        [AuthenticationHelpers.Authorize]
+        [Route("logout")]
         public IActionResult Logout()
         {
-            StringValues token;
-            bool success = HttpContext.Request.Query.TryGetValue("tkn", out token);
-
-            if (!success)
-            {
-                return NotFound();
-            }
+            //StringValues token;
+            //bool success = HttpContext.Request.Query.TryGetValue("tkn", out token);
             
-            // Currently token may include '+', which C# automatically converts to ' '
-            string tokenStr = token.ToString().Replace(" ", "+");
-            _tokenValidator.Invalidate(tokenStr);
 
             return Ok();
         }

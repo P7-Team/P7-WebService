@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using WebService.Interfaces;
 using SqlKata.Execution;
 using SqlKata.Compilers;
+using WebService.Models;
 
 namespace WebService.Services
 {
