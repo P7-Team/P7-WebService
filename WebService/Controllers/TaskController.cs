@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using WebService.Interfaces;
 using WebService.Models;
+using WebService.Models.DTOs;
 using WebService.Services;
 using WebService.Services.Repositories;
 using Task = WebService.Models.Task;
@@ -36,22 +37,9 @@ namespace WebService.Controllers
 
         [HttpPost]
         [Route("api/task/complete")]
-        public void AddResult()
+        public void AddResult([FromForm] ResultDTO resultInput)
         {
-            string boundary = MultipartHelper.GetBoundary(HttpContext.Request.ContentType);
-            SectionedDataReader reader =
-                new SectionedDataReader(new MultipartReader(boundary, HttpContext.Request.Body));
-
-            MultipartMarshaller<MultipartSection> marshaller = new MultipartMarshaller<MultipartSection>(reader);
-
-            Dictionary<string, string> formData = marshaller.GetFormData();
-            List<FileStream> fileStreams = marshaller.GetFileStreams();
-
-            Task task = new Task(int.Parse(formData["batchId"]), int.Parse(formData["taskNumber"]), int.Parse(formData["taskSubNumber"]));
-            
-            Batch batch = _context.GetBatch((int)task.Id);
-            Result result = new Result(String.Empty, Encoding.UTF8.EncodingName, fileStreams[0], batch, false, task);
-            
+            Result result = resultInput.MapToResult();
             _context.SaveResult(result);
         }
     }
