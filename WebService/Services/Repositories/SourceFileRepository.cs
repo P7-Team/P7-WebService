@@ -12,6 +12,8 @@ namespace WebService.Services.Repositories
     {
         private QueryFactory _db;
         private const string _table = "Source";
+        private const string _generalizedTable = "File";
+        
         public SourceFileRepository(QueryFactory db)
         {
             _db = db;
@@ -21,6 +23,8 @@ namespace WebService.Services.Repositories
         {
             _db.Query(_table).Insert(new
             {
+                path = item.Path,
+                filename = item.Filename,
                 language = item.Language,
             });
             return (item.Path, item.Filename);
@@ -37,12 +41,23 @@ namespace WebService.Services.Repositories
 
         public SourceFile Read((string path, string filename) identifier)
         {
-            throw new NotImplementedException();
+            return _db.Query(_table)
+                .Select("Source.path as path", "Source.filename as filename", "batchId", "language", "encoding")
+                .Where("Source.path", identifier.path).Where("Source.filename", identifier.filename)
+                .Join(_generalizedTable, j => j.On("Source.path", "File.path").On("Source.filename", "File.filename"))
+                .First<SourceFile>();
         }
 
         public void Update(SourceFile item)
         {
-            throw new NotImplementedException();
+            _db.Query(_table).Where(new
+            {
+                path = item.Path,
+                filename = item.Filename
+            }).Update(new
+            {
+                language = item.Language
+            });
         }
     }
 }
