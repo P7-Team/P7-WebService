@@ -1,11 +1,9 @@
 type: object
 required:
-- id
 - executable
+- executableLanguage
 - inputs
 properties:
-  id:
-    type: string
   executable:
     type: string
     format: binary
@@ -14,3 +12,15 @@ properties:
     items:
       type: string
       format: binary
+  executableLanguage:
+    type: string
+  executableEncoding:
+    type: string
+  ixecutableFileExtension:
+    type: string
+  inputEncoding:
+    type: string
+  inputFileExtension:
+    type: string
+  replicationFactor:
+    type: integer
