@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using WebService.Interfaces;
 using WebService.Models;
+using WebService.Models.DTOs;
 using WebService.Services;
 using WebService.Services.Repositories;
 using WebService.Services.Stores;
@@ -28,24 +29,13 @@ namespace WebService.Controllers
 
         // POST api/<BatchController>
         [HttpPost]
-        public void Post()
+        public void Post([FromForm] BatchDTO batchInput)
         {
-            MultipartMarshaller<MultipartSection> batchMarshaller = createMarshaller(HttpContext.Request);
-            
-            Dictionary<string, string> formData = batchMarshaller.GetFormData();
-            List<FileStream> streams = batchMarshaller.GetFileStreams();
-            Batch batch = BatchMarshaller.MarshalBatch(formData, streams.Select(stream => (stream.Name, (Stream)stream)).ToList(), getUser());
+            Batch batch = batchInput.MapToBatch();
+            //TODO: set ÓwnerUsername property of the batch to a real user
+            batch.OwnerUsername = getUser().Username;
             _store.Store(batch);
         }   
-
-        private MultipartMarshaller<MultipartSection> createMarshaller(HttpRequest request)
-        {
-            string boundary = MultipartHelper.GetBoundary(request.ContentType);
-            SectionedDataReader reader = new SectionedDataReader(new MultipartReader(boundary, request.Body));
-
-            return new MultipartMarshaller<MultipartSection>(reader);
-        }
-
         private User getUser()
         {
             return new User("fakeUser", "fakePassword");

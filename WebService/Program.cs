@@ -74,8 +74,10 @@ namespace WebService
                     serviceCollection.AddScoped<FileSaver>();
                     serviceCollection.AddScoped<FileFetcher>();
                     serviceCollection.AddScoped<FileDeleter>();
+                    serviceCollection.AddScoped<IRepository<Run, (int id, int number, int subnumber)>, RunRepository>();
+                    serviceCollection.AddScoped<RunRepository>();
 
-                    serviceCollection.AddSingleton<IFileStore, FileStore>(sp =>
+                    serviceCollection.AddScoped<IFileStore, FileStore>(sp =>
                     {
                         string fileDir = ConfigurationHelper.ReadOSFileDirFromConfiguration(config);
                         return new FileStore(sp.GetService<BatchFileRepository>(), sp.GetService<ResultRepository>(), sp.GetService<SourceFileRepository>(), sp.GetService<FileSaver>(), sp.GetService<FileFetcher>(), sp.GetService<FileDeleter>(), fileDir);
