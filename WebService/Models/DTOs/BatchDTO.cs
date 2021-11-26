@@ -33,6 +33,10 @@ namespace WebService.Models.DTOs
         [FromForm]
         public int ReplicationFactor { get; set; }
 
+        /// <summary>
+        /// Creates a new instance of Batch, and defines source and inputfiles as well as replicaion factor.
+        /// </summary>
+        /// <returns></returns>
         public Batch MapToBatch()
         {
             Batch batch = new Batch() { ReplicationFactor = ReplicationFactor };

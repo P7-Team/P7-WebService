@@ -32,7 +32,7 @@ namespace WebService.Controllers
         public void Post([FromForm] BatchDTO batchInput)
         {
             Batch batch = batchInput.MapToBatch();
-            //TODO: set ÓwnerUsername property of the batch to a real user
+            //TODO: set OwnerUsername property of the batch to a real user
             batch.OwnerUsername = getUser().Username;
             _store.Store(batch);
         }   
