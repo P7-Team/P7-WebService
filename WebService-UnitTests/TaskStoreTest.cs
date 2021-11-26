@@ -4,6 +4,7 @@ using WebService.Models;
 using WebService.Services.Stores;
 using Xunit;
 using System.IO;
+using Newtonsoft.Json;
 
 
 //TODO: Finish later.
@@ -67,8 +68,8 @@ namespace WebService_UnitTests
 
         public void Update(Run item)
         {
-            //TODO
-            throw new NotImplementedException();
+            CalledRun.Path = item.Path;
+            CalledRun.FileName = item.FileName;            
         }
         public void Delete((int id, int number, int subnumber) identifier)
         {
@@ -79,28 +80,62 @@ namespace WebService_UnitTests
 
     public class TaskStoreTests
     {
-        [Fact (Skip = "Not Yet Implemented")]
-        public void Store_GivenTask_SavesUsingGivenRepositories()
+        [Fact]
+        public void Store_GivenRepositories_SavesTask()
         {
             
             //Arrange
-            Task testTask = new Task();
+            Task testTask = new Task(1, 2, 4);
             Batch testBatch = new Batch(123);
-            string path = Path.GetTempFileName();
+            
             Stream data = new MemoryStream();
-            BatchFile testFile = new BatchFile(".exe", "UTF-8", data, testBatch);
-            MockTaskRepository taskRep = new MockTaskRepository(1, 1, 4);
-            MockRunRepository runRep = new MockRunRepository(1, 1, 4);
+            BatchFile testFile = new BatchFile(".mp3", "UTF-8", data, testBatch);
+            testFile.Path = Path.GetTempPath();
+            testFile.Filename = Path.GetTempFileName();
+
+            MockTaskRepository taskRep = new MockTaskRepository(0, 0, 0);
+            MockRunRepository runRep = new MockRunRepository(0, 0, 0);
+
             TaskStore taskStore = new TaskStore(taskRep,runRep);
 
             //Act
             taskStore.Store(testTask, testFile);
 
             //Assert
-            Assert.Equal(testTask , taskRep.CalledTask);
-            
+            Assert.Equal(testTask, taskRep.CalledTask);
         }
 
+        [Fact]
+        public void Store_GivenRepositories_SavesRun()
+        {
 
+            //Arrange
+            Task testTask = new Task(3, 5, 2);
+            Batch testBatch = new Batch(123);
+
+            Stream data = new MemoryStream();
+            BatchFile testFile = new BatchFile(".py", "UTF-8", data, testBatch);
+            testFile.Path = Path.GetTempPath();
+            testFile.Filename = Path.GetTempFileName();
+
+            MockTaskRepository taskRep = new MockTaskRepository(0, 0, 0);
+            MockRunRepository runRep = new MockRunRepository(0, 0, 0);
+
+            TaskStore taskStore = new TaskStore(taskRep, runRep);
+
+            //Act
+            taskStore.Store(testTask, testFile);
+
+            //Assert
+            Run assertRun = new Run(testTask.Id, testTask.Number, testTask.SubNumber);
+            assertRun.Path = testFile.Path;
+            assertRun.FileName = testFile.Filename;
+
+            //To avoid direct object comparison, need to look at their content.
+            var comapare1 = JsonConvert.SerializeObject(assertRun);
+            var comapare2 = JsonConvert.SerializeObject(runRep.CalledRun);
+
+            Assert.Equal(comapare1, comapare2);
+        }       
     }
 }
