@@ -31,7 +31,7 @@ namespace IntegrationTests.Fixture
 
         public void Dispose()
         {
-            Clean(new string[] {"Users", "Batch", "Task", "Result", "Source", "Runs", "Argument"});
+            Clean(new string[] {"Users", "Batch", "Task", "Result", "Source", "File", "Runs", "Argument"});
         }
 
         private void Configure()
