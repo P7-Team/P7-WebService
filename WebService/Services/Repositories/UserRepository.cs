@@ -7,7 +7,7 @@ using WebService.Interfaces;
 using SqlKata.Execution;
 using SqlKata.Compilers;
 
-namespace WebService.Services
+namespace WebService.Services.Repositories
 {
     public class UserRepository : IRepository<User, string>
     {
