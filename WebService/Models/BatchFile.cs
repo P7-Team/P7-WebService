@@ -34,7 +34,7 @@ namespace WebService.Models
         }
 
         /// <summary>
-        /// Contructor used by the <see cref="BatchFileRepositoryy"/> to convert the DB representation to a BatchFile object
+        /// Contructor used by the <see cref="BatchFileRepository"/> to convert the DB representation to a BatchFile object
         /// </summary>
         /// <param name="path">The path to where the BatchFile is stored on the filesystem</param>
         /// <param name="filename">The name of the BatchFile stored on the filesystem</param>

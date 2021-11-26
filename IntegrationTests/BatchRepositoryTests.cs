@@ -42,7 +42,7 @@ namespace IntegrationTests
         }
 
         [Fact(Skip = skip)]
-        public void Update_GivenValidBatch_UpdatedBatchInDB()
+        public void Update_GivenValidBatch_UpdatesBatchInDB()
         {
             Batch oldBatch = new Batch() { OwnerUsername = "batchTestUser1" };
             int id = repository.Create(oldBatch);
@@ -59,7 +59,7 @@ namespace IntegrationTests
         public void Delete_GivenIdForExistingBatch_RemovesBatchFromDB()
         {
             Batch batch = new Batch() { OwnerUsername = "batchTestUser1" };
-            // Insert user to be deleted, and ensure that it is in the DB
+            
             int id = repository.Create(batch);
             Batch resultBeforeDelete = repository.Read(id);
             Assert.Equal("batchTestUser1", resultBeforeDelete.OwnerUsername);
