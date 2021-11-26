@@ -10,25 +10,16 @@ namespace WebService.Services.Repositories
 {
     public class ArgumentRepository : IRepository<Argument, (string path, string filename, int number)>
     {
-        private Dictionary<string, string> _propertiesToColumns;
         private Dictionary<string, string> _columnsToProperties;
-        private List<string> _primaryKeyColumns;
         private readonly QueryFactory _db;
         private const string _table = "Argument";
 
         public ArgumentRepository(QueryFactory db)
         {
             _db = db;
-            _propertiesToColumns = new Dictionary<string, string>()
+            _columnsToProperties = new Dictionary<string, string>()
             {
-                { "Path", "path" }, { "Filename", "filename" }, { "Number", "number"}, { "Value", "arg" }
-            };
-            // Reverse the mapping
-            _columnsToProperties = _propertiesToColumns.ToDictionary((i) => i.Value, (i) => i.Key);
-
-            _primaryKeyColumns = new List<string>()
-            {
-                "path", "filename", "number"
+                { "path", "Path" }, { "filename", "Filename" }, { "number", "Number"}, { "arg", "Value" }
             };
         }
 
