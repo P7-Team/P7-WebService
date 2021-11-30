@@ -7,6 +7,7 @@ namespace WebService
     public class User : IEquatable<User>, IAggregateRoot<string>
     {
         public string Username { get; }
+        public int Id { get; }
         public string Password { get; set; }
         public int ContributionPoints { get; set; }
 

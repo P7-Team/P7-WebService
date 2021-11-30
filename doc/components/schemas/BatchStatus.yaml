@@ -1,0 +1,19 @@
+type: array
+items:
+  properties:
+    finished:
+      type: boolean 
+      description: Batch Status
+      example: false
+    id:
+      type: integer
+      description: Id of batch
+      example: 100
+    total:
+      type: integer
+      description: Total number of task for batch
+      example: 10
+    tasksDone:
+      type: integer
+      description: The amount of tasks with result for the batch
+      example: 5

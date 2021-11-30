@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using WebService.Interfaces;
 using WebService.Models;
+using WebService.Services;
 using Task = WebService.Models.Task;
 
 namespace WebService
@@ -31,7 +32,8 @@ namespace WebService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            
+            services.AddSingleton<ITokenValidator,HMTokenValidator>();
+
             // services.AddDbContext<WebServiceContext>(opt =>
             //     opt.UseInMemoryDatabase("WebServiceDatabase"));
         }

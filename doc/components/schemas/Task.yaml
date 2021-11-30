@@ -5,7 +5,8 @@ required:
 - input
 properties:
   id:
-    type: long
+    type: integer
+    format: long
   executable:
     type: string
     format: binary
