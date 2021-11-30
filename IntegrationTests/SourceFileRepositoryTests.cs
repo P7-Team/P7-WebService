@@ -50,6 +50,7 @@ namespace IntegrationTests
             // Assert
             SourceFile actual = _sourceFileRepository.Read(sourceFile.GetIdentifier());
             Assert.Equal(sourceFile.Path, actual.Path);
+            Assert.Equal(sourceFile.BatchId, actual.BatchId);
             Assert.Equal(sourceFile.Filename, actual.Filename);
             Assert.Equal(sourceFile.Encoding, actual.Encoding);
             Assert.Equal(sourceFile.Language, actual.Language);
@@ -203,6 +204,5 @@ namespace IntegrationTests
             sourceFile.WithPath(batchFile.Path).WithFileName(batchFile.Filename);
             return sourceFile;
         }
-        
     }
 }
