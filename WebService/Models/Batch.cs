@@ -48,7 +48,7 @@ namespace WebService.Models
         
         public Task GetTask(int number,int subNumber)
         {
-            foreach (var task in _tasks)
+            foreach (var task in Tasks)
             {
                 if (task.Number == number && task.SubNumber == subNumber)
                 {
