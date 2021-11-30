@@ -16,7 +16,7 @@ namespace WebService_UnitTests
             ResultDTO dto = new ResultDTO() { BatchId = 1, TaskNumber = 2, TaskSubNumber = 3 };
 
             Result result = dto.MapToResult();
-            Task task = result.Task;
+            Task task = new Task(result.TaskId, result.TaskNumber, result.TaskSubnumber);
 
             Assert.Equal(1, task.Id);
             Assert.Equal(2, task.Number);
