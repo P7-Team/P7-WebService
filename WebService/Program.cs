@@ -74,7 +74,7 @@ namespace WebService
                     serviceCollection.AddScoped<FileSaver>();
                     serviceCollection.AddScoped<FileFetcher>();
                     serviceCollection.AddScoped<FileDeleter>();
-                    serviceCollection.AddScoped<IRepository<Run, (int id, int number, int subnumber)>, RunRepository>();
+                    serviceCollection.AddScoped<IRepository<Run, (int, int, int, string, string)>, RunRepository>();
                     serviceCollection.AddScoped<RunRepository>();
 
                     serviceCollection.AddScoped<IFileStore, FileStore>(sp =>

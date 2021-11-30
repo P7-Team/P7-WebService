@@ -17,17 +17,19 @@ namespace WebService.Services.Repositories
 
         public (int id, int number, int subnumber) Create(Task item)
         {
-            return _db.Query(_table).InsertGetId<(int id, int number, int subNumber)>(new
+            _db.Query(_table).Insert(new
             {
                 id = item.Id,
                 number = item.Number,
                 subNumber = item.SubNumber,  
             });
+
+            return item.GetIdentifier();
         }
 
         public Task Read((int id, int number, int subnumber) identifier)
         {
-            return _db.Query(_table).Select("is as Id", "number as Number", "subnumber as Subnumber")
+            return _db.Query(_table).Select("id as Id", "number as Number", "subnumber as Subnumber")
                 .Where(new { 
                 id = identifier.id,
                 number = identifier.number,
