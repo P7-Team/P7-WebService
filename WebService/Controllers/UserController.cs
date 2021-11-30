@@ -7,7 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using WebService.Models;
+using WebService.Models.DTOs;
 using WebService.Services;
+using WebService.Services.Repositories;
 
 namespace WebService.Controllers
 {
@@ -15,36 +17,36 @@ namespace WebService.Controllers
     public class UserController : ControllerBase
     {
         private readonly ITokenValidator _tokenValidator;
-        public UserController(ITokenValidator tokenValidator)
+        private readonly UserRepository _userRepository;
+        public UserController(ITokenValidator tokenValidator, UserRepository userRepository)
         {
             _tokenValidator = tokenValidator;
+            _userRepository = userRepository;
         }
 
         [HttpPost]
         [Route("api/user/signup")]
-        public IActionResult SignUp()
+        public IActionResult SignUp([FromBody] UserDTO userDTO)
         {
-            string content = ContentReader.ReadStreamContent(HttpContext.Request.Body);
-            User user = JsonConvert.DeserializeObject<User>(content);
+            User user = userDTO.MapToUser();
 
-            // TODO: Check if user already exists, this needs to be updated
-            bool exists = false;
+            bool exists = UserExists(user);
 
             if (!exists)
+            {
+                _userRepository.Create(user);
                 return Created(HttpContext.Request.Path.Value, new EmptyResult());
+            }
             else
                 return UnprocessableEntity();
         }
 
         [HttpPost]
         [Route("api/user/login")]
-        public IActionResult Login()
+        public IActionResult Login([FromBody] UserDTO userDto)
         {
-            string content = ContentReader.ReadStreamContent(HttpContext.Request.Body);
-            User user = JsonConvert.DeserializeObject<User>(content);
-            
-            // TODO: Check if user credentials match a persisted user
-            bool exists = true;
+            WebService.User user = userDto.MapToUser();
+            bool exists = UserExists(user);
 
             if (exists)
             {
@@ -76,6 +78,24 @@ namespace WebService.Controllers
             _tokenValidator.Invalidate(tokenStr);
 
             return Ok();
+        }
+
+        /// <summary>
+        /// Helper method which can be used to check whether a user exists
+        /// </summary>
+        /// <param name="user">The user instance to check if exists</param>
+        /// <returns>A boolean representing whether a user exists in the DB</returns>
+        private bool UserExists(User user)
+        {
+            try
+            {
+                _userRepository.Read(user.GetIdentifier());
+                return true;
+            }
+            catch (InvalidOperationException e)
+            {
+                return false;
+            }
         }
     }
 }
