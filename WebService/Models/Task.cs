@@ -1,18 +1,24 @@
 using System;
+//TODO : TIME!
+using WebService.Interfaces;
 
 namespace WebService.Models
 {
-    public class Task
+    public class Task : IAggregateRoot<(int, int, int)>
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
 
-        public string Executable { get; set; }
+        public SourceFile Executable { get; set; }
 
-        public string Input { get; set; }
+        public BatchFile Input { get; set; } 
 
         public int Number { get; set; }
 
-        public int SubNumber { get; set; }
+        public int SubNumber { get; set; } //For byzentine checking
+
+        public DateTime StartedOn {get; set;}
+
+        public DateTime FinishedOn {get; set;}
 
         public string AllocatedTo { get; private set; }
         
@@ -32,6 +38,13 @@ namespace WebService.Models
 
         public bool IsReady { get; set; }
 
+        public Task(int id, int number, int subnumber)
+        {
+            Id = id;
+            Number = number;
+            SubNumber = subnumber;
+        }
+
         public Task(bool isReady)
         {
             IsReady = isReady;
@@ -44,7 +57,7 @@ namespace WebService.Models
             IsReady = false;
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             return Equals(obj as Task);
         }
@@ -60,6 +73,11 @@ namespace WebService.Models
                    other.Id == Id &&
                    other.Number == Number &&
                    other.SubNumber == SubNumber;
+        }
+
+        public (int, int, int) GetIdentifier()
+        {
+            return (Id, Number, SubNumber);
         }
     }
 }

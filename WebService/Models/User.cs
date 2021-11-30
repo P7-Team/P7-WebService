@@ -4,17 +4,23 @@ using WebService.Models;
 
 namespace WebService
 {
-    public class User : IEquatable<User>, IAggregateRoot<int>
+    public class User : IEquatable<User>, IAggregateRoot<string>
     {
         public string Username { get; }
         public int Id { get; }
         public string Password { get; set; }
         public int ContributionPoints { get; set; }
 
-        public User(string username, int ID, string password)
+        public User(string username, string password, int contributionPoints)
         {
             Username = username;
-            Id = ID;
+            Password = password;
+            ContributionPoints = contributionPoints;
+        }
+
+        public User(string username, string password)
+        {
+            Username = username;
             Password = password;
         }
 
@@ -27,7 +33,7 @@ namespace WebService
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Id == other.Id;
+            return Username == other.Username;
         }
 
         public override bool Equals(object obj)
@@ -40,7 +46,7 @@ namespace WebService
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return Username.GetHashCode();
         }
 
         public bool Save()
@@ -49,9 +55,9 @@ namespace WebService
             throw new NotImplementedException();
         }
 
-        public int GetIdentifier()
+        public string GetIdentifier()
         {
-            return Id;
+            return Username;
         }
     }
 }
