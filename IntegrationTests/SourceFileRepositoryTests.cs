@@ -14,8 +14,8 @@ namespace IntegrationTests
     {
         // change to skip = null, in order to run integration tests
         // Check https://josephwoodward.co.uk/2019/01/skipping-xunit-tests-based-on-runtime-conditions for conditional skip
-        //const string skip = "Integration Test, should not be run along with unit tests";
-        const string skip = null;
+        const string skip = "Integration Test, should not be run along with unit tests";
+        //const string skip = null;
 
         private readonly SourceFileRepository _sourceFileRepository;
         private readonly BatchFileRepository _batchFileRepository;
