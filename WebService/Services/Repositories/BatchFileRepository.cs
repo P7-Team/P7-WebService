@@ -20,7 +20,6 @@ namespace WebService.Services.Repositories
 
         public (string path, string filename) Create(BatchFile item)
         {
-            // TODO: save the file in the filesystem and assign the resulting filepath to the Path property
             _db.Query(table).Insert(new
             {
                 path = item.Path,
@@ -34,7 +33,9 @@ namespace WebService.Services.Repositories
 
         public BatchFile Read((string path, string filename) identifier)
         {
-            return _db.Query(table).Where(new
+            return _db.Query(table)
+                .Select("path", "filename", "encoding", "includedIn AS batchId")
+                .Where(new
             {
                 path = identifier.path,
                 filename = identifier.filename

@@ -171,9 +171,9 @@ namespace WebService.Services.Stores
             StringBuilder sb = new StringBuilder();
             sb.Append(resultFile.BatchId);
             sb.Append("-");
-            sb.Append(resultFile.Task.Number);
+            sb.Append(resultFile.TaskNumber);
             sb.Append("-");
-            sb.Append(resultFile.Task.SubNumber);
+            sb.Append(resultFile.TaskSubnumber);
             return sb.ToString();
         }
 

@@ -48,6 +48,11 @@ namespace WebService.Models
             BatchId = includedIn;
         }
 
+        public BatchFile()
+        {
+            // Left in for DB conversion...
+        }
+
         public BatchFile WithPath(string path)
         {
             Path = path;
