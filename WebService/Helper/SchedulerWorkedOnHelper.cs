@@ -32,11 +32,16 @@ namespace WebService.Helper
         public bool IsWorkedOnBy(Task task, User user)
         {
             WorkedOnElementsLock.EnterReadLock();
-            bool status = _workedOnElements.Any(x => x.Task.AllocatedTo == user.Username
+            try
+            {
+                return _workedOnElements.Any(x => x.Task.AllocatedTo == user.Username
                                                      && x.Task.Id == task.Id
                                                      && x.Task.Number == task.Number);
-            WorkedOnElementsLock.ExitReadLock();
-            return status;
+            }
+            finally
+            {
+                WorkedOnElementsLock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -47,10 +52,15 @@ namespace WebService.Helper
         public bool IsWorkedOn(Task task)
         {
             WorkedOnElementsLock.EnterReadLock();
-            bool status = _workedOnElements.Any(x => x.Task.Id == task.Id
+            try
+            {
+                return _workedOnElements.Any(x => x.Task.Id == task.Id
                                                      && x.Task.Number == task.Number);
-            WorkedOnElementsLock.ExitReadLock();
-            return status;
+            }
+            finally
+            {
+                WorkedOnElementsLock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -60,18 +70,22 @@ namespace WebService.Helper
         /// <param name="user"></param>
         public void AddToWorkedOn(TaskWrapper taskWrapper, User user)
         {
-            WorkedOnElementsLock.EnterWriteLock();
             if (taskWrapper.Task.AllocatedTo != null)
+                return;
+            else
+                WorkedOnElementsLock.EnterWriteLock();
+
+            try
+            {
+                taskWrapper.user = user;
+                taskWrapper.Task.SetAllocatedTo(user);
+                taskWrapper.AssignedAt = DateTime.Now;
+                _workedOnElements.Add(taskWrapper);
+            }
+            finally
             {
                 WorkedOnElementsLock.ExitWriteLock();
-                return;
             }
-
-            taskWrapper.user = user;
-            taskWrapper.Task.SetAllocatedTo(user);
-            taskWrapper.AssignedAt = DateTime.Now;
-            _workedOnElements.Add(taskWrapper);
-            WorkedOnElementsLock.ExitWriteLock();
         }
         
 
@@ -83,10 +97,14 @@ namespace WebService.Helper
         public TaskWrapper GetCurrentlyWorkedOn(User user)
         {
             WorkedOnElementsLock.EnterReadLock();
-            TaskWrapper currentElement = _workedOnElements.Find(x =>
-                x.user.Equals(user));
-            WorkedOnElementsLock.ExitReadLock();
-            return currentElement;
+            try
+            {
+                return _workedOnElements.Find(x => x.user.Equals(user));
+            }
+            finally
+            {
+                WorkedOnElementsLock.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -96,15 +114,20 @@ namespace WebService.Helper
         public void CleanInactiveUsers()
         {
             WorkedOnElementsLock.EnterWriteLock();
-            List<TaskWrapper> inactiveElements = _workedOnElements.FindAll(x => x.LastPing <
-                DateTime.Now.Subtract(new TimeSpan(CleanUpTimeHours, CleanUpTimeMinutes, CleanUpTimeSeconds)));
-            foreach (TaskWrapper inactiveElement in inactiveElements)
+            try
             {
-                inactiveElement.Task.UnAllocate();
-                _workedOnElements.Remove(inactiveElement);
+                List<TaskWrapper> inactiveElements = _workedOnElements.FindAll(x => x.LastPing <
+                DateTime.Now.Subtract(new TimeSpan(CleanUpTimeHours, CleanUpTimeMinutes, CleanUpTimeSeconds)));
+                foreach (TaskWrapper inactiveElement in inactiveElements)
+                {
+                    inactiveElement.Task.UnAllocate();
+                    _workedOnElements.Remove(inactiveElement);
+                }
             }
-
-            WorkedOnElementsLock.ExitWriteLock();
+            finally
+            {
+                WorkedOnElementsLock.ExitWriteLock();
+            }
         }
 
         /// <summary>
@@ -117,12 +140,18 @@ namespace WebService.Helper
         public TaskWrapper PopTaskWrapper(long id, int number, int subNumber)
         {
             WorkedOnElementsLock.EnterWriteLock();
-            TaskWrapper taskWrapper = _workedOnElements.Find(x => x.Task.Id == id &&
+            try
+            {
+                TaskWrapper taskWrapper = _workedOnElements.Find(x => x.Task.Id == id &&
                                                                   x.Task.Number == number &&
                                                                   x.Task.SubNumber == subNumber);
-            _workedOnElements.Remove(taskWrapper);
-            WorkedOnElementsLock.ExitWriteLock();
-            return taskWrapper;
+                _workedOnElements.Remove(taskWrapper);
+                return taskWrapper;
+            }
+            finally
+            {
+                WorkedOnElementsLock.ExitWriteLock();
+            }
         }
 
         public List<TaskWrapper> CurrentlyWorkedOn()
@@ -138,13 +167,18 @@ namespace WebService.Helper
         public void UpdateLastPing(User user, DateTime dateTime)
         {
             WorkedOnElementsLock.EnterWriteLock();
-            foreach (TaskWrapper taskWrapper in _workedOnElements.Where(
-                x => x.Task.AllocatedTo == user.Username))
+            try
             {
-                taskWrapper.LastPing = new DateTime(dateTime.Ticks);
+                foreach (TaskWrapper taskWrapper in _workedOnElements.Where(
+                x => x.Task.AllocatedTo == user.Username))
+                {
+                    taskWrapper.LastPing = new DateTime(dateTime.Ticks);
+                }
             }
-
-            WorkedOnElementsLock.ExitWriteLock();
+            finally
+            {
+                WorkedOnElementsLock.ExitWriteLock();
+            }
         }
     }
 }
