@@ -4,9 +4,12 @@ using System.IO;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using WebService.Helper;
+using WebService.Interfaces;
 using WebService.Models;
+using WebService.Models.DTOs;
 using WebService.Services;
+using WebService.Services.Repositories;
+using WebService.Services.Stores;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -16,23 +19,25 @@ namespace WebService.Controllers
     [ApiController]
     public class BatchController : ControllerBase
     {
-        public BatchController()
+        BatchStore _store;
+        public BatchController(BatchStore store)
         {
+            _store = store;
         }
 
         // POST api/<BatchController>
         [HttpPost]
-        public void Post()
+        public void Post([FromForm] BatchDTO batchInput)
         {
-            string boundary = MultipartHelper.GetBoundary(HttpContext.Request.ContentType);
-            SectionedDataReader reader =
-                new SectionedDataReader(new MultipartReader(boundary, HttpContext.Request.Body));
+            Batch batch = batchInput.MapToBatch();
+            //TODO: set OwnerUsername property of the batch to a real user
+            batch.OwnerUsername = getUser().Username;
+            _store.Store(batch);
+        }
 
-            MultipartMarshaller<MultipartSection> batchMarshaller = new MultipartMarshaller<MultipartSection>(reader);
-
-            Dictionary<string, string> formData = batchMarshaller.GetFormData();
-            List<FileStream> streams = batchMarshaller.GetFileStreams();
-
+        private User getUser()
+        {
+            return new User("fakeUser", "fakePassword");
         }
 
         [HttpGet]
@@ -45,7 +50,7 @@ namespace WebService.Controllers
             {
                 return BadRequest();
             }
-            
+
             // TODO: Lookup batches for the user and get the status information
             List<BatchStatus> batchStatus = new List<BatchStatus>();
 
@@ -62,13 +67,13 @@ namespace WebService.Controllers
             {
                 return NotFound();
             }
-            
+
             // TODO: Lookup the filepath and filenames for all result files : Tuple(path, filename)
             List<Tuple<string, string>> pathsAndFiles = new List<Tuple<string, string>>();
-            
+
             Dictionary<string, Stream> files = new Dictionary<string, Stream>();
             // TODO: Possible way to do it, ELSE USE STORAGE MANAGER (WHEN IT IS DONE)
-            
+
             foreach (Tuple<string,string> pathAndFile in pathsAndFiles)
             {
                 // Assumes that the filepath is stored with an ending directory separator

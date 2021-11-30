@@ -21,7 +21,7 @@ paths:
       tags:
       - batch
       summary: Add a batch to be computed
-      operationId: addBatch
+      operationId: AddBatch
       requestBody:
         description: Batch object that should be computed
         content:
