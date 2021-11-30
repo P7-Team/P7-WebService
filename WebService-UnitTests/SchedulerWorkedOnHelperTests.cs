@@ -27,6 +27,7 @@ namespace WebService_UnitTests
             sh.UpdateLastPing(user, dateTime);
 
             Assert.IsType<DateTime>(sh.GetCurrentlyWorkedOn(user).LastPing);
+            Assert.Equal(dateTime, sh.GetCurrentlyWorkedOn(user).LastPing);
         }
 
         [Fact]
