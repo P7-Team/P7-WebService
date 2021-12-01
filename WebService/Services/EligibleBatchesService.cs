@@ -9,10 +9,10 @@ using WebService.Models;
 
 namespace WebService.Services
 {
-    public class EligibleBatchService : IEligibleBatchesService
+    public class EligibleBatchesService : IEligibleBatchesService
     {
         private readonly IDBConnectionFactory _connectionFactory;
-        public EligibleBatchService(IDBConnectionFactory connectionFactory)
+        public EligibleBatchesService(IDBConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;
         }

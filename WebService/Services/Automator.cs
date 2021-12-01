@@ -18,7 +18,7 @@ namespace WebService.Services
         private int _intervalInMinutes;
 
         public Automator(int intervalInMinutes, ISchedulerWorkedOnHelper schedulerWorkedOnHelper,
-            IContributionPointCalculator cp,IScheduler scheduler)
+            IContributionPointCalculator cp, IScheduler scheduler)
         {
             _intervalInMinutes = intervalInMinutes;
 
