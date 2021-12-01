@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using WebService.Interfaces;
 
@@ -6,7 +7,7 @@ namespace WebService.Services
 {
     public class TokenStore : ITokenStore
     {
-        private static readonly Dictionary<string, string> Tokens = new Dictionary<string, string>();
+        private static readonly ConcurrentDictionary<string, string> Tokens = new ConcurrentDictionary<string, string>();
 
         public void Store(string token, string username, bool overrideExisting = true)
         {

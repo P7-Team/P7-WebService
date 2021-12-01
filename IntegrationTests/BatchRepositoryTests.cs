@@ -23,11 +23,12 @@ namespace IntegrationTests
 
         public BatchRepositoryTests(DatabaseFixture fixture)
         {
-            fixture.Clean(new string[]{"Batch"});
+            fixture.Clean(new string[]{"Batch", "Users"});
             repository = new BatchRepository(fixture.Db);
             
             UserRepository _userRepository = new UserRepository(fixture.Db);
-            _userRepository.Create(new WebService.User("batchTestUser", "test"));
+            _userRepository.Create(new User("batchTestUser1", "test"));
+            _userRepository.Create(new User("batchTestUser2", "test"));
         }
 
         [Fact(Skip = skip)]

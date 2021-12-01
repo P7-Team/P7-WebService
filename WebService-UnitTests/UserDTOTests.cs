@@ -1,4 +1,5 @@
 ﻿using WebService;
+using WebService.Models;
 using WebService.Models.DTOs;
 using Xunit;
 

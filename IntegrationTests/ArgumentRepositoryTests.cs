@@ -23,7 +23,7 @@ namespace IntegrationTests
             repository = new ArgumentRepository(fixture.Db);
 
             UserRepository userRepository = new UserRepository(fixture.Db);
-            userRepository.Create(new WebService.User("testUser", "testPassword"));
+            userRepository.Create(new User("testUser", "testPassword"));
             BatchRepository batchRepository = new BatchRepository(fixture.Db);
             int batchId = batchRepository.Create(new Batch() { OwnerUsername = "testUser" });
             BatchFileRepository fileRepository = new BatchFileRepository(fixture.Db);

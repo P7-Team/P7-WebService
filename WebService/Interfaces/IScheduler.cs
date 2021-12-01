@@ -12,13 +12,6 @@ namespace WebService.Interfaces
         public void RemoveCompletedTask(Task task);
 
         public void RemoveCompletedTask(long id, int number, int subNumber);
-
-        public void UnAssignUserFromTask(User user,long id, int number, int subNumber);
-
-        public void PingScheduler(User user,DateTime time);
-
-        public DateTime? GetLastPing(User user);
-
-        public void FreeTasksNoLongerWorkedOn();
+        
     }
 }

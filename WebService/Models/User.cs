@@ -1,8 +1,7 @@
 using System;
 using WebService.Interfaces;
-using WebService.Models;
 
-namespace WebService
+namespace WebService.Models
 {
     public class User : IEquatable<User>, IAggregateRoot<string>
     {
