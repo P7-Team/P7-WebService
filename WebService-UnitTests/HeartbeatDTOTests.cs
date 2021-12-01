@@ -12,11 +12,11 @@ namespace WebService_UnitTests
         [Fact]
         public void MapToHeartbeat_DTOHasStatus_SetsStatus()
         {
-            HeartbeatDTO dto = new HeartbeatDTO() { Status = "available" };
+            HeartbeatDTO dto = new HeartbeatDTO() { Status = "error" };
 
             HeartBeat heartbeat = dto.MapToHeartbeat();
 
-            Assert.Equal(MessageType.Available, heartbeat.GetMessageType());
+            Assert.Equal(MessageType.Error, heartbeat.GetMessageType());
         }
     }
 }
