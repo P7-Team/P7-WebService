@@ -75,6 +75,8 @@ namespace WebService.Controllers
 
                 foreach (Task task in tasks)
                 {
+                    if (task.FinishedOn == null) continue;
+                    
                     Result taskResult = _resultRepository.Read((task.Id, task.Number, task.SubNumber));
                     status.AddFile(taskResult.Path + taskResult.Filename);
                 }
@@ -85,7 +87,7 @@ namespace WebService.Controllers
         }
 
         [HttpGet]
-        [Route("result/{fileID:string}")]
+        [Route("result/{fileID}")]
         public IActionResult FetchBatchResult(string fileID)
         {
             FileHelper.ExtractFilenameAndPath(fileID, out string path, out string filename);

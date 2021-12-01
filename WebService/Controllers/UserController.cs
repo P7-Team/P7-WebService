@@ -14,6 +14,7 @@ using WebService.Services.Repositories;
 namespace WebService.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly ITokenValidator _tokenValidator;
@@ -25,7 +26,7 @@ namespace WebService.Controllers
         }
 
         [HttpPost]
-        [Route("api/user/signup")]
+        [Route("signup")]
         public IActionResult SignUp([FromBody] UserDTO userDTO)
         {
             User user = userDTO.MapToUser();
@@ -37,12 +38,12 @@ namespace WebService.Controllers
                 _userRepository.Create(user);
                 return Created(HttpContext.Request.Path.Value, new EmptyResult());
             }
-            else
-                return UnprocessableEntity();
+            
+            return UnprocessableEntity();
         }
 
         [HttpPost]
-        [Route("api/user/login")]
+        [Route("login")]
         public IActionResult Login([FromBody] UserDTO userDto)
         {
             User user = userDto.MapToUser();
@@ -62,7 +63,7 @@ namespace WebService.Controllers
         }
         
         [HttpDelete]
-        [Route("api/user/logout")]
+        [Route("logout")]
         public IActionResult Logout()
         {
             StringValues token;
