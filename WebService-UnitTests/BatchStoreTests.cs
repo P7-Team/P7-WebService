@@ -49,7 +49,9 @@ namespace WebService_UnitTests
     {
         public SourceFile CalledWithSourceFile { get; private set; }
         public IEnumerable<BatchFile> CalledWithInputFiles { get; private set; }
-        
+
+        public string Directory { get; }
+
         public void StoreFile(SourceFile sourceFile)
         {
             CalledWithSourceFile = sourceFile;
