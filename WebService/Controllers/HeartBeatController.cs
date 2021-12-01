@@ -28,7 +28,7 @@ namespace WebService.Controllers
             switch (heartbeat.GetMessageType())
             {
                 case MessageType.Working:
-                    _SchedulerWorkedOnHelper.UpdateLastPing(new User("fakeUser", "fakePassword"), DateTime.Now);
+                    _SchedulerWorkedOnHelper.UpdateLastPing(heartbeatInput.Provider, DateTime.Now);
                     return Ok();
                 case MessageType.IsJobDone:
                     return Ok(heartbeat.GetMessageType().ToString());
