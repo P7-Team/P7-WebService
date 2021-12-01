@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using WebService.Helper;
 using WebService.Interfaces;
 using WebService.Models;
@@ -20,24 +21,36 @@ using Task = WebService.Models.Task;
 namespace WebService.Controllers
 {
     [ApiController]
+    [Route("api/task")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskContext _context;
+        private readonly IScheduler _scheduler;
 
-        public TaskController(ITaskContext context)
+        public TaskController(ITaskContext context, IScheduler scheduler)
         {
             _context = context;
+            _scheduler = scheduler;
         }
-        
+
         [HttpGet]
-        [Route("api/task/ready")]
-        public Task GetReadyTask()
+        [Route("ready")]
+        public IActionResult GetReadyTask([FromBody] ProviderDTO providerDto)
         {
-            return _context.FirstOrDefault(k => k.IsReady);
+            User user = providerDto.ToUser();
+            Task task = _scheduler.AllocateTask(user);
+            if (task == null) return Ok();
+            Dictionary<string, int> output = new Dictionary<string, int>
+            {
+                ["id"] = task.Id,
+                ["number"] = task.Number,
+                ["subNumber"] = task.SubNumber
+            };
+            return Ok(JsonConvert.SerializeObject(output));
         }
 
         [HttpPost]
-        [Route("api/task/complete")]
+        [Route("complete")]
         public void AddResult([FromForm] ResultDTO resultInput)
         {
             Result result = resultInput.MapToResult();

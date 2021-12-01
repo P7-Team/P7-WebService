@@ -81,7 +81,7 @@ namespace WebService
                     serviceCollection.AddScoped<IFileStore, FileStore>(sp =>
                     {
                         string fileDir = ConfigurationHelper.ReadOSFileDirFromConfiguration(config);
-                        return new FileStore(sp.GetService<BatchFileRepository>(), sp.GetService<ResultRepository>(), sp.GetService<SourceFileRepository>(), sp.GetService<FileSaver>(), sp.GetService<FileFetcher>(), sp.GetService<FileDeleter>(), fileDir);
+                        return new FileStore(sp.GetRequiredService<BatchFileRepository>(), sp.GetRequiredService<ResultRepository>(), sp.GetRequiredService<SourceFileRepository>(), sp.GetRequiredService<FileSaver>(), sp.GetRequiredService<FileFetcher>(), sp.GetRequiredService<FileDeleter>(), fileDir);
                     });
 
                     serviceCollection.AddScoped<TaskStore>();
@@ -90,15 +90,15 @@ namespace WebService
                     serviceCollection.AddScoped<IStore<Batch>, BatchStore>();
 
                     // Setup a context for the TaskController
-                    serviceCollection.AddSingleton<ITaskContext, TaskContext>(sp =>
+                    serviceCollection.AddScoped<ITaskContext, TaskContext>(sp =>
                     {
-                        return new TaskContext(sp.GetService<FileStore>(), sp.GetService<BatchRepository>());
+                        return new TaskContext(sp.GetRequiredService<IFileStore>(), sp.GetRequiredService<BatchRepository>());
                     });
 
                     serviceCollection.AddSingleton<ISchedulerHistoryHelper, SchedulerHistoryHelper>();
                     serviceCollection.AddSingleton<ISchedulerWorkedOnHelper, SchedulerWorkedOnHelper>();
                     serviceCollection.AddSingleton<IContributionPointCalculator, ContributionPointCalculator>();
-                    serviceCollection.AddSingleton<Scheduler>();
+                    serviceCollection.AddSingleton<IScheduler,Scheduler>();
                     serviceCollection.AddSingleton<IEligibleBatchesService, EligibleBatchesService>();
 
                     serviceCollection.AddSingleton<Automator>(sp =>
