@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using WebService.Models;
+using WebService.Models.DTOs;
 using WebService.Services;
 
 
@@ -11,22 +12,21 @@ namespace WebService.Controllers
     public class HeartBeatController : ControllerBase
     {
         [HttpPost]
-        public IActionResult Post(IDictionary<string, string> messageType)
+        public IActionResult Post([FromBody] HeartbeatDTO heartbeatInput)
         {
-            HeartBeat statusMessage = new HeartBeat(messageType["status"]);
+            HeartBeat heartbeat = heartbeatInput.MapToHeartbeat();
 
-            switch (statusMessage.GetMessageType())
+            switch (heartbeat.GetMessageType())
             {
                 case MessageType.Working:
                 case MessageType.Available:
                 case MessageType.IsJobDone:
-                    return Ok(statusMessage.GetMessageType().ToString());
+                    return Ok(heartbeat.GetMessageType().ToString());
                 case MessageType.Done:
                     
-                    return Ok(statusMessage.GetMessageType().ToString());
+                    return Ok(heartbeat.GetMessageType().ToString());
                 default:
-                    return BadRequest(
-                        messageType["status is not valid, should be either: Working, Available, IsWorking or Done"]);
+                    return BadRequest("status is not valid, should be either: Working, Available, IsWorking or Done");
             }
         }
     }

@@ -42,7 +42,6 @@ namespace WebService.Services
                             AssignedAt = DateTime.Now
                         };
                         _schedulerWoh.AddToWorkedOn(tw, user);
-                        BatchesLock.ExitWriteLock();
                         return tempTask;
                     }
                 }
@@ -82,16 +81,7 @@ namespace WebService.Services
 
         public void RemoveCompletedTask(Task task)
         {
-            BatchesLock.EnterWriteLock();
-            try
-            {
-                RemoveCompletedTask(task.Id, task.Number, task.SubNumber);
-            }
-            finally
-
-            {
-                BatchesLock.ExitWriteLock();
-            }
+            RemoveCompletedTask(task.Id, task.Number, task.SubNumber);
         }
 
         public void RemoveCompletedTask(long id, int number, int subNumber)

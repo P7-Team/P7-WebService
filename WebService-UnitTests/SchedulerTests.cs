@@ -8,7 +8,7 @@ using Xunit;
 
 namespace WebService_UnitTests
 {
-    public class SchedulerControllerTests
+    public class SchedulerTests
     {
         private const int InRangeNumber = 0;
         private const int OutOfRangeNumber = 20;
