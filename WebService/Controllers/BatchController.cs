@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 using WebService.Interfaces;
 using WebService.Models;
 using WebService.Models.DTOs;
@@ -78,11 +79,13 @@ namespace WebService.Controllers
                     if (task.FinishedOn == null) continue;
                     
                     Result taskResult = _resultRepository.Read((task.Id, task.Number, task.SubNumber));
-                    status.AddFile(taskResult.Path + taskResult.Filename);
+                    if (taskResult != null)
+                        status.AddFile(taskResult.Filename);
                 }
                 statusList.Add(status);
             }
 
+            string json = System.Text.Json.JsonSerializer.Serialize(statusList);
             return Ok(statusList);
         }
 
@@ -90,8 +93,8 @@ namespace WebService.Controllers
         [Route("result/{fileID}")]
         public IActionResult FetchBatchResult(string fileID)
         {
-            FileHelper.ExtractFilenameAndPath(fileID, out string path, out string filename);
-            BatchFile file = _batchFileRepository.Read((path, filename));
+            string path = _fileStore.Directory;
+            BatchFile file = _batchFileRepository.Read((path, fileID));
             
             if (file == null)
             {

@@ -9,6 +9,7 @@ namespace WebService.Interfaces
 {
     public interface IFileStore
     {
+        public string Directory { get; }
         /// <summary>
         /// Handles storing the <see cref="SourceFile"/> object
         /// </summary>

@@ -20,6 +20,7 @@ using Task = WebService.Models.Task;
 namespace WebService.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskContext _context;
@@ -30,14 +31,14 @@ namespace WebService.Controllers
         }
         
         [HttpGet]
-        [Route("api/task/ready")]
+        [Route("ready")]
         public Task GetReadyTask()
         {
             return _context.FirstOrDefault(k => k.IsReady);
         }
 
         [HttpPost]
-        [Route("api/task/complete")]
+        [Route("complete")]
         public void AddResult([FromForm] ResultDTO resultInput)
         {
             Result result = resultInput.MapToResult();

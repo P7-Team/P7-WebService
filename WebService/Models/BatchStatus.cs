@@ -5,11 +5,11 @@ namespace WebService.Models
 {
     public class BatchStatus
     {
-        private bool Finished { get; set; }
-        private int Total { get; set; }
-        private int TasksDone { get; set; }
-        private int Id { get; set; }
-        private List<string> Files { get; set; }
+        public bool Finished { get; set; }
+        public int Total { get; set; }
+        public int TasksDone { get; set; }
+        public int Id { get; set; }
+        public List<string> Files { get; set; }
 
         public BatchStatus(int id, bool finished, int tasksDone, int total)
         {

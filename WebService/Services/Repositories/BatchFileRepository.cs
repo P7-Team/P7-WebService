@@ -18,6 +18,11 @@ namespace WebService.Services.Repositories
             _db = db;
         }
 
+        public BatchFileRepository()
+        {
+            // Left empty...
+        }
+
         public (string path, string filename) Create(BatchFile item)
         {
             _db.Query(table).Insert(new
