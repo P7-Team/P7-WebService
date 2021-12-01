@@ -14,7 +14,7 @@ namespace WebService_UnitTests
         {
             ISchedulerHistoryHelper historyHelper = new SchedulerHistoryHelper();
             Task task = new Task();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
             TaskWrapper tw = new TaskWrapper(task)
             {
                 user = user

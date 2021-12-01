@@ -9,6 +9,7 @@ using Xunit;
 using Dapper;
 using IntegrationTests.Fixture;
 using Microsoft.Extensions.Configuration;
+using WebService.Models;
 using WebService.Services.Repositories;
 
 namespace IntegrationTests

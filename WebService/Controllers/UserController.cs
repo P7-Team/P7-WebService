@@ -45,7 +45,7 @@ namespace WebService.Controllers
         [Route("api/user/login")]
         public IActionResult Login([FromBody] UserDTO userDto)
         {
-            WebService.User user = userDto.MapToUser();
+            User user = userDto.MapToUser();
             bool exists = UserExists(user);
 
             if (exists)

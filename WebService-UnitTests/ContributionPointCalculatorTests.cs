@@ -13,7 +13,7 @@ namespace WebService_UnitTests
         public void CalculateContributionPoints_Calculates_Points_For_Active_Jobs()
         {
             // The setup is quite large due to dependencies.
-            User user = new User("Username", 0, "password");
+            User user = new User("Username", "password", 0);
             Task task = new Task();
             TaskWrapper taskWrapper = new TaskWrapper(task);
             ISchedulerWorkedOnHelper workedOnHelper = new SchedulerWorkedOnHelper();
@@ -32,7 +32,7 @@ namespace WebService_UnitTests
         public void CalculateContributionPoints_Does_Not_Calculate_Points_For_Jobs_Which_Are_Not_Old_Enough()
         {
             // The setup is quite large due to dependencies.
-            User user = new User("Username", 0, "password");
+            User user = new User("Username", "password", 0);
             Task task = new Task();
             TaskWrapper taskWrapper = new TaskWrapper(task);
             ISchedulerWorkedOnHelper workedOnHelper = new SchedulerWorkedOnHelper();

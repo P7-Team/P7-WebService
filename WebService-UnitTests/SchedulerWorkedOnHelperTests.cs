@@ -18,7 +18,7 @@ namespace WebService_UnitTests
         public void UpdateLastPing_Ping_Set()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
             Task task = new Task(true);
             // Act
             TaskWrapper taskWrapper = new TaskWrapper(task);
@@ -34,7 +34,7 @@ namespace WebService_UnitTests
         public void UpdateLastPing_Ping_Updated()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
             Task task = new Task(true);
             Batch testBatch = new Batch(0);
             // Act
@@ -53,7 +53,7 @@ namespace WebService_UnitTests
         public void CleanInactiveUsers_UnAssigns_InActive_User()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
             Task task = new Task(true);
             Batch testBatch = new Batch(0);
             // Act
@@ -69,7 +69,7 @@ namespace WebService_UnitTests
         public void CleanInactiveUsers_Does_Not_UnAssign_Active_User()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
             Task task = new Task(true);
             // Act
             TaskWrapper taskWrapper = new TaskWrapper(task);
@@ -82,7 +82,7 @@ namespace WebService_UnitTests
         public void IsWorkedOn_User_Assigned_Returns_True()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
             Task task = new Task(true);
             // Act
             TaskWrapper tw = new TaskWrapper(task);
@@ -94,8 +94,8 @@ namespace WebService_UnitTests
         public void IsWorkedOn_User_Not_Assigned_Returns_False()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
-            User user1 = new User("AnotherUserName", 9001, "Password");
+            User user = new User("Username",  "Password", 0);
+            User user1 = new User("AnotherUserName",  "Password", 9001);
             Task task = new Task(true);
             // Act
             TaskWrapper tw = new TaskWrapper(task);
@@ -107,7 +107,7 @@ namespace WebService_UnitTests
         public void AddWorkedOn_User_Assigned()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
             Task task = new Task(true);
             TaskWrapper tw = new TaskWrapper(task);
 
@@ -120,8 +120,8 @@ namespace WebService_UnitTests
         public void AddWorkedOn_AnotherUser_Assigned_User_Not_Assigned()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
-            User user2 = new User("AnotherUserName", 9001, "Password");
+            User user = new User("Username",  "Password", 0);
+            User user2 = new User("AnotherUserName",  "Password", 9001);
             Task task = new Task(true);
             TaskWrapper tw = new TaskWrapper(task);
 
@@ -137,8 +137,8 @@ namespace WebService_UnitTests
         public void AddWorkedOn_AnotherUser_Assigned_AnotherUser_Stays_Assigned()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
-            User user2 = new User("AnotherUserName", 9001, "Password");
+            User user = new User("Username",  "Password", 0);
+            User user2 = new User("AnotherUserName",  "Password", 9001);
             Task task = new Task(true);
             TaskWrapper tw = new TaskWrapper(task);
 
@@ -154,7 +154,7 @@ namespace WebService_UnitTests
         public void GetCurrentlyWorkedOn_User_Assigned_Returns_Correct_TaskWrapper()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
             Task task = new Task(true);
             TaskWrapper tw = new TaskWrapper(task);
             //Act
@@ -166,7 +166,7 @@ namespace WebService_UnitTests
         public void GetCurrentlyWorkedOn_User_Not_Assigned_Returns_Null()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
 
             Assert.Null(sh.GetCurrentlyWorkedOn(user));
         }
@@ -175,7 +175,7 @@ namespace WebService_UnitTests
         public void PopTaskWrapper_Returns_TaskWrapper()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
             Task task = new Task(true);
             TaskWrapper tw = new TaskWrapper(task);
 
@@ -189,7 +189,7 @@ namespace WebService_UnitTests
         public void PopTaskWrapper_Returns_Correct_TaskWrapper()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
             Task task = new Task(true);
             TaskWrapper tw = new TaskWrapper(task);
 
@@ -203,7 +203,7 @@ namespace WebService_UnitTests
         public void PopTaskWrapper_Returns_Correct_Null_When_Not_Exists()
         {
             ISchedulerWorkedOnHelper sh = new SchedulerWorkedOnHelper();
-            User user = new User("Username", 0, "Password");
+            User user = new User("Username",  "Password", 0);
             Task task = new Task(true);
             TaskWrapper tw = new TaskWrapper(task);
 
