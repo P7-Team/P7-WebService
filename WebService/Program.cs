@@ -105,7 +105,7 @@ namespace WebService
                     {
                         // Get connection string from application.json
                         int automaterInterval = int.Parse(config.GetSection("AutomaterInterval").Value);
-                        return new Automator(automaterInterval, sp.GetRequiredService<ISchedulerWorkedOnHelper>(), sp.GetRequiredService<IContributionPointCalculator>(), sp.GetRequiredService<IScheduler>());
+                        return new Automator(automaterInterval, sp.GetRequiredService<ISchedulerWorkedOnHelper>(), sp.GetRequiredService<IContributionPointCalculator>(), sp.GetRequiredService<IScheduler>(), sp.GetRequiredService<IEligibleBatchesService>());
                     });
                 });
     }

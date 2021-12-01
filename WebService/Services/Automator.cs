@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using WebService.Interfaces;
 using WebService.Models;
@@ -12,19 +13,21 @@ namespace WebService.Services
         private ISchedulerWorkedOnHelper _schedulerWorkedOnHelper;
         private IContributionPointCalculator _cp;
         private readonly IScheduler _scheduler;
+        private readonly IEligibleBatchesService _eligibleBatchesService;
         private readonly Thread _cleanInactiveUsers;
         private readonly Thread _contributionPointsManager;
         private readonly Thread _addBatchesToScheduler;
         private int _intervalInMinutes;
 
         public Automator(int intervalInMinutes, ISchedulerWorkedOnHelper schedulerWorkedOnHelper,
-            IContributionPointCalculator cp, IScheduler scheduler)
+            IContributionPointCalculator cp, IScheduler scheduler, IEligibleBatchesService eligibleBatchesService)
         {
             _intervalInMinutes = intervalInMinutes;
 
             _schedulerWorkedOnHelper = schedulerWorkedOnHelper;
             _cp = cp;
             _scheduler = scheduler;
+            _eligibleBatchesService = eligibleBatchesService;
 
             _cleanInactiveUsers = new Thread(CleanInactiveUsers);
             _contributionPointsManager = new Thread(ContributionPointsHandler);
@@ -63,9 +66,8 @@ namespace WebService.Services
 
         private void FetchAndAddBatches()
         {
-            List<Batch> batches = new List<Batch>();
-            _scheduler.AddBatches(batches);
-            
+            int pointLimit = 100;
+            _scheduler.AddBatches(_eligibleBatchesService.GetEligibleBatches(pointLimit).ToList());
         }
     }
 }
