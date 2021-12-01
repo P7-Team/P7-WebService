@@ -85,8 +85,7 @@ namespace WebService.Controllers
                 statusList.Add(status);
             }
 
-            string json = System.Text.Json.JsonSerializer.Serialize(statusList);
-            return Ok(statusList);
+            return Ok(System.Text.Json.JsonSerializer.Serialize(statusList));
         }
 
         [HttpGet]
