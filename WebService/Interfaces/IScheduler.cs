@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using WebService.Models;
 
 namespace WebService.Interfaces
@@ -8,6 +9,7 @@ namespace WebService.Interfaces
         public Task AllocateTask(User user);
 
         public void AddBatch(Batch batch);
+        public void AddBatches(List<Batch> batches);
 
         public void RemoveCompletedTask(Task task);
 
