@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -20,9 +21,20 @@ namespace WebService.Controllers
     public class BatchController : ControllerBase
     {
         BatchStore _store;
-        public BatchController(BatchStore store)
+        private BatchRepository _batchRepository;
+        private TaskRepository _taskRepository;
+        private ResultRepository _resultRepository;
+        private IFileStore _fileStore;
+        private BatchFileRepository _batchFileRepository;
+        
+        public BatchController(BatchStore store, BatchRepository batchRepository, TaskRepository taskRepository, ResultRepository resultRepository, BatchFileRepository batchFileRepository, IFileStore fileStore)
         {
             _store = store;
+            _batchRepository = batchRepository;
+            _taskRepository = taskRepository;
+            _resultRepository = resultRepository;
+            _fileStore = fileStore;
+            _batchFileRepository = batchFileRepository;
         }
 
         // POST api/<BatchController>
@@ -50,40 +62,43 @@ namespace WebService.Controllers
             {
                 return BadRequest();
             }
+            
+            List<Batch> userBatches = _batchRepository.Read(user);
+            List<BatchStatus> statusList = new List<BatchStatus>();
+            foreach (Batch batch in userBatches)
+            {
+                List<Task> tasks = _taskRepository.Read(batch.Id);
+                int totalTasks = tasks.Count;
+                int finishedTask = tasks.Where(t => t.FinishedOn != null).Count();
+                bool batchFinished = totalTasks == finishedTask;
+                BatchStatus status = new BatchStatus(batch.Id, batchFinished, finishedTask, totalTasks);
 
-            // TODO: Lookup batches for the user and get the status information
-            List<BatchStatus> batchStatus = new List<BatchStatus>();
+                foreach (Task task in tasks)
+                {
+                    Result taskResult = _resultRepository.Read((task.Id, task.Number, task.SubNumber));
+                    status.AddFile(taskResult.Path + taskResult.Filename);
+                }
+                statusList.Add(status);
+            }
 
-            return Ok(batchStatus);
+            return Ok(statusList);
         }
 
         [HttpGet]
-        [Route("result/{id:int}")]
-        public IActionResult FetchBatchResult(int id)
+        [Route("result/{fileID:string}")]
+        public IActionResult FetchBatchResult(string fileID)
         {
-            // TODO: Lookup the batch with {id} to check for existence
-            bool batchExists = true;
-            if (!batchExists)
+            FileHelper.ExtractFilenameAndPath(fileID, out string path, out string filename);
+            BatchFile file = _batchFileRepository.Read((path, filename));
+            
+            if (file == null)
             {
                 return NotFound();
             }
 
-            // TODO: Lookup the filepath and filenames for all result files : Tuple(path, filename)
-            List<Tuple<string, string>> pathsAndFiles = new List<Tuple<string, string>>();
-
-            Dictionary<string, Stream> files = new Dictionary<string, Stream>();
-            // TODO: Possible way to do it, ELSE USE STORAGE MANAGER (WHEN IT IS DONE)
-
-            foreach (Tuple<string,string> pathAndFile in pathsAndFiles)
-            {
-                // Assumes that the filepath is stored with an ending directory separator
-                string absPath = pathAndFile.Item1 + pathAndFile.Item2;
-                Stream fileStream = System.IO.File.Open(absPath, FileMode.Open);
-                files.Add(pathAndFile.Item2, fileStream);
-            }
-
-            MultipartFormDataContent content = MultipartFormDataHelper.CreateContent(new Dictionary<string, string>(), files);
-            return Ok(content);
+            Stream fileData = _fileStore.FetchFile(file);
+            
+            return Ok(fileData);
         }
     }
 }

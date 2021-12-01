@@ -29,6 +29,11 @@ namespace WebService.Services.Repositories
                     .Where("id", identifier).First<Batch>();
         }
 
+        public List<Batch> Read(string user)
+        {
+            return _db.Query(table).Where("ownedBy", user).Get<Batch>().ToList();
+        }
+
         public void Update(Batch item)
         {
             _db.Query(table).Where("id", item.GetIdentifier()).Update(new { ownedBy = item.OwnerUsername });

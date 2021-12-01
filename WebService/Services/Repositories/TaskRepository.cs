@@ -1,4 +1,5 @@
-﻿using SqlKata.Execution;
+﻿using System.Collections.Generic;
+using SqlKata.Execution;
 using System.Linq;
 using WebService.Interfaces;
 using WebService.Models;
@@ -35,6 +36,14 @@ namespace WebService.Services.Repositories
                 number = identifier.number,
                 subnumber = identifier.subnumber
                 }).First<Task>();
+        }
+
+        public List<Task> Read(int batchId)
+        {
+            return _db.Query(_table)
+                .Where(new { 
+                    id = batchId,
+                }).Get<Task>().ToList();
         }
 
         public void Update(Task item)

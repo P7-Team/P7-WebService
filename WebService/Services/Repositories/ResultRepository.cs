@@ -42,6 +42,15 @@ namespace WebService.Services.Repositories
                 .Where("Result.path", identifier.path).Where("Result.filename", identifier.filename)
                 .First<Result>();
         }
+        
+        public Result Read((int id, int number, int subnumber) identifier)
+        {
+            return _db.Query(_table)
+                .Select("Result.path AS Path", "Result.filename AS Filename", "encoding", "includedIn AS batchId", "isVerified AS verified", "task_id AS TaskId", "task_number AS TaskNumber", "task_subnumber AS TaskSubnumber")
+                .Join(_generalizedTable, j => j.On("File.path", "Result.path").On("File.filename", "Result.filename"))
+                .Where("task_id", identifier.id).Where("task_number", identifier.number).Where("task_subnumber", identifier.subnumber)
+                .First<Result>();
+        }
 
         public void Update(Result item)
         {
