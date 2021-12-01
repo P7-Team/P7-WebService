@@ -99,12 +99,13 @@ namespace WebService
                     serviceCollection.AddSingleton<ISchedulerWorkedOnHelper, SchedulerWorkedOnHelper>();
                     serviceCollection.AddSingleton<IContributionPointCalculator, ContributionPointCalculator>();
                     serviceCollection.AddSingleton<Scheduler>();
+                    serviceCollection.AddSingleton<IEligibleBatchesService, EligibleBatchesService>();
 
                     serviceCollection.AddSingleton<Automator>(sp =>
                     {
                         // Get connection string from application.json
                         int automaterInterval = int.Parse(config.GetSection("AutomaterInterval").Value);
-                        return new Automator(automaterInterval, sp.GetRequiredService<ISchedulerWorkedOnHelper>(), sp.GetRequiredService<IContributionPointCalculator>());
+                        return new Automator(automaterInterval, sp.GetRequiredService<ISchedulerWorkedOnHelper>(), sp.GetRequiredService<IContributionPointCalculator>(), sp.GetRequiredService<IScheduler>());
                     });
                 });
     }
