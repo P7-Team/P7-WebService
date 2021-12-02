@@ -21,7 +21,7 @@ using Task = WebService.Models.Task;
 namespace WebService.Controllers
 {
     [ApiController]
-    [Route("api/task")]
+    [Route("api/[controller]")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskContext _context;

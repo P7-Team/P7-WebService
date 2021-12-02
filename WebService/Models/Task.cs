@@ -16,9 +16,9 @@ namespace WebService.Models
 
         public int SubNumber { get; set; } //For byzentine checking
 
-        public DateTime StartedOn {get; set;}
+        public DateTime? StartedOn {get; set;}
 
-        public DateTime FinishedOn {get; set;}
+        public DateTime? FinishedOn {get; set;}
 
         public string AllocatedTo { get; private set; }
 
