@@ -7,7 +7,7 @@ namespace WebService.Models.DTOs
         [Required]
         public string Username;
 
-        public User ToUser()
+        public User MapToUser()
         {
             return new User(Username, null);
         }
