@@ -160,10 +160,7 @@ namespace IntegrationTests
             _batchFileRepository.Delete(file.GetIdentifier());
             
             // Assert
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                _batchFileRepository.Read(file.GetIdentifier());
-            });
+            Assert.Null(_batchFileRepository.Read(file.GetIdentifier()));
             
             // Cleanup
             _batchRepository.Delete(testBatch.Id);

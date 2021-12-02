@@ -96,7 +96,7 @@ namespace IntegrationTests
 
             repository.Delete(user.GetIdentifier());
 
-            Assert.Throws<InvalidOperationException>(() => { repository.Read(user.GetIdentifier()); });
+            Assert.Null(repository.Read(user.GetIdentifier()));
         }
     }
 }
