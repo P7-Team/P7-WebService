@@ -37,7 +37,8 @@ namespace WebService.Controllers
         [Route("ready")]
         public IActionResult GetReadyTask([FromBody] ProviderDTO providerDto)
         {
-            User user = providerDto.ToUser();
+            User user = providerDto.MapToUser();
+
             Task task = _scheduler.AllocateTask(user);
             if (task == null) return Ok();
             Dictionary<string, int> output = new Dictionary<string, int>
