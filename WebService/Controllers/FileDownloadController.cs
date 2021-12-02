@@ -18,7 +18,7 @@ namespace WebService.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/{fileID}")]
+        [Route("api/[controller]/{fileID}")]
         public IActionResult FetchBatchResult(string fileID)
         {
             string path = _fileStore.Directory;
