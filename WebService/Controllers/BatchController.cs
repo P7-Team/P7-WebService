@@ -50,7 +50,7 @@ namespace WebService.Controllers
 
         private User getUser()
         {
-            return new User("fakeUser", "fakePassword");
+            return new User("testUser3", "fakePassword");
         }
 
         [HttpGet]

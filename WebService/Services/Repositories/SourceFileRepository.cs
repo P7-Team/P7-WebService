@@ -48,6 +48,15 @@ namespace WebService.Services.Repositories
                 .First<SourceFile>();
         }
 
+        public SourceFile Read(int batchId)
+        {
+            return _db.Query(_table)
+                .Select("Source.path as path", "Source.filename as filename", "includedIn AS batchId", "language", "encoding")
+                .Where("Source.batchId", batchId)
+                .Join(_generalizedTable, j => j.On("Source.path", "File.path").On("Source.filename", "File.filename"))
+                .FirstOrDefault<SourceFile>();
+        }
+
         public void Update(SourceFile item)
         {
             _db.Query(_table).Where(new

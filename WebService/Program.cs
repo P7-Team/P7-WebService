@@ -100,7 +100,7 @@ namespace WebService
                     serviceCollection.AddSingleton<ISchedulerWorkedOnHelper, SchedulerWorkedOnHelper>();
                     serviceCollection.AddSingleton<IContributionPointCalculator, ContributionPointCalculator>();
                     serviceCollection.AddSingleton<IScheduler,Scheduler>();
-                    serviceCollection.AddSingleton<IEligibleBatchesService, EligibleBatchesService>();
+                    serviceCollection.AddScoped<IEligibleBatchesService, EligibleBatchesService>();
 
                     serviceCollection.AddSingleton<Automator>(sp =>
                     {

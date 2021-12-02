@@ -47,6 +47,16 @@ namespace WebService.Services.Repositories
             }).First<BatchFile>();
         }
 
+        public BatchFile Read(int taskId, int taskNumber, int taskSubnumber)
+        {
+            return _db.Query("Task")
+                .Select("File.path AS path", "File.filename AS filename", "encoding", "includedIn AS batchId")
+                .Join("Runs", j => j.On("Task.id", "Runs.task_id").On("Task.number", "Runs.task_number").On("Task.subNumber", "Runs.task_subnumber"))
+                .Join("File", j => j.On("Runs.path", "File.path").On("Runs.filename", "File.filename"))
+                .Where("task_id", taskId).Where("task_number", taskNumber).Where("task_subnumber", taskSubnumber)
+                .FirstOrDefault<BatchFile>();
+        }
+
         public void Update(BatchFile item)
         {
             _db.Query(table).Where(new
