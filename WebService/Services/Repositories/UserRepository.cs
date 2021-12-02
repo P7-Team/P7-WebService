@@ -42,7 +42,7 @@ namespace WebService.Services.Repositories
         {
             // Select first user with matching username (it is assumed that there is only one)
             return _db.Query(table).Select("username as Username", "password as Password", "points as ContributionPoints")
-                    .Where("username", identifier).First<User>();
+                    .Where("username", identifier).FirstOrDefault<User>();
         }
 
         public void Update(User item)

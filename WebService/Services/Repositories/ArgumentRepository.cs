@@ -46,7 +46,7 @@ namespace WebService.Services.Repositories
             List<string> ColumnsToSelect = _columnsToProperties.Select(pair => pair.Key + " as " + pair.Value).ToList();
 
             return _db.Query(_table).Select(ColumnsToSelect.ToArray())
-                .Where(MatchesPrimaryKey(identifier)).First<Argument>();
+                .Where(MatchesPrimaryKey(identifier)).FirstOrDefault<Argument>();
         }
 
         public void Update(Argument item)

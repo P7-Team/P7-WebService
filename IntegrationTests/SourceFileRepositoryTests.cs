@@ -106,10 +106,7 @@ namespace IntegrationTests
             sourceFile.WithPath(testPath).WithFileName(testFilename);
             
             // Assert
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                _sourceFileRepository.Read(sourceFile.GetIdentifier());
-            });
+            Assert.Null(_sourceFileRepository.Read(sourceFile.GetIdentifier()));
         }
 
         [Fact(Skip = skip)]
@@ -166,10 +163,7 @@ namespace IntegrationTests
             _sourceFileRepository.Delete(sourceFile.GetIdentifier());
             
             // Assert
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                _sourceFileRepository.Read(sourceFile.GetIdentifier());
-            });
+            Assert.Null(_sourceFileRepository.Read(sourceFile.GetIdentifier()));
 
             // Cleanup
             _batchRepository.Delete(testBatch.Id);

@@ -44,7 +44,7 @@ namespace WebService.Services.Repositories
             {
                 path = identifier.path,
                 filename = identifier.filename
-            }).First<BatchFile>();
+            }).FirstOrDefault<BatchFile>();
         }
 
         public void Update(BatchFile item)

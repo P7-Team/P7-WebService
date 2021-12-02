@@ -35,7 +35,7 @@ namespace WebService.Services.Repositories
                 id = identifier.id,
                 number = identifier.number,
                 subnumber = identifier.subnumber
-                }).First<Task>();
+                }).FirstOrDefault<Task>();
         }
 
         public List<Task> Read(int batchId)
