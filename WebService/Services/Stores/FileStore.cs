@@ -18,7 +18,7 @@ namespace WebService.Services.Stores
         private readonly IFileFetcher _fileFetcher;
         private readonly IFileDeleter _fileDeleter;
         
-        private string Directory { get; set; }
+        public string Directory { get;  }
 
         public FileStore(BatchFileRepository batchFileRepository, ResultRepository resultRepository,
             SourceFileRepository sourceFileRepository, IFileSaver fileSaver, IFileFetcher fileFetcher,

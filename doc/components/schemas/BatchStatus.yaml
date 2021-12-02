@@ -1,5 +1,10 @@
 type: array
 items:
+  required:
+  - finished
+  - id
+  - total
+  - done
   properties:
     finished:
       type: boolean 
@@ -13,7 +18,14 @@ items:
       type: integer
       description: Total number of task for batch
       example: 10
-    tasksDone:
+    done:
       type: integer
       description: The amount of tasks with result for the batch
       example: 5
+    files:
+      type: array
+      items:
+        type: object
+        properties:
+          fileID:
+            type: string
