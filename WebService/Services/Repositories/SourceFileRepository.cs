@@ -45,7 +45,7 @@ namespace WebService.Services.Repositories
                 .Select("Source.path as path", "Source.filename as filename", "includedIn AS batchId", "language", "encoding")
                 .Where("Source.path", identifier.path).Where("Source.filename", identifier.filename)
                 .Join(_generalizedTable, j => j.On("Source.path", "File.path").On("Source.filename", "File.filename"))
-                .First<SourceFile>();
+                .FirstOrDefault<SourceFile>();
         }
 
         public SourceFile Read(int batchId)

@@ -101,6 +101,9 @@ namespace WebService.Controllers
             }
 
             Stream fileData = _fileStore.FetchFile(file);
+
+            if (fileData == null)
+                return NotFound();
             
             return Ok(fileData);
         }

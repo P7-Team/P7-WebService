@@ -36,7 +36,7 @@ namespace WebService.Services.Repositories
                     "path as Path",
                     "filename as FileName"
                 )
-                .Where(MatchesPrimaryKey(identifier)).First<Run>();
+                .Where(MatchesPrimaryKey(identifier)).FirstOrDefault<Run>();
         }
 
         public void Update(Run item)

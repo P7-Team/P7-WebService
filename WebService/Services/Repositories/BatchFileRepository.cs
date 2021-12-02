@@ -44,7 +44,7 @@ namespace WebService.Services.Repositories
             {
                 path = identifier.path,
                 filename = identifier.filename
-            }).First<BatchFile>();
+            }).FirstOrDefault<BatchFile>();
         }
 
         public BatchFile Read(int taskId, int taskNumber, int taskSubnumber)

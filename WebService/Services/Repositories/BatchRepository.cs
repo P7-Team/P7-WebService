@@ -26,7 +26,7 @@ namespace WebService.Services.Repositories
         public Batch Read(int identifier)
         {
             return _db.Query(table).Select("id as Id", "ownedBy as OwnerUsername")
-                    .Where("id", identifier).First<Batch>();
+                    .Where("id", identifier).FirstOrDefault<Batch>();
         }
 
         public List<Batch> Read(string user)

@@ -67,7 +67,7 @@ namespace IntegrationTests
 
             repository.Delete(id);
 
-            Assert.Throws<InvalidOperationException>(() => { repository.Read(id); });
+            Assert.Null(repository.Read(id));
         }
     }
 }

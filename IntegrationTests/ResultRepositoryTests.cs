@@ -121,10 +121,7 @@ namespace IntegrationTests
             _resultRepository.Delete(expected.GetIdentifier());
             
             // Assert
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                _resultRepository.Read(expected.GetIdentifier());
-            });
+            Assert.Null(_resultRepository.Read(expected.GetIdentifier()));
 
             // Cleanup
             _batchFileRepository.Delete(expected.GetIdentifier());

@@ -71,7 +71,7 @@ namespace IntegrationTests
 
             repository.Delete(arg.GetIdentifier());
 
-            Assert.Throws<InvalidOperationException>(() => { repository.Read(arg.GetIdentifier()); });
+            Assert.Null(repository.Read(arg.GetIdentifier()));
         }
     }
 }
