@@ -87,25 +87,5 @@ namespace WebService.Controllers
 
             return Ok(System.Text.Json.JsonSerializer.Serialize(statusList));
         }
-
-        [HttpGet]
-        [Route("result/{fileID}")]
-        public IActionResult FetchBatchResult(string fileID)
-        {
-            string path = _fileStore.Directory;
-            BatchFile file = _batchFileRepository.Read((path, fileID));
-            
-            if (file == null)
-            {
-                return NotFound();
-            }
-
-            Stream fileData = _fileStore.FetchFile(file);
-
-            if (fileData == null)
-                return NotFound();
-            
-            return Ok(fileData);
-        }
     }
 }
