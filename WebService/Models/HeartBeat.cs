@@ -6,7 +6,6 @@ namespace WebService.Models
     public enum MessageType
     {
         Working,
-        Available,
         Done,
         IsJobDone,
         Error

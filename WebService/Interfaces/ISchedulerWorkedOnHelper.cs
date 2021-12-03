@@ -15,7 +15,7 @@ namespace WebService.Interfaces
 
         public void AddToWorkedOn(TaskWrapper taskWrapper, User user);
 
-        public void UpdateLastPing(User user, DateTime dateTime);
+        public void UpdateLastPing(string providerId, DateTime dateTime);
 
         public TaskWrapper GetCurrentlyWorkedOn(User user);
 
