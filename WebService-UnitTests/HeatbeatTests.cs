@@ -10,24 +10,24 @@ namespace WebService_UnitTests
         public void heatBeatMessageType_Parses()
         {
             HeartBeat heartBeat = new HeartBeat("Working");
-            heartBeat.SetMessageType("Available");
-            Assert.Equal(MessageType.Available, heartBeat.GetMessageType());
+            heartBeat.SetMessageType("Done");
+            Assert.Equal(MessageType.Done, heartBeat.GetMessageType());
         }
 
         [Fact]
         public void heatBeatMessageType_Parses_With_LowerCase()
         {
             HeartBeat heartBeat = new HeartBeat("Working");
-            heartBeat.SetMessageType("available");
-            Assert.Equal(MessageType.Available, heartBeat.GetMessageType());
+            heartBeat.SetMessageType("done");
+            Assert.Equal(MessageType.Done, heartBeat.GetMessageType());
         }
 
         [Fact]
         public void heatBeatMessageType_Parses_With_Uppercase()
         {
             HeartBeat heartBeat = new HeartBeat("Working");
-            heartBeat.SetMessageType("AVAILABLE");
-            Assert.Equal(MessageType.Available, heartBeat.GetMessageType());
+            heartBeat.SetMessageType("DONE");
+            Assert.Equal(MessageType.Done, heartBeat.GetMessageType());
         }
 
         [Fact]

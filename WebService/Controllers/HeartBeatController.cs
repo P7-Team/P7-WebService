@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using WebService.Interfaces;
 using WebService.Models;
+using WebService.Models.DTOs;
 using WebService.Services;
 
 
@@ -10,23 +13,29 @@ namespace WebService.Controllers
     [ApiController]
     public class HeartBeatController : ControllerBase
     {
-        [HttpPost]
-        public IActionResult Post(IDictionary<string, string> messageType)
-        {
-            HeartBeat statusMessage = new HeartBeat(messageType["status"]);
+        private readonly ISchedulerWorkedOnHelper _SchedulerWorkedOnHelper;
 
-            switch (statusMessage.GetMessageType())
+        public HeartBeatController(ISchedulerWorkedOnHelper schedulerWorkedOnHelper)
+        {
+            _SchedulerWorkedOnHelper = schedulerWorkedOnHelper;
+        }
+
+        [HttpPost]
+        public IActionResult Post([FromBody] HeartbeatDTO heartbeatInput)
+        {
+            HeartBeat heartbeat = heartbeatInput.MapToHeartbeat();
+
+            switch (heartbeat.GetMessageType())
             {
                 case MessageType.Working:
-                case MessageType.Available:
+                    _SchedulerWorkedOnHelper.UpdateLastPing(heartbeatInput.Provider, DateTime.Now);
+                    return Ok();
                 case MessageType.IsJobDone:
-                    return Ok(statusMessage.GetMessageType().ToString());
+                    return Ok(heartbeat.GetMessageType().ToString());
                 case MessageType.Done:
-                    
-                    return Ok(statusMessage.GetMessageType().ToString());
+                    return Ok(heartbeat.GetMessageType().ToString());
                 default:
-                    return BadRequest(
-                        messageType["status is not valid, should be either: Working, Available, IsWorking or Done"]);
+                    return BadRequest("status is not valid, should be either: Working, Available, IsWorking or Done");
             }
         }
     }

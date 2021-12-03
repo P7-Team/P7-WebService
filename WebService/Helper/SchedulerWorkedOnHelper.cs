@@ -162,15 +162,15 @@ namespace WebService.Helper
         /// <summary>
         /// Updates the lastPing for a specific user, with a timestamp.
         /// </summary>
-        /// <param name="user"></param>
+        /// <param name="providerId"></param>
         /// <param name="dateTime"></param>
-        public void UpdateLastPing(User user, DateTime dateTime)
+        public void UpdateLastPing(string providerId, DateTime dateTime)
         {
             WorkedOnElementsLock.EnterWriteLock();
             try
             {
                 foreach (TaskWrapper taskWrapper in _workedOnElements.Where(
-                x => x.Task.AllocatedTo == user.Username))
+                x => x.Task.AllocatedTo == providerId))
                 {
                     taskWrapper.LastPing = new DateTime(dateTime.Ticks);
                 }

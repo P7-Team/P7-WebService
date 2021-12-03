@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 using SqlKata.Compilers;
 using SqlKata.Execution;
+using WebService.Helper;
 using WebService.Interfaces;
 using WebService.Models;
 using WebService.Services;
@@ -90,7 +91,23 @@ namespace WebService
                     serviceCollection.AddScoped<IStore<Batch>, BatchStore>();
 
                     // Setup a context for the TaskController
-                    serviceCollection.AddScoped<ITaskContext, TaskContext>();
+                    serviceCollection.AddScoped<ITaskContext, TaskContext>(sp =>
+                    {
+                        return new TaskContext(sp.GetRequiredService<IFileStore>(), sp.GetRequiredService<BatchRepository>());
+                    });
+
+                    serviceCollection.AddSingleton<ISchedulerHistoryHelper, SchedulerHistoryHelper>();
+                    serviceCollection.AddSingleton<ISchedulerWorkedOnHelper, SchedulerWorkedOnHelper>();
+                    serviceCollection.AddSingleton<IContributionPointCalculator, ContributionPointCalculator>();
+                    serviceCollection.AddSingleton<IScheduler,Scheduler>();
+                    serviceCollection.AddScoped<IEligibleBatchesService, EligibleBatchesService>();
+
+                    serviceCollection.AddSingleton<Automator>(sp =>
+                    {
+                        // Get connection string from application.json
+                        int automaterInterval = int.Parse(config.GetSection("AutomaterInterval").Value);
+                        return new Automator(automaterInterval, sp.GetRequiredService<ISchedulerWorkedOnHelper>(), sp.GetRequiredService<IContributionPointCalculator>(), sp.GetRequiredService<IScheduler>(), sp.GetRequiredService<IEligibleBatchesService>());
+                    });
                 });
     }
 }

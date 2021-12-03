@@ -24,7 +24,7 @@ namespace WebService_UnitTests
             TaskWrapper taskWrapper = new TaskWrapper(task);
             sh.AddToWorkedOn(taskWrapper, user);
             DateTime dateTime = DateTime.Now;
-            sh.UpdateLastPing(user, dateTime);
+            sh.UpdateLastPing("Username", dateTime);
 
             Assert.IsType<DateTime>(sh.GetCurrentlyWorkedOn(user).LastPing);
             Assert.Equal(dateTime, sh.GetCurrentlyWorkedOn(user).LastPing);
@@ -42,9 +42,9 @@ namespace WebService_UnitTests
             TaskWrapper taskWrapper = new TaskWrapper(task);
             sh.AddToWorkedOn(taskWrapper, user);
 
-            sh.UpdateLastPing(user, DateTime.Now.Subtract(new TimeSpan(2, 0, 20, 0)));
+            sh.UpdateLastPing("Username", DateTime.Now.Subtract(new TimeSpan(2, 0, 20, 0)));
             DateTime lastPing = sh.GetCurrentlyWorkedOn(user).LastPing;
-            sh.UpdateLastPing(user, DateTime.Now);
+            sh.UpdateLastPing("Username", DateTime.Now);
             DateTime currentPing = sh.GetCurrentlyWorkedOn(user).LastPing;
             Assert.True(lastPing < currentPing);
         }
@@ -60,7 +60,7 @@ namespace WebService_UnitTests
             testBatch.AddTask(task);
             TaskWrapper taskWrapper = new TaskWrapper(task);
             sh.AddToWorkedOn(taskWrapper, user);
-            sh.UpdateLastPing(user, DateTime.Now.Subtract(new TimeSpan(0, 0, 5, 2)));
+            sh.UpdateLastPing("Username", DateTime.Now.Subtract(new TimeSpan(0, 0, 5, 2)));
             sh.CleanInactiveUsers();
             Assert.Null(sh.GetCurrentlyWorkedOn(user));
         }
@@ -74,7 +74,7 @@ namespace WebService_UnitTests
             // Act
             TaskWrapper taskWrapper = new TaskWrapper(task);
             sh.AddToWorkedOn(taskWrapper, user);
-            sh.UpdateLastPing(user, DateTime.Now.Subtract(new TimeSpan(0, 0, 2, 2)));
+            sh.UpdateLastPing("Username", DateTime.Now.Subtract(new TimeSpan(0, 0, 2, 2)));
             Assert.Equal(user.Username, sh.GetCurrentlyWorkedOn(user).user.Username);
         }
 

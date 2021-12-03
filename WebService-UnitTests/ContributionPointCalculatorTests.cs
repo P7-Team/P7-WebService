@@ -19,7 +19,7 @@ namespace WebService_UnitTests
             ISchedulerWorkedOnHelper workedOnHelper = new SchedulerWorkedOnHelper();
             workedOnHelper.AddToWorkedOn(taskWrapper, user);
             taskWrapper.AssignedAt = DateTime.Now.Subtract(new TimeSpan(0, 15, 0));
-            workedOnHelper.UpdateLastPing(user, DateTime.Now.Subtract(new TimeSpan(0, 6, 1)));
+            workedOnHelper.UpdateLastPing("Username", DateTime.Now.Subtract(new TimeSpan(0, 6, 1)));
             IContributionPointCalculator calculator = new ContributionPointCalculator(workedOnHelper);
             int oldContributionPoints = taskWrapper.user.ContributionPoints;
             // act
@@ -37,7 +37,7 @@ namespace WebService_UnitTests
             TaskWrapper taskWrapper = new TaskWrapper(task);
             ISchedulerWorkedOnHelper workedOnHelper = new SchedulerWorkedOnHelper();
             workedOnHelper.AddToWorkedOn(taskWrapper, user);
-            workedOnHelper.UpdateLastPing(user, DateTime.Now.Subtract(new TimeSpan(0, 1, 0)));
+            workedOnHelper.UpdateLastPing("Username", DateTime.Now.Subtract(new TimeSpan(0, 1, 0)));
             IContributionPointCalculator calculator = new ContributionPointCalculator(workedOnHelper);
             int oldContributionPoints = taskWrapper.user.ContributionPoints;
             // act
