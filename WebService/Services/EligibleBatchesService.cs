@@ -39,9 +39,11 @@ namespace WebService.Services
         {
             MySqlConnection conn = _connectionFactory.GetConnection();
             IEnumerable<Batch> result = conn.Query<Batch>(@"SELECT *
-                                            FROM Batch
-                                            INNER JOIN Users U on Batch.ownedBy = U.username
-                                            WHERE U.points >= @Points", new { Points = pointLimit });
+                                                                FROM Batch b
+                                                                INNER JOIN Users U on b.ownedBy = U.username
+                                                                WHERE U.points >= @Points
+                                                                 AND NOT EXISTS (SELECT 1 FROM Task t WHERE t.finishedOn IS NOT NULL AND t.id = b.id)",
+                                                        new { Points = pointLimit });
 
             foreach (Batch batch in result)
             {
