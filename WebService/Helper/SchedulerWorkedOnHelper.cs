@@ -5,6 +5,7 @@ using System.Threading;
 using WebService.Interfaces;
 using WebService.Models;
 using WebService.Services;
+using WebService.Services.Repositories;
 
 namespace WebService.Helper
 {
@@ -70,7 +71,7 @@ namespace WebService.Helper
         /// <param name="user"></param>
         public void AddToWorkedOn(TaskWrapper taskWrapper, User user)
         {
-            if (taskWrapper.Task.AllocatedTo != null)
+            if (IsWorkedOn(taskWrapper.Task))
                 return;
             else
                 WorkedOnElementsLock.EnterWriteLock();

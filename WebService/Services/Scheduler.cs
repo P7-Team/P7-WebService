@@ -5,6 +5,7 @@ using System.Threading;
 using System.Timers;
 using WebService.Interfaces;
 using WebService.Models;
+using WebService.Services.Repositories;
 
 namespace WebService.Services
 {
@@ -16,13 +17,15 @@ namespace WebService.Services
 
         private readonly ISchedulerWorkedOnHelper _schedulerWoh;
         private readonly ISchedulerHistoryHelper _historyHelper;
+        private readonly IRepository<Task, (int, int, int)> _taskRepository;
 
-        public Scheduler(ISchedulerWorkedOnHelper schedulerWoh, ISchedulerHistoryHelper historyHelper)
+        public Scheduler(ISchedulerWorkedOnHelper schedulerWoh, ISchedulerHistoryHelper historyHelper, IRepository<Task, (int, int, int)> taskRepository)
         {
             BatchesLock = new ReaderWriterLockSlim();
             _schedulerWoh = schedulerWoh;
             _historyHelper = historyHelper;
             _batches = new List<Batch>();
+            _taskRepository = taskRepository;
         }
 
         public Task AllocateTask(User user)
@@ -42,6 +45,7 @@ namespace WebService.Services
                             AssignedAt = DateTime.Now
                         };
                         _schedulerWoh.AddToWorkedOn(tw, user);
+                        _taskRepository.Update(tw.Task);
                         return tempTask;
                     }
                 }
@@ -63,6 +67,13 @@ namespace WebService.Services
                 if (!_batches.Contains(batch))
                 {
                     _batches.Add(batch);
+                    foreach (Task task in batch.Tasks)
+                    {
+                        if (task.AllocatedTo != null)
+                        {
+                            _schedulerWoh.AddToWorkedOn(new TaskWrapper(task), new User(task.AllocatedTo, "Ineligible"));
+                        }
+                    }
                 }
             }
             finally
