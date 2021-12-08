@@ -1,5 +1,7 @@
 ﻿using Dapper;
 using MySql.Data.MySqlClient;
+using SqlKata.Compilers;
+using SqlKata.Execution;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,16 +14,21 @@ namespace WebService.Services
     public class EligibleBatchesService : IEligibleBatchesService
     {
         private readonly IDBConnectionFactory _connectionFactory;
+        private readonly QueryFactory _db;
         private readonly TaskRepository _taskRepository;
         private readonly SourceFileRepository _sourceFileRepository;
         private readonly BatchFileRepository _batchFileRepository;
 
-        public EligibleBatchesService(IDBConnectionFactory connectionFactory, TaskRepository taskRepository, SourceFileRepository sourceFileRepository, BatchFileRepository batchFileRepository)
+        public EligibleBatchesService(IDBConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;
-            _taskRepository = taskRepository;
-            _sourceFileRepository = sourceFileRepository;
-            _batchFileRepository = batchFileRepository;
+            var conn = connectionFactory.GetConnection();
+            var compiler = new MySqlCompiler();
+
+            _db = new QueryFactory(conn, compiler);
+            _taskRepository = new TaskRepository(_db);
+            _sourceFileRepository = new SourceFileRepository(_db);
+            _batchFileRepository = new BatchFileRepository(_db);
         }
 
         /// <summary>
