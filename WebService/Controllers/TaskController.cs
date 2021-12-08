@@ -38,9 +38,7 @@ namespace WebService.Controllers
         [Route("ready")]
         public IActionResult GetReadyTask()
         {
-            // TODO: Vi skal kunne bruge andre brugere end fakeUser
-            // User user = providerDto.MapToUser();
-            User user = new User("fakeUser", "fakePassword");
+            User user = new User((string)HttpContext.Items["User"]);
 
             Task task = _scheduler.AllocateTask(user);
             if (task == null) return NotFound();
