@@ -34,6 +34,7 @@ namespace WebService.Controllers
         }
 
         [HttpGet]
+        [AuthenticationHelpers.Authorize]
         [Route("ready")]
         public IActionResult GetReadyTask([FromBody] ProviderDTO providerDto)
         {
@@ -51,6 +52,7 @@ namespace WebService.Controllers
         }
 
         [HttpPost]
+        [AuthenticationHelpers.Authorize]
         [Route("complete")]
         public void AddResult([FromForm] ResultDTO resultInput)
         {
