@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MySql.Data.MySqlClient;
 using WebService.Interfaces;
 using WebService.Models;
 using WebService.Services;
@@ -25,13 +26,21 @@ namespace WebService.Services.Repositories
 
         public (string path, string filename) Create(BatchFile item)
         {
-            _db.Query(table).Insert(new
+            try
             {
-                path = item.Path,
-                filename = item.Filename,
-                encoding = item.Encoding,
-                includedIn = item.BatchId
-            });
+                _db.Query(table).Insert(new
+                {
+                    path = item.Path,
+                    filename = item.Filename,
+                    encoding = item.Encoding,
+                    includedIn = item.BatchId
+                });
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e);
+            }
+
 
             return (item.Path, item.Filename);
         }
