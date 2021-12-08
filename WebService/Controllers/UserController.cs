@@ -27,6 +27,7 @@ namespace WebService.Controllers
 
         [HttpPost]
         [Route("signup")]
+        [AllowAnonymous]
         public IActionResult SignUp([FromBody] UserDTO userDto)
         {
             User user = userDto.MapToUser();
