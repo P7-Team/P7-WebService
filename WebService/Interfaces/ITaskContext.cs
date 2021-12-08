@@ -14,5 +14,7 @@ namespace WebService.Interfaces
         /// <param name="batchId">The ID of the persisted <see cref="Batch"/></param>
         /// <returns>The <see cref="Batch"/> with the given ID</returns>
         public Batch GetBatch(int batchId);
+
+        public void UpdateCompletedTask(int id, int number, int subnumber);
     }
 }

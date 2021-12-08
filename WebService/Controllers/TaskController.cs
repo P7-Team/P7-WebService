@@ -58,6 +58,7 @@ namespace WebService.Controllers
         {
             Result result = resultInput.MapToResult();
             _context.SaveResult(result);
+            _context.UpdateCompletedTask(result.TaskId, result.TaskNumber, result.TaskSubnumber);
         }
     }
 }

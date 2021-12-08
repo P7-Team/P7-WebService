@@ -93,7 +93,7 @@ namespace WebService
                     // Setup a context for the TaskController
                     serviceCollection.AddScoped<ITaskContext, TaskContext>(sp =>
                     {
-                        return new TaskContext(sp.GetRequiredService<IFileStore>(), sp.GetRequiredService<BatchRepository>());
+                        return new TaskContext(sp.GetRequiredService<IFileStore>(), sp.GetRequiredService<BatchRepository>(), sp.GetRequiredService<TaskRepository>());
                     });
 
                     serviceCollection.AddSingleton<ISchedulerHistoryHelper, SchedulerHistoryHelper>();
