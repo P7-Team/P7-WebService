@@ -41,12 +41,14 @@ namespace WebService.Controllers
             User user = new User((string)HttpContext.Items["User"]);
 
             Task task = _scheduler.AllocateTask(user);
-            if (task == null) return Ok();
-            Dictionary<string, int> output = new Dictionary<string, int>
+            if (task == null) return NotFound();
+            Dictionary<string, string> output = new Dictionary<string, string>
             {
-                ["id"] = task.Id,
-                ["number"] = task.Number,
-                ["subNumber"] = task.SubNumber
+                ["id"] = task.Id.ToString(),
+                ["number"] = task.Number.ToString(),
+                ["subNumber"] = task.SubNumber.ToString(),
+                ["source"] = task.Executable.Filename,
+                ["input"] = task.Input.Filename
             };
             return Ok(JsonConvert.SerializeObject(output));
         }

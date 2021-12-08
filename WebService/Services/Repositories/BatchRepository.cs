@@ -1,6 +1,7 @@
 ﻿using SqlKata.Execution;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using WebService.Interfaces;
 using WebService.Models;
@@ -31,6 +32,10 @@ namespace WebService.Services.Repositories
 
         public List<Batch> Read(string user)
         {
+            if (_db.Connection.State == ConnectionState.Closed)
+            {
+                _db.Connection.Open();
+            }
             return _db.Query(table).Where("ownedBy", user).Get<Batch>().ToList();
         }
 

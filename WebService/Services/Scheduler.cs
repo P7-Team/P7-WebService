@@ -19,13 +19,17 @@ namespace WebService.Services
         private readonly ISchedulerHistoryHelper _historyHelper;
         private readonly IRepository<Task, (int, int, int)> _taskRepository;
 
-        public Scheduler(ISchedulerWorkedOnHelper schedulerWoh, ISchedulerHistoryHelper historyHelper, IRepository<Task, (int, int, int)> taskRepository)
+        public Scheduler(ISchedulerWorkedOnHelper schedulerWoh, ISchedulerHistoryHelper historyHelper, IDBConnectionFactory connectionFactory)
         {
             BatchesLock = new ReaderWriterLockSlim();
             _schedulerWoh = schedulerWoh;
             _historyHelper = historyHelper;
             _batches = new List<Batch>();
-            _taskRepository = taskRepository;
+            
+            var conn = connectionFactory.GetConnection();
+
+            var db = connectionFactory.CreateQueryFactory(conn);
+            _taskRepository = new TaskRepository(db);
         }
 
         public Task AllocateTask(User user)
