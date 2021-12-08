@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SqlKata.Execution;
 using System.Linq;
+using MySql.Data.MySqlClient;
 using WebService.Interfaces;
 using WebService.Models;
 
@@ -30,12 +32,22 @@ namespace WebService.Services.Repositories
 
         public Task Read((int id, int number, int subnumber) identifier)
         {
-            return _db.Query(_table).Select("id as Id", "number as Number", "subnumber as Subnumber")
-                .Where(new { 
-                id = identifier.id,
-                number = identifier.number,
-                subnumber = identifier.subnumber
-                }).FirstOrDefault<Task>();
+            try
+            {
+                return _db.Query(_table).Select("id as Id", "number as Number", "subnumber as Subnumber")
+                    .Where(new { 
+                        id = identifier.id,
+                        number = identifier.number,
+                        subnumber = identifier.subnumber
+                    }).FirstOrDefault<Task>();
+            }
+            catch (MySqlException e)
+            {
+                // This removes duplicate entries, if attempted...
+                Console.WriteLine(e);
+                return null;
+            }
+
         }
 
         public List<Task> Read(int batchId)
