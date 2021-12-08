@@ -26,6 +26,12 @@ namespace WebService.Models
             Password = password;
         }
 
+        public User(string username)
+        {
+            Username = username;
+            Password = null;
+        }
+
         public void AddContributionPoints(int contributionModifier)
         {
             ContributionPoints += contributionModifier;

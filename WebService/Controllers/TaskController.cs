@@ -36,9 +36,9 @@ namespace WebService.Controllers
         [HttpGet]
         [AuthenticationHelpers.Authorize]
         [Route("ready")]
-        public IActionResult GetReadyTask([FromBody] ProviderDTO providerDto)
+        public IActionResult GetReadyTask()
         {
-            User user = providerDto.MapToUser();
+            User user = new User((string)HttpContext.Items["User"]);
 
             Task task = _scheduler.AllocateTask(user);
             if (task == null) return Ok();
