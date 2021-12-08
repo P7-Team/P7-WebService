@@ -23,9 +23,8 @@ namespace WebService.Services
         {
             _connectionFactory = connectionFactory;
             var conn = connectionFactory.GetConnection();
-            var compiler = new MySqlCompiler();
 
-            _db = new QueryFactory(conn, compiler);
+            _db = connectionFactory.CreateQueryFactory(conn);
             _taskRepository = new TaskRepository(_db);
             _sourceFileRepository = new SourceFileRepository(_db);
             _batchFileRepository = new BatchFileRepository(_db);

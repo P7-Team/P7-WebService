@@ -1,5 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using MySql.Data.MySqlClient;
+using SqlKata.Compilers;
+using SqlKata.Execution;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,13 @@ namespace WebService.Services
         public DBConnectionFactory(string connectionString)
         {
             _connectionString = connectionString;
+        }
+
+        public QueryFactory CreateQueryFactory(MySqlConnection connection)
+        {
+            var compiler = new MySqlCompiler();
+
+            return new QueryFactory(connection, compiler);
         }
 
         MySqlConnection IDBConnectionFactory.GetConnection()
