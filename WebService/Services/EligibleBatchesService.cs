@@ -42,7 +42,7 @@ namespace WebService.Services
                                                                 FROM Batch b
                                                                 INNER JOIN Users U on b.ownedBy = U.username
                                                                 WHERE U.points >= @Points
-                                                                 AND NOT EXISTS (SELECT 1 FROM Task t WHERE t.finishedOn IS NOT NULL AND t.id = b.id)",
+                                                                 AND EXISTS (SELECT 1 FROM Task t WHERE t.finishedOn IS NULL AND t.id = b.id)",
                                                         new { Points = pointLimit });
 
             foreach (Batch batch in result)
