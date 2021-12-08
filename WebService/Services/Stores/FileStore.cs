@@ -169,6 +169,8 @@ namespace WebService.Services.Stores
         private string ExtractFileName(Result resultFile)
         {
             StringBuilder sb = new StringBuilder();
+            sb.Append("Result");
+            sb.Append("-");
             sb.Append(resultFile.BatchId);
             sb.Append("-");
             sb.Append(resultFile.TaskNumber);
