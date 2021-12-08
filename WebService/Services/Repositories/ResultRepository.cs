@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 using WebService.Interfaces;
 using WebService.Models;
 
@@ -22,15 +23,23 @@ namespace WebService.Services.Repositories
 
         public (string path, string filename) Create(Result item)
         {
-            _db.Query(_table).Insert(new
+            try
             {
-                path = item.Path,
-                filename = item.Filename,
-                isVerified = item.Verified,
-                task_id = item.TaskId,
-                task_number = item.TaskNumber,
-                task_subnumber = item.TaskSubnumber
-            });
+                _db.Query(_table).Insert(new
+                {
+                    path = item.Path,
+                    filename = item.Filename,
+                    isVerified = item.Verified,
+                    task_id = item.TaskId,
+                    task_number = item.TaskNumber,
+                    task_subnumber = item.TaskSubnumber
+                });
+
+            }
+            catch (MySqlException e)
+            {
+                Console.WriteLine(e);                
+            }
             return (item.Path, item.Filename);
         }
 
