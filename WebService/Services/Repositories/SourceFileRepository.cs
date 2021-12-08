@@ -26,6 +26,7 @@ namespace WebService.Services.Repositories
                 path = item.Path,
                 filename = item.Filename,
                 language = item.Language,
+                batchId = item.BatchId,
             });
             return (item.Path, item.Filename);
         }
