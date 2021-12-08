@@ -88,15 +88,7 @@ namespace WebService.Controllers
         /// <returns>A boolean representing whether a user exists in the DB</returns>
         private bool UserExists(User user)
         {
-            try
-            {
-                _userRepository.Read(user.GetIdentifier());
-                return true;
-            }
-            catch (InvalidOperationException e)
-            {
-                return false;
-            }
+            return _userRepository.Read(user.GetIdentifier()) != null;
         }
     }
 }
