@@ -21,6 +21,7 @@ namespace WebService.Controllers
         }
 
         [HttpPost]
+        [AuthenticationHelpers.Authorize]
         public IActionResult Post([FromBody] HeartbeatDTO heartbeatInput)
         {
             HeartBeat heartbeat = heartbeatInput.MapToHeartbeat();

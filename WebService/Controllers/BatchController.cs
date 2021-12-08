@@ -27,8 +27,9 @@ namespace WebService.Controllers
         private ResultRepository _resultRepository;
         private IFileStore _fileStore;
         private BatchFileRepository _batchFileRepository;
-        
-        public BatchController(BatchStore store, BatchRepository batchRepository, TaskRepository taskRepository, ResultRepository resultRepository, BatchFileRepository batchFileRepository, IFileStore fileStore)
+
+        public BatchController(BatchStore store, BatchRepository batchRepository, TaskRepository taskRepository,
+            ResultRepository resultRepository, BatchFileRepository batchFileRepository, IFileStore fileStore)
         {
             _store = store;
             _batchRepository = batchRepository;
@@ -40,21 +41,23 @@ namespace WebService.Controllers
 
         // POST api/<BatchController>
         [HttpPost]
+        [AuthenticationHelpers.Authorize]
         public void Post([FromForm] BatchDTO batchInput)
         {
             Batch batch = batchInput.MapToBatch();
             //TODO: set OwnerUsername property of the batch to a real user
-            batch.OwnerUsername = getUser().Username;
+            batch.OwnerUsername = getUser();
             _store.Store(batch);
         }
 
-        private User getUser()
+        private string getUser()
         {
-            return new User("testUser3", "fakePassword");
+            return HttpContext.Items["User"].ToString();
         }
 
         [HttpGet]
         [Route("status")]
+        [AuthenticationHelpers.Authorize]
         public IActionResult GetBatchStatus()
         {
             string token = HttpContext.Request.Headers["Authorization"].ToString();
@@ -63,7 +66,7 @@ namespace WebService.Controllers
             {
                 return BadRequest();
             }
-            
+
             List<Batch> userBatches = _batchRepository.Read(user);
             List<BatchStatus> statusList = new List<BatchStatus>();
             foreach (Batch batch in userBatches)
@@ -77,11 +80,12 @@ namespace WebService.Controllers
                 foreach (Task task in tasks)
                 {
                     if (task.FinishedOn == null) continue;
-                    
+
                     Result taskResult = _resultRepository.Read((task.Id, task.Number, task.SubNumber));
                     if (taskResult != null)
                         status.AddFile(taskResult.Filename);
                 }
+
                 statusList.Add(status);
             }
 

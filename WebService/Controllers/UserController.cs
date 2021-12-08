@@ -1,11 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
+using WebService.AuthenticationHelpers;
+using WebService.Interfaces;
 using WebService.Models;
 using WebService.Models.DTOs;
 using WebService.Services;
@@ -17,19 +16,21 @@ namespace WebService.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly ITokenValidator _tokenValidator;
+        private readonly IAuthenticatorService _authenticatorService;
         private readonly UserRepository _userRepository;
-        public UserController(ITokenValidator tokenValidator, UserRepository userRepository)
+
+        public UserController(IAuthenticatorService authenticatorService, UserRepository userRepository)
         {
-            _tokenValidator = tokenValidator;
+            _authenticatorService = authenticatorService;
             _userRepository = userRepository;
         }
 
         [HttpPost]
         [Route("signup")]
-        public IActionResult SignUp([FromBody] UserDTO userDTO)
+        public IActionResult SignUp([FromBody] UserDTO userDto)
         {
-            User user = userDTO.MapToUser();
+            User user = userDto.MapToUser();
+            user.Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
 
             bool exists = UserExists(user);
 
@@ -38,47 +39,33 @@ namespace WebService.Controllers
                 _userRepository.Create(user);
                 return Created(HttpContext.Request.Path.Value, new EmptyResult());
             }
-            
+
             return UnprocessableEntity();
         }
 
         [HttpPost]
         [Route("login")]
-        public IActionResult Login([FromBody] UserDTO userDto)
+        [AllowAnonymous]
+        public IActionResult Login(AuthenticateRequest model)
         {
-            User user = userDto.MapToUser();
-            bool exists = UserExists(user);
+            var response = _authenticatorService.Authenticate(model);
 
-            if (exists)
-            {
-                // Create session token
-                string rawToken = user.Username + user.Password + user.ContributionPoints;
-                HashAlgorithm sha = SHA256.Create();
-                Token token = new Token(Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(rawToken))));
-                new TokenStore().Store(token.Key, user.Username);
-                return Ok(token);   
-            }
-            else
-                return NotFound();
+            if (response == null)
+                return BadRequest(new {message = "Username or password is incorrect"});
+
+            return Ok(response);
         }
-        
+
         [HttpDelete]
+        [AuthenticationHelpers.Authorize]
         [Route("logout")]
         public IActionResult Logout()
         {
-            StringValues token;
-            bool success = HttpContext.Request.Query.TryGetValue("tkn", out token);
+            //StringValues token;
+            //bool success = HttpContext.Request.Query.TryGetValue("tkn", out token);
 
-            if (!success)
-            {
-                return NotFound();
-            }
-            
-            // Currently token may include '+', which C# automatically converts to ' '
-            string tokenStr = token.ToString().Replace(" ", "+");
-            _tokenValidator.Invalidate(tokenStr);
 
-            return Ok();
+            return Ok(HttpContext.Items["User"]);
         }
 
         /// <summary>

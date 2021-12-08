@@ -1,21 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using WebService.AuthenticationHelpers;
 using WebService.Interfaces;
-using WebService.Models;
 using WebService.Services;
-using Task = WebService.Models.Task;
 
 namespace WebService
 {
@@ -32,8 +24,14 @@ namespace WebService
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSingleton<ITokenValidator,HMTokenValidator>();
+            services.AddSingleton<ITokenValidator, HMTokenValidator>();
 
+            // configure strongly typed settings object
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
+            // configure DI for application services
+            services.AddScoped<IAuthenticatorService, Authenticator>();
+            
             // services.AddDbContext<WebServiceContext>(opt =>
             //     opt.UseInMemoryDatabase("WebServiceDatabase"));
         }
@@ -51,11 +49,16 @@ namespace WebService
             app.UseRouting();
 
             app.UseAuthorization();
+            
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            // custom jwt auth middleware
+            app.UseMiddleware<JwtMiddleware>();
+
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

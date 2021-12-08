@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 using WebService.Interfaces;
 
 namespace WebService.Models
@@ -7,6 +8,8 @@ namespace WebService.Models
     {
         public string Username { get; }
         public int Id { get; }
+        
+        [JsonIgnore]
         public string Password { get; set; }
         public int ContributionPoints { get; set; }
 
