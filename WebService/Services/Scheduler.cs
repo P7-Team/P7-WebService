@@ -71,7 +71,7 @@ namespace WebService.Services
                     {
                         if (task.AllocatedTo != null)
                         {
-                            _schedulerWoh.AddToWorkedOn(new TaskWrapper(task), new User(task.AllocatedTo, "Ineligible"));
+                            _schedulerWoh.AddToWorkedOn(new TaskWrapper(task), new User(task.AllocatedTo));
                         }
                     }
                 }
