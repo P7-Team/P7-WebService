@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
+using WebService.Interfaces;
 using WebService.Models;
+using WebService.Models.DTOs;
 using WebService.Services;
+using WebService.Services.Repositories;
+using WebService.Services.Stores;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,27 +21,43 @@ namespace WebService.Controllers
     [ApiController]
     public class BatchController : ControllerBase
     {
-        public BatchController()
+        BatchStore _store;
+        private BatchRepository _batchRepository;
+        private TaskRepository _taskRepository;
+        private ResultRepository _resultRepository;
+        private IFileStore _fileStore;
+        private BatchFileRepository _batchFileRepository;
+
+        public BatchController(BatchStore store, BatchRepository batchRepository, TaskRepository taskRepository,
+            ResultRepository resultRepository, BatchFileRepository batchFileRepository, IFileStore fileStore)
         {
+            _store = store;
+            _batchRepository = batchRepository;
+            _taskRepository = taskRepository;
+            _resultRepository = resultRepository;
+            _fileStore = fileStore;
+            _batchFileRepository = batchFileRepository;
         }
 
         // POST api/<BatchController>
         [HttpPost]
-        public void Post()
+        [AuthenticationHelpers.Authorize]
+        public void Post([FromForm] BatchDTO batchInput)
         {
-            string boundary = MultipartHelper.GetBoundary(HttpContext.Request.ContentType);
-            SectionedDataReader reader =
-                new SectionedDataReader(new MultipartReader(boundary, HttpContext.Request.Body));
+            Batch batch = batchInput.MapToBatch();
+            //TODO: set OwnerUsername property of the batch to a real user
+            batch.OwnerUsername = getUser();
+            _store.Store(batch);
+        }
 
-            MultipartMarshaller<MultipartSection> batchMarshaller = new MultipartMarshaller<MultipartSection>(reader);
-
-            Dictionary<string, string> formData = batchMarshaller.GetFormData();
-            List<FileStream> streams = batchMarshaller.GetFileStreams();
-
+        private string getUser()
+        {
+            return HttpContext.Items["User"].ToString();
         }
 
         [HttpGet]
         [Route("status")]
+        [AuthenticationHelpers.Authorize]
         public IActionResult GetBatchStatus()
         {
             string token = HttpContext.Request.Headers["Authorization"].ToString();
@@ -44,40 +66,30 @@ namespace WebService.Controllers
             {
                 return BadRequest();
             }
-            
-            // TODO: Lookup batches for the user and get the status information
-            List<BatchStatus> batchStatus = new List<BatchStatus>();
 
-            return Ok(batchStatus);
-        }
+            List<Batch> userBatches = _batchRepository.Read(user);
+            List<BatchStatus> statusList = new List<BatchStatus>();
+            foreach (Batch batch in userBatches)
+            {
+                List<Task> tasks = _taskRepository.Read(batch.Id);
+                int totalTasks = tasks.Count;
+                int finishedTask = tasks.Where(t => t.FinishedOn != null).Count();
+                bool batchFinished = totalTasks == finishedTask;
+                BatchStatus status = new BatchStatus(batch.Id, batchFinished, finishedTask, totalTasks);
 
-        [HttpGet]
-        [Route("result/{id:int}")]
-        public IActionResult FetchBatchResult(int id)
-        {
-            // TODO: Lookup the batch with {id} to check for existence
-            bool batchExists = true;
-            if (!batchExists)
-            {
-                return NotFound();
-            }
-            
-            // TODO: Lookup the filepath and filenames for all result files : Tuple(path, filename)
-            List<Tuple<string, string>> pathsAndFiles = new List<Tuple<string, string>>();
-            
-            Dictionary<string, Stream> files = new Dictionary<string, Stream>();
-            // TODO: Possible way to do it, ELSE USE STORAGE MANAGER (WHEN IT IS DONE)
-            
-            foreach (Tuple<string,string> pathAndFile in pathsAndFiles)
-            {
-                // Assumes that the filepath is stored with an ending directory separator
-                string absPath = pathAndFile.Item1 + pathAndFile.Item2;
-                Stream fileStream = System.IO.File.Open(absPath, FileMode.Open);
-                files.Add(pathAndFile.Item2, fileStream);
+                foreach (Task task in tasks)
+                {
+                    if (task.FinishedOn == null) continue;
+
+                    Result taskResult = _resultRepository.Read((task.Id, task.Number, task.SubNumber));
+                    if (taskResult != null)
+                        status.AddFile(taskResult.Filename);
+                }
+
+                statusList.Add(status);
             }
 
-            MultipartFormDataContent content = MultipartFormDataHelper.CreateContent(new Dictionary<string, string>(), files);
-            return Ok(content);
+            return Ok(System.Text.Json.JsonSerializer.Serialize(statusList));
         }
     }
 }

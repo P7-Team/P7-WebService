@@ -3,50 +3,61 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using WebService.Helper;
 using WebService.Interfaces;
 using WebService.Models;
+using WebService.Models.DTOs;
 using WebService.Services;
+using WebService.Services.Repositories;
 using Task = WebService.Models.Task;
 
 namespace WebService.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class TaskController : ControllerBase
     {
         private readonly ITaskContext _context;
+        private readonly IScheduler _scheduler;
 
-        public TaskController(ITaskContext context)
+        public TaskController(ITaskContext context, IScheduler scheduler)
         {
             _context = context;
+            _scheduler = scheduler;
         }
-        
+
         [HttpGet]
-        [Route("api/task/ready")]
-        public Task GetReadyTask()
+        [AuthenticationHelpers.Authorize]
+        [Route("ready")]
+        public IActionResult GetReadyTask([FromBody] ProviderDTO providerDto)
         {
-            return _context.FirstOrDefault(k => k.IsReady);
+            User user = providerDto.MapToUser();
+
+            Task task = _scheduler.AllocateTask(user);
+            if (task == null) return Ok();
+            Dictionary<string, int> output = new Dictionary<string, int>
+            {
+                ["id"] = task.Id,
+                ["number"] = task.Number,
+                ["subNumber"] = task.SubNumber
+            };
+            return Ok(JsonConvert.SerializeObject(output));
         }
 
         [HttpPost]
-        [Route("api/task/complete")]
-        public void AddResult()
+        [AuthenticationHelpers.Authorize]
+        [Route("complete")]
+        public void AddResult([FromForm] ResultDTO resultInput)
         {
-            string boundary = MultipartHelper.GetBoundary(HttpContext.Request.ContentType);
-            SectionedDataReader reader =
-                new SectionedDataReader(new MultipartReader(boundary, HttpContext.Request.Body));
-
-            MultipartMarshaller<MultipartSection> marshaller = new MultipartMarshaller<MultipartSection>(reader);
-
-            Dictionary<string, string> formData = marshaller.GetFormData();
-            List<FileStream> fileStreams = marshaller.GetFileStreams();
-
-            CompletedTask completedTask = new CompletedTask(long.Parse(formData["id"]), fileStreams[0].Name);
-            // TODO: This needs to be persisted in the DB and File needs to be stored in file system.
+            Result result = resultInput.MapToResult();
+            _context.SaveResult(result);
         }
     }
 }

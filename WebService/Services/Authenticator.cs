@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
@@ -9,25 +7,30 @@ using Microsoft.IdentityModel.Tokens;
 using WebService.AuthenticationHelpers;
 using WebService.Interfaces;
 using WebService.Models;
+using WebService.Services.Repositories;
 
 namespace WebService.Services
 {
     public class Authenticator : IAuthenticatorService
     {
         private readonly AppSettings _appSettings;
+        private UserRepository _repository;
 
-        public Authenticator(IOptions<AppSettings> appSettings)
+        public Authenticator(IOptions<AppSettings> appSettings,UserRepository repository)
         {
+            _repository = repository;
             _appSettings = appSettings.Value;
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = new User(model.Username, 0, model.Password);
-
+            var user = _repository.Read(model.Username);
+            
             // return null if user not found
             if (user == null) return null;
 
+            if (!BCrypt.Net.BCrypt.Verify(model.Password,user.Password)) return null;
+            
             // authentication successful so generate jwt token
             var token = GenerateJwtToken(user);
 
@@ -43,7 +46,7 @@ namespace WebService.Services
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] {new Claim("id", user.Id.ToString())}),
+                Subject = new ClaimsIdentity(new[] {new Claim("Username", user.Username)}),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)

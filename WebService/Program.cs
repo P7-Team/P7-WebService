@@ -11,9 +11,12 @@ using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 using SqlKata.Compilers;
 using SqlKata.Execution;
+using WebService.Helper;
 using WebService.Interfaces;
 using WebService.Models;
 using WebService.Services;
+using WebService.Services.Repositories;
+using WebService.Services.Stores;
 using Task = WebService.Models.Task;
 
 namespace WebService
@@ -37,12 +40,6 @@ namespace WebService
                     var config = new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", optional: false)
                     .Build();
-                    
-                    // Setup a context for the TaskController
-                    serviceCollection.AddSingleton<ITaskContext, TaskContext>(sp =>
-                    {
-                        return new TaskContext();
-                    });
 
                     // This provides a IDBConnectionFactory that can be used to create connections
                     // to the db.
@@ -54,7 +51,7 @@ namespace WebService
                     });
 
                     // Create a QueryFactory that can be used in repositories to create queries using SqlKata
-                    serviceCollection.AddScoped<QueryFactory>(sp =>
+                    serviceCollection.AddSingleton<QueryFactory>(sp =>
                     {
                         // Get connection string from application.json
                         string connectionString = config.GetSection("ConnectionString").Value;
@@ -66,8 +63,51 @@ namespace WebService
                     });
 
                     // Inject UserRepository when IRepository<User, int> or UserRepository is required
-                    serviceCollection.AddScoped<IRepository<User, int>, UserRepository>();
+                    serviceCollection.AddScoped<IRepository<User, string>, UserRepository>();
                     serviceCollection.AddScoped<UserRepository>();
+                    serviceCollection.AddScoped<IRepository<Batch, int>, BatchRepository>();
+                    serviceCollection.AddScoped<BatchRepository>();
+                    serviceCollection.AddScoped<IRepository<BatchFile, (string, string)>, BatchFileRepository>();
+                    serviceCollection.AddScoped<BatchFileRepository>();
+                    serviceCollection.AddScoped<SourceFileRepository>();
+                    serviceCollection.AddScoped<IRepository<Task, (int, int, int)>, TaskRepository>();
+                    serviceCollection.AddScoped<TaskRepository>();
+                    serviceCollection.AddScoped<ResultRepository>();
+                    serviceCollection.AddScoped<FileSaver>();
+                    serviceCollection.AddScoped<FileFetcher>();
+                    serviceCollection.AddScoped<FileDeleter>();
+                    serviceCollection.AddScoped<IRepository<Run, (int, int, int, string, string)>, RunRepository>();
+                    serviceCollection.AddScoped<RunRepository>();
+
+                    serviceCollection.AddScoped<IFileStore, FileStore>(sp =>
+                    {
+                        string fileDir = ConfigurationHelper.ReadOSFileDirFromConfiguration(config);
+                        return new FileStore(sp.GetRequiredService<BatchFileRepository>(), sp.GetRequiredService<ResultRepository>(), sp.GetRequiredService<SourceFileRepository>(), sp.GetRequiredService<FileSaver>(), sp.GetRequiredService<FileFetcher>(), sp.GetRequiredService<FileDeleter>(), fileDir);
+                    });
+
+                    serviceCollection.AddScoped<TaskStore>();
+                    serviceCollection.AddScoped<IStore<Task>, TaskStore>();
+                    serviceCollection.AddScoped<BatchStore>();
+                    serviceCollection.AddScoped<IStore<Batch>, BatchStore>();
+
+                    // Setup a context for the TaskController
+                    serviceCollection.AddScoped<ITaskContext, TaskContext>(sp =>
+                    {
+                        return new TaskContext(sp.GetRequiredService<IFileStore>(), sp.GetRequiredService<BatchRepository>());
+                    });
+
+                    serviceCollection.AddSingleton<ISchedulerHistoryHelper, SchedulerHistoryHelper>();
+                    serviceCollection.AddSingleton<ISchedulerWorkedOnHelper, SchedulerWorkedOnHelper>();
+                    serviceCollection.AddSingleton<IContributionPointCalculator, ContributionPointCalculator>();
+                    serviceCollection.AddSingleton<IScheduler,Scheduler>();
+                    serviceCollection.AddScoped<IEligibleBatchesService, EligibleBatchesService>();
+
+                    serviceCollection.AddSingleton<Automator>(sp =>
+                    {
+                        // Get connection string from application.json
+                        int automaterInterval = int.Parse(config.GetSection("AutomaterInterval").Value);
+                        return new Automator(automaterInterval, sp.GetRequiredService<ISchedulerWorkedOnHelper>(), sp.GetRequiredService<IContributionPointCalculator>(), sp.GetRequiredService<IScheduler>(), sp.GetRequiredService<IEligibleBatchesService>());
+                    });
                 });
     }
 }

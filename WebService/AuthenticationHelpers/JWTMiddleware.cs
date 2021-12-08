@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebService.Interfaces;
 using WebService.Models;
+using WebService.Services.Repositories;
 using Task = System.Threading.Tasks.Task;
 
 namespace WebService.AuthenticationHelpers
@@ -22,17 +23,17 @@ namespace WebService.AuthenticationHelpers
             _appSettings = appSettings.Value;
         }
 
-        public async Task Invoke(HttpContext context, IAuthenticatorService authenticator)
+        public async Task Invoke(HttpContext context, IAuthenticatorService authenticator,UserRepository repository)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
-                AttachUserToContext(context, authenticator, token);
+                AttachUserToContext(context, repository, token);
 
             await _next(context);
         }
 
-        private void AttachUserToContext(HttpContext context, IAuthenticatorService userService, string token)
+        private void AttachUserToContext(HttpContext context, UserRepository userService, string token)
         {
             try
             {
@@ -49,11 +50,10 @@ namespace WebService.AuthenticationHelpers
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                var userId = jwtToken.Claims.First(x => x.Type == "Username").Value;
 
                 // attach user to context on successful jwt validation
-                // TODO Attatch user to context from lookup based on ID.
-                context.Items["User"] = new User("Username", userId, "Password");
+                context.Items["User"] = userService.Read(userId).Username;
             }
             catch
             {

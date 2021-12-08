@@ -6,37 +6,41 @@ using Newtonsoft.Json;
 using WebService.AuthenticationHelpers;
 using WebService.Interfaces;
 using WebService.Models;
+using WebService.Models.DTOs;
 using WebService.Services;
+using WebService.Services.Repositories;
 
 namespace WebService.Controllers
 {
     [ApiController]
-    [Route("api/user")]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly ITokenValidator _tokenValidator;
         private readonly IAuthenticatorService _authenticatorService;
-        public UserController(ITokenValidator tokenValidator, IAuthenticatorService authenticatorService)
+        private readonly UserRepository _userRepository;
+
+        public UserController(IAuthenticatorService authenticatorService, UserRepository userRepository)
         {
             _authenticatorService = authenticatorService;
-            _tokenValidator = tokenValidator;
+            _userRepository = userRepository;
         }
 
         [HttpPost]
         [Route("signup")]
-        [AllowAnonymous]
-        public IActionResult SignUp()
+        public IActionResult SignUp([FromBody] UserDTO userDto)
         {
-            string content = ContentReader.ReadStreamContent(HttpContext.Request.Body);
-            User user = JsonConvert.DeserializeObject<User>(content);
+            User user = userDto.MapToUser();
+            user.Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
 
-            // TODO: Check if user already exists, this needs to be updated
-            bool exists = false;
+            bool exists = UserExists(user);
 
             if (!exists)
+            {
+                _userRepository.Create(user);
                 return Created(HttpContext.Request.Path.Value, new EmptyResult());
-            else
-                return UnprocessableEntity();
+            }
+
+            return UnprocessableEntity();
         }
 
         [HttpPost]
@@ -47,11 +51,11 @@ namespace WebService.Controllers
             var response = _authenticatorService.Authenticate(model);
 
             if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new {message = "Username or password is incorrect"});
 
             return Ok(response);
         }
-        
+
         [HttpDelete]
         [AuthenticationHelpers.Authorize]
         [Route("logout")]
@@ -59,9 +63,19 @@ namespace WebService.Controllers
         {
             //StringValues token;
             //bool success = HttpContext.Request.Query.TryGetValue("tkn", out token);
-            
 
-            return Ok();
+
+            return Ok(HttpContext.Items["User"]);
+        }
+
+        /// <summary>
+        /// Helper method which can be used to check whether a user exists
+        /// </summary>
+        /// <param name="user">The user instance to check if exists</param>
+        /// <returns>A boolean representing whether a user exists in the DB</returns>
+        private bool UserExists(User user)
+        {
+            return _userRepository.Read(user.GetIdentifier()) != null;
         }
     }
 }
