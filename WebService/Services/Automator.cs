@@ -32,6 +32,7 @@ namespace WebService.Services
             _cleanInactiveUsers = new Thread(CleanInactiveUsers);
             _contributionPointsManager = new Thread(ContributionPointsHandler);
             _addBatchesToScheduler = new Thread(AddBatchesToScheduler);
+            FetchAndAddBatches();
             _addBatchesToScheduler.Start();
             _cleanInactiveUsers.Start();
             _contributionPointsManager.Start();

@@ -36,17 +36,21 @@ namespace WebService.Controllers
         [HttpGet]
         [AuthenticationHelpers.Authorize]
         [Route("ready")]
-        public IActionResult GetReadyTask([FromBody] ProviderDTO providerDto)
+        public IActionResult GetReadyTask()
         {
-            User user = providerDto.MapToUser();
+            // TODO: Vi skal kunne bruge andre brugere end fakeUser
+            // User user = providerDto.MapToUser();
+            User user = new User("fakeUser", "fakePassword");
 
             Task task = _scheduler.AllocateTask(user);
-            if (task == null) return Ok();
-            Dictionary<string, int> output = new Dictionary<string, int>
+            if (task == null) return NotFound();
+            Dictionary<string, string> output = new Dictionary<string, string>
             {
-                ["id"] = task.Id,
-                ["number"] = task.Number,
-                ["subNumber"] = task.SubNumber
+                ["id"] = task.Id.ToString(),
+                ["number"] = task.Number.ToString(),
+                ["subNumber"] = task.SubNumber.ToString(),
+                ["source"] = task.Executable.Filename,
+                ["input"] = task.Input.Filename
             };
             return Ok(JsonConvert.SerializeObject(output));
         }

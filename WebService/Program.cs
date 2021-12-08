@@ -25,7 +25,19 @@ namespace WebService
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            var sp = host.Services;
+            
+            // int automatorInterval = int.Parse(config.GetSection("AutomaterInterval").Value);
+            int automatorInterval = 5;
+            var automator = new Automator(automatorInterval, 
+                sp.GetRequiredService<ISchedulerWorkedOnHelper>(), 
+                sp.GetRequiredService<IContributionPointCalculator>(), 
+                sp.GetRequiredService<IScheduler>(), 
+                sp.GetRequiredService<IEligibleBatchesService>());
+            
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -51,7 +63,7 @@ namespace WebService
                     });
 
                     // Create a QueryFactory that can be used in repositories to create queries using SqlKata
-                    serviceCollection.AddSingleton<QueryFactory>(sp =>
+                    serviceCollection.AddScoped<QueryFactory>(sp =>
                     {
                         // Get connection string from application.json
                         string connectionString = config.GetSection("ConnectionString").Value;
@@ -100,14 +112,7 @@ namespace WebService
                     serviceCollection.AddSingleton<ISchedulerWorkedOnHelper, SchedulerWorkedOnHelper>();
                     serviceCollection.AddSingleton<IContributionPointCalculator, ContributionPointCalculator>();
                     serviceCollection.AddSingleton<IScheduler,Scheduler>();
-                    serviceCollection.AddScoped<IEligibleBatchesService, EligibleBatchesService>();
-
-                    serviceCollection.AddSingleton<Automator>(sp =>
-                    {
-                        // Get connection string from application.json
-                        int automaterInterval = int.Parse(config.GetSection("AutomaterInterval").Value);
-                        return new Automator(automaterInterval, sp.GetRequiredService<ISchedulerWorkedOnHelper>(), sp.GetRequiredService<IContributionPointCalculator>(), sp.GetRequiredService<IScheduler>(), sp.GetRequiredService<IEligibleBatchesService>());
-                    });
+                    serviceCollection.AddSingleton<IEligibleBatchesService, EligibleBatchesService>();
                 });
     }
 }

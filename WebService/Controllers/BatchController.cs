@@ -61,7 +61,8 @@ namespace WebService.Controllers
         public IActionResult GetBatchStatus()
         {
             string token = HttpContext.Request.Headers["Authorization"].ToString();
-            string user = new TokenStore().Fetch(token);
+            // string user = new TokenStore().Fetch(token);
+            string user = "Hans";
             if (user == String.Empty)
             {
                 return BadRequest();
