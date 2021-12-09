@@ -18,6 +18,7 @@ namespace WebService.Controllers
         }
 
         [HttpGet]
+        [AuthenticationHelpers.Authorize]
         [Route("api/[controller]/{fileID}")]
         public IActionResult FetchBatchResult(string fileID)
         {
