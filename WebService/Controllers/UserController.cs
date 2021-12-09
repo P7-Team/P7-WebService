@@ -47,7 +47,7 @@ namespace WebService.Controllers
         [HttpPost]
         [Route("login")]
         [AllowAnonymous]
-        public IActionResult Login(AuthenticateRequest model)
+        public IActionResult Login([FromBody] AuthenticateRequest model)
         {
             var response = _authenticatorService.Authenticate(model);
 
