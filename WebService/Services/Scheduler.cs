@@ -11,7 +11,7 @@ namespace WebService.Services
 {
     public class Scheduler : IScheduler
     {
-        // TODO Implement functionality such that the user can only be assigned to a specific task once.
+
         private readonly List<Batch> _batches;
         private ReaderWriterLockSlim BatchesLock { get; }
 
