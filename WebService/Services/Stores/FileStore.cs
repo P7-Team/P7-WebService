@@ -101,7 +101,7 @@ namespace WebService.Services.Stores
                 return null;
             }
         }
-
+        
         public bool DeleteFile(BatchFile file)
         {
             if (!file.ValidForFileSystem())

@@ -33,6 +33,7 @@ namespace WebService.Interfaces
         /// <returns>A <see cref="Stream"/> of the data in the file, null if <see cref="BatchFile.Path"/> or <see cref="BatchFile.Filename"/> is null on the object or file could not be found</returns>
         public Stream FetchFile(BatchFile file);
         
+        
         /// <summary>
         /// Deletes a given <see cref="BatchFile"/> from the filesystem
         /// </summary>

@@ -11,6 +11,8 @@ namespace WebService.Interfaces
         public void AddBatch(Batch batch);
         public void AddBatches(List<Batch> batches);
 
+        public void RemoveInactiveUsers();
+
         public void RemoveCompletedTask(Task task);
 
         public void RemoveCompletedTask(long id, int number, int subNumber);

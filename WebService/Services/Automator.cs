@@ -40,10 +40,9 @@ namespace WebService.Services
 
         private void CleanInactiveUsers()
         {
-        
             Timer aTimer = new Timer(1000 * 60 * _intervalInMinutes);
             // Hook up the Elapsed event for the timer. 
-            aTimer.Elapsed += (s, e) => _schedulerWorkedOnHelper.CleanInactiveUsers();
+            aTimer.Elapsed += (s, e) => _scheduler.RemoveInactiveUsers();
             aTimer.AutoReset = true;
             aTimer.Enabled = true;
         }

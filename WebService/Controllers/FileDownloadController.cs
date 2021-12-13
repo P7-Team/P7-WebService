@@ -10,10 +10,13 @@ namespace WebService.Controllers
     {
         private readonly BatchFileRepository _batchFileRepository;
         private readonly IFileStore _fileStore;
-        
-        public FileDownloadController(BatchFileRepository batchFileRepository, IFileStore fileStore)
+        private readonly BatchRepository _batchRepository;
+
+        public FileDownloadController(BatchFileRepository batchFileRepository, IFileStore fileStore,
+            BatchRepository batchRepository)
         {
             _fileStore = fileStore;
+            _batchRepository = batchRepository;
             _batchFileRepository = batchFileRepository;
         }
 
@@ -24,17 +27,18 @@ namespace WebService.Controllers
         {
             string path = _fileStore.Directory;
             BatchFile file = _batchFileRepository.Read((path, fileID));
-            
-            if (file == null)
+            if (fileID.Contains("Result"))
             {
-                return NotFound();
+                Batch batch = _batchRepository.Read(file.BatchId);
+                if (batch.OwnerUsername != (string) HttpContext.Items["User"]) return NotFound();
             }
+            
 
             Stream fileData = _fileStore.FetchFile(file);
 
             if (fileData == null)
                 return NotFound();
-            
+
             return Ok(fileData);
         }
     }

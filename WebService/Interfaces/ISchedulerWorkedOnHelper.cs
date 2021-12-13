@@ -19,7 +19,7 @@ namespace WebService.Interfaces
 
         public TaskWrapper GetCurrentlyWorkedOn(User user);
 
-        public void CleanInactiveUsers();
+        public List<TaskWrapper> CleanInactiveUsers();
 
         public TaskWrapper PopTaskWrapper(long id, int number, int subNumber);
 

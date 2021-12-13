@@ -14,8 +14,8 @@ namespace WebService.Helper
         public ReaderWriterLockSlim WorkedOnElementsLock { get; }
         private readonly List<TaskWrapper> _workedOnElements;
         private const int CleanUpTimeHours = 0;
-        private const int CleanUpTimeMinutes = 5;
-        private const int CleanUpTimeSeconds = 0;
+        private const int CleanUpTimeMinutes = 0;
+        private const int CleanUpTimeSeconds = 10;
 
         public SchedulerWorkedOnHelper()
         {
@@ -112,8 +112,9 @@ namespace WebService.Helper
         /// Cleans any TaskWrappers which have not been pinged for the defined amount of time.
         /// The time is defined within the class.
         /// </summary>
-        public void CleanInactiveUsers()
+        public List<TaskWrapper> CleanInactiveUsers()
         {
+            
             WorkedOnElementsLock.EnterWriteLock();
             try
             {
@@ -124,6 +125,8 @@ namespace WebService.Helper
                     inactiveElement.Task.UnAllocate();
                     _workedOnElements.Remove(inactiveElement);
                 }
+
+                return inactiveElements;
             }
             finally
             {

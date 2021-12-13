@@ -11,7 +11,6 @@ namespace WebService.Services
 {
     public class Scheduler : IScheduler
     {
-
         private readonly List<Batch> _batches;
         private ReaderWriterLockSlim BatchesLock { get; }
 
@@ -19,13 +18,14 @@ namespace WebService.Services
         private readonly ISchedulerHistoryHelper _historyHelper;
         private readonly IRepository<Task, (int, int, int)> _taskRepository;
 
-        public Scheduler(ISchedulerWorkedOnHelper schedulerWoh, ISchedulerHistoryHelper historyHelper, IDBConnectionFactory connectionFactory)
+        public Scheduler(ISchedulerWorkedOnHelper schedulerWoh, ISchedulerHistoryHelper historyHelper,
+            IDBConnectionFactory connectionFactory)
         {
             BatchesLock = new ReaderWriterLockSlim();
             _schedulerWoh = schedulerWoh;
             _historyHelper = historyHelper;
             _batches = new List<Batch>();
-            
+
             var conn = connectionFactory.GetConnection();
 
             var db = connectionFactory.CreateQueryFactory(conn);
@@ -43,7 +43,8 @@ namespace WebService.Services
                     {
                         Task tempTask = currentBatch.GetTask(i);
 
-                        if (_schedulerWoh.IsWorkedOn(tempTask) || _historyHelper.HasWorkedOn(tempTask, user)) continue;
+                        if (_schedulerWoh.IsWorkedOn(tempTask) && !_schedulerWoh.IsWorkedOnBy(tempTask, user) ||
+                            _historyHelper.HasWorkedOn(tempTask, user)) continue;
                         TaskWrapper tw = new TaskWrapper(tempTask)
                         {
                             AssignedAt = DateTime.Now
@@ -97,6 +98,15 @@ namespace WebService.Services
         public void RemoveCompletedTask(Task task)
         {
             RemoveCompletedTask(task.Id, task.Number, task.SubNumber);
+        }
+
+        public void RemoveInactiveUsers()
+        {
+            List<TaskWrapper> itemsToPersist = _schedulerWoh.CleanInactiveUsers();
+            foreach (TaskWrapper taskWrapper in itemsToPersist)
+            {
+                _taskRepository.Update(taskWrapper.Task);
+            }
         }
 
         public void RemoveCompletedTask(long id, int number, int subNumber)

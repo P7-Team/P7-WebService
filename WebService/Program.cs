@@ -28,30 +28,27 @@ namespace WebService
             var host = CreateHostBuilder(args).Build();
 
             var sp = host.Services;
-            
+
             // int automatorInterval = int.Parse(config.GetSection("AutomaterInterval").Value);
-            int automatorInterval = 5;
-            var automator = new Automator(automatorInterval, 
-                sp.GetRequiredService<ISchedulerWorkedOnHelper>(), 
-                sp.GetRequiredService<IContributionPointCalculator>(), 
-                sp.GetRequiredService<IScheduler>(), 
+            int automatorInterval = 1;
+            var automator = new Automator(automatorInterval,
+                sp.GetRequiredService<ISchedulerWorkedOnHelper>(),
+                sp.GetRequiredService<IContributionPointCalculator>(),
+                sp.GetRequiredService<IScheduler>(),
                 sp.GetRequiredService<IEligibleBatchesService>());
-            
+
             host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                })
+                .ConfigureWebHostDefaults(webBuilder => { webBuilder.UseStartup<Startup>(); })
                 .ConfigureServices((hostBuilderContext, serviceCollection) =>
                 {
                     // This makes the content of application.json available
                     var config = new ConfigurationBuilder()
-                    .AddJsonFile("appsettings.json", optional: false)
-                    .Build();
+                        .AddJsonFile("appsettings.json", optional: false)
+                        .Build();
 
                     // This provides a IDBConnectionFactory that can be used to create connections
                     // to the db.
@@ -94,7 +91,10 @@ namespace WebService
                     serviceCollection.AddScoped<IFileStore, FileStore>(sp =>
                     {
                         string fileDir = ConfigurationHelper.ReadOSFileDirFromConfiguration(config);
-                        return new FileStore(sp.GetRequiredService<BatchFileRepository>(), sp.GetRequiredService<ResultRepository>(), sp.GetRequiredService<SourceFileRepository>(), sp.GetRequiredService<FileSaver>(), sp.GetRequiredService<FileFetcher>(), sp.GetRequiredService<FileDeleter>(), fileDir);
+                        return new FileStore(sp.GetRequiredService<BatchFileRepository>(),
+                            sp.GetRequiredService<ResultRepository>(), sp.GetRequiredService<SourceFileRepository>(),
+                            sp.GetRequiredService<FileSaver>(), sp.GetRequiredService<FileFetcher>(),
+                            sp.GetRequiredService<FileDeleter>(), fileDir);
                     });
 
                     serviceCollection.AddScoped<TaskStore>();
@@ -105,13 +105,14 @@ namespace WebService
                     // Setup a context for the TaskController
                     serviceCollection.AddScoped<ITaskContext, TaskContext>(sp =>
                     {
-                        return new TaskContext(sp.GetRequiredService<IFileStore>(), sp.GetRequiredService<BatchRepository>(), sp.GetRequiredService<TaskRepository>());
+                        return new TaskContext(sp.GetRequiredService<IFileStore>(),
+                            sp.GetRequiredService<BatchRepository>(), sp.GetRequiredService<TaskRepository>());
                     });
 
                     serviceCollection.AddSingleton<ISchedulerHistoryHelper, SchedulerHistoryHelper>();
                     serviceCollection.AddSingleton<ISchedulerWorkedOnHelper, SchedulerWorkedOnHelper>();
                     serviceCollection.AddSingleton<IContributionPointCalculator, ContributionPointCalculator>();
-                    serviceCollection.AddSingleton<IScheduler,Scheduler>();
+                    serviceCollection.AddSingleton<IScheduler, Scheduler>();
                     serviceCollection.AddSingleton<IEligibleBatchesService, EligibleBatchesService>();
                 });
     }
