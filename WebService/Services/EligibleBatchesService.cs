@@ -22,10 +22,9 @@ namespace WebService.Services
         public EligibleBatchesService(IDBConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;
-            var conn = connectionFactory.GetConnection();
 
-            _db = connectionFactory.CreateQueryFactory(conn);
-            _taskRepository = new TaskRepository(_db);
+            _db = connectionFactory.CreateQueryFactory();
+            _taskRepository = new TaskRepository(connectionFactory);
             _sourceFileRepository = new SourceFileRepository(_db);
             _batchFileRepository = new BatchFileRepository(_db);
         }

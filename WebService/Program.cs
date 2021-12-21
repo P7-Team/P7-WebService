@@ -79,7 +79,7 @@ namespace WebService
                     serviceCollection.AddScoped<IRepository<BatchFile, (string, string)>, BatchFileRepository>();
                     serviceCollection.AddScoped<BatchFileRepository>();
                     serviceCollection.AddScoped<SourceFileRepository>();
-                    serviceCollection.AddScoped<IRepository<Task, (int, int, int)>, TaskRepository>();
+                    serviceCollection.AddSingleton<IRepository<Task, (int, int, int)>, TaskRepository>();
                     serviceCollection.AddScoped<TaskRepository>();
                     serviceCollection.AddScoped<ResultRepository>();
                     serviceCollection.AddScoped<FileSaver>();

@@ -12,6 +12,6 @@ namespace WebService.Services
     {
         public MySqlConnection GetConnection();
 
-        public QueryFactory CreateQueryFactory(MySqlConnection connection);
+        public QueryFactory CreateQueryFactory();
     }
 }

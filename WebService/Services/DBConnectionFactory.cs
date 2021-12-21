@@ -25,7 +25,14 @@ namespace WebService.Services
             return new QueryFactory(connection, compiler);
         }
 
-        MySqlConnection IDBConnectionFactory.GetConnection()
+        public QueryFactory CreateQueryFactory()
+        {
+            var compiler = new MySqlCompiler();
+
+            return new QueryFactory(GetConnection(), compiler);
+        }
+
+        public MySqlConnection GetConnection()
         {
 
             return new MySqlConnection(_connectionString);

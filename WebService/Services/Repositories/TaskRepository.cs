@@ -13,9 +13,9 @@ namespace WebService.Services.Repositories
         private readonly QueryFactory _db;
         private const string _table = "Task";
 
-        public TaskRepository(QueryFactory db)
+        public TaskRepository(IDBConnectionFactory connectionFactory)
         {
-            _db = db;
+            _db = connectionFactory.CreateQueryFactory();
         }
 
         public (int id, int number, int subnumber) Create(Task item)
