@@ -30,7 +30,7 @@ namespace IntegrationTests
             _batchRepository = new BatchRepository(fixture.Db);
             _batchFileRepository = new BatchFileRepository(fixture.Db);
             _resultRepository = new ResultRepository(fixture.Db);
-            _taskRepository = new TaskRepository(fixture.Db);
+            _taskRepository = new TaskRepository(fixture.ConnectionFactory);
         }
 
         [Fact(Skip = skip)]
