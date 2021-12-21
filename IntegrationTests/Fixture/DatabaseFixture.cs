@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using SqlKata.Compilers;
 using SqlKata.Execution;
+using WebService.Services;
 
 namespace IntegrationTests.Fixture
 {
@@ -22,6 +23,8 @@ namespace IntegrationTests.Fixture
             var compiler = new MySqlCompiler();
 
             Db = new QueryFactory(_connection, compiler);
+
+            ConnectionFactory = new DBConnectionFactory(ConnString);
 
             // Remove all existing data in the table
             //connection.Execute(@"SET FOREIGN_KEY_CHECKS = 0;
@@ -59,5 +62,6 @@ namespace IntegrationTests.Fixture
 
         public QueryFactory Db { get; private set; }
         public string ConnString { get; private set; }
+        public IDBConnectionFactory ConnectionFactory { get; private set; }
     }
 }

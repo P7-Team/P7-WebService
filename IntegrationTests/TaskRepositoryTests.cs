@@ -15,7 +15,7 @@ namespace IntegrationTests
         {
             dbFixture.Clean(new string[] { "Task" });
 
-            taskRepository = new TaskRepository(dbFixture.Db);
+            taskRepository = new TaskRepository(dbFixture.ConnectionFactory);
 
         }
 
