@@ -28,21 +28,6 @@ namespace WebService_UnitTests
             Assert.IsType<Task>(scheduler.AllocateTask(user));
         }
 
-
-        [Fact]
-        public void GetNextTask_User_Already_Assigned_Returns_Null()
-        {
-            IScheduler scheduler = new Scheduler(new SchedulerWorkedOnHelper(),new SchedulerHistoryHelper(), new MockTaskRepository());
-            User user = new User("Username", "Password", 0);
-            Task task = new Task(true);
-            Batch testBatch = new Batch(0);
-            testBatch.AddTask(task);
-            scheduler.AddBatch(testBatch);
-            scheduler.AllocateTask(user);
-            // Assert
-            Assert.Null(scheduler.AllocateTask(user));
-        }
-
         [Fact]
         public void GetNextTask_Assigns_User()
         {
