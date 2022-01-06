@@ -1,0 +1,19 @@
+type: object
+required:
+- batchId
+- taskNumber
+- taskSubNumber
+- result
+properties:
+  batchId:
+    type: integer
+    format: integer
+  taskNumber:
+    type: integer
+    format: integer
+  taskSubNumber:
+    type: integer
+    format: integer
+  result:
+    type: string
+    format: binary
