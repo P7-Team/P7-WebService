@@ -29,12 +29,12 @@ namespace WebService.Services
             _scheduler = scheduler;
             _eligibleBatchesService = eligibleBatchesService;
 
-            _cleanInactiveUsers = new Thread(CleanInactiveUsers);
-            _contributionPointsManager = new Thread(ContributionPointsHandler);
-            _addBatchesToScheduler = new Thread(AddBatchesToScheduler);
+            //_cleanInactiveUsers = new Thread(CleanInactiveUsers);
+            _contributionPointsManager = new Thread(ContributionPointsHandler) { IsBackground = true};
+            _addBatchesToScheduler = new Thread(AddBatchesToScheduler) { IsBackground = true };
             FetchAndAddBatches();
             _addBatchesToScheduler.Start();
-            _cleanInactiveUsers.Start();
+            //_cleanInactiveUsers.Start();
             _contributionPointsManager.Start();
         }
 
